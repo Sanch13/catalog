@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+{% load static %}
+
+<head>
+    {% block title %}
+        <title>Catalog</title>
+    {% endblock title %}
+
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet"/>
+    <link href="{% static 'css/style.css' %}" rel="stylesheet"/>
+
+    {% block css %}
+    {% endblock css %}
+
+</head>
+
+<body>
+
+<header>
+    <nav class="navbar navbar-expand-md fixed-top py-0">
+        <div class="container-fluid mx-5">
+            <button class="navbar-toggler order-first collapsed"
+                    type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarID"
+                    aria-controls="navbarID"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <!-- Logo -->
+            <a class="navbar-brand text-end mx-0" style="width: 250px;" href="https://www.miran-bel.com/" target="_blank">
+                <img src="" width="80px" height="56px" alt="logo" class="">
+            </a>
+            <!-- Menu -->
+            <div class="navbar-collapse collapse" id="navbarID" style="">
+                <ul class="navbar-nav mx-auto mb-1">
+                    <li class="nav-item">
+                        <a class="nav-link py-1" href="#">Menu</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+
+
+
+{% block content %}
+{% endblock %}
+
+</body>
+
+</html>

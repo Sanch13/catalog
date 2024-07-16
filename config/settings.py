@@ -20,8 +20,9 @@ INSTALLED_APPS = [
 ]
 
 # PACKAGES
-# INSTALLED_APPS += [
-# ]
+INSTALLED_APPS += [
+    'imagekit',
+]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

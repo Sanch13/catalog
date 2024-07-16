@@ -1,10 +1,6 @@
 from django.shortcuts import render
 
-from catalog.models import Category, Cap
-
-
-def main(request):
-    return redirect(to="catalog:home")
+from catalog.models import Category
 
 
 def get_catalog(request):

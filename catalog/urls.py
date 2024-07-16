@@ -6,6 +6,5 @@ app_name = "catalog"
 
 
 urlpatterns = [
-    path('', get_catalog, name="home"),
-    # path('<slug:category_slug>/', category_detail, name="category"),
+    path('', get_catalog, name="catalog"),
 ]

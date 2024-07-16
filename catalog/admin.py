@@ -1,34 +1,44 @@
-from django.contrib import admin
-from django.utils.text import slugify
 from django.utils.html import format_html
+from django import forms
+from django.contrib import admin
+from .widgets import CustomClearableFileInput
 
-from .models import Product, File, Category
-
-
-class FileInline(admin.TabularInline):
-    model = File
-    extra = 1
-
-    def thumbnail(self, instance):
-        return '<img src="{}" width="100" height="100" />'.format(instance.file.url)
-
-    thumbnail.allow_tags = True
-    thumbnail.short_description = 'Preview'
-
-    fields = ('file', 'file_type', 'thumbnail',)
-    readonly_fields = ('thumbnail',)
+from .models import Category
 
 
-@admin.register(Product)
-class ProductAdmin(admin.ModelAdmin):
-    list_display = ('name', 'category', 'status')
-    inlines = [FileInline]
+# class FileInline(admin.TabularInline):
+#     model = File
+#     extra = 1
+#
+#     def thumbnail(self, instance):
+#         return '<img src="{}" width="100" height="100" />'.format(instance.file.url)
+#
+#     thumbnail.allow_tags = True
+#     thumbnail.short_description = 'Preview'
+#
+#     fields = ('file', 'file_type', 'thumbnail',)
+#     readonly_fields = ('thumbnail',)
+#
+#
+# @admin.register(Product)
+# class ProductAdmin(admin.ModelAdmin):
+#     list_display = ('name', 'category', 'status')
+#     inlines = [FileInline]
+
+class CategoryAdminForm(forms.ModelForm):
+    class Meta:
+        model = Category
+        fields = '__all__'
+        widgets = {
+            'category_image': CustomClearableFileInput,
+        }
 
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
+    form = CategoryAdminForm
+    list_display = ('name', 'slug')
     prepopulated_fields = {"slug": ("name",)}
-    list_display = ('name', 'category_image')
 
     def category_image_tag(self, obj):
         if obj.category_image:
