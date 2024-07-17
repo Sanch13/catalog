@@ -3,6 +3,8 @@ from django.utils.text import slugify
 
 from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
+from ckeditor.fields import RichTextField
+from ckeditor_uploader.fields import RichTextUploadingField
 
 from .utils import get_file_upload_path_category, get_upload_path_category_images
 
@@ -24,10 +26,16 @@ class Category(models.Model):
     description = models.TextField(blank=True,
                                    null=True,
                                    verbose_name='Описание')
+    description_2 = RichTextField(blank=True,
+                                  null=True,
+                                  verbose_name='Описание_2')
     category_image = models.ImageField(upload_to=get_upload_path_category_images,
                                        blank=True,
                                        null=True,
                                        verbose_name='Изображение категории')
+    category_image_2 = RichTextUploadingField(blank=True,
+                                              null=True,
+                                              verbose_name='Изображение категории_2')
     thumbnail = ImageSpecField(source='category_image',
                                processors=[ResizeToFill(100, 100)],
                                format='JPEG',
@@ -44,7 +52,6 @@ class Category(models.Model):
         if not self.slug:
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
-
 
 # class Product(models.Model):
 #     class ProductStatus(models.TextChoices):
