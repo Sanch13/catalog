@@ -22,8 +22,6 @@ INSTALLED_APPS = [
 # PACKAGES
 INSTALLED_APPS += [
     'imagekit',
-    'ckeditor',
-    'ckeditor_uploader',
 ]
 
 MIDDLEWARE = [
@@ -101,6 +99,5 @@ STATICFILES_DIRS = [
 # STATIC_ROOT = "/home/sanch/Projects/catalog/static"
 MEDIA_URL = "media/"
 MEDIA_ROOT = BASE_DIR / "media/"
-CKEDITOR_UPLOAD_PATH = "uploads/"
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

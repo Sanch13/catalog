@@ -42,7 +42,7 @@ class CategoryAdmin(admin.ModelAdmin):
 
     def category_image_tag(self, obj):
         if obj.category_image:
-            return format_html('<img src="{}" width="100" height="100" />', obj.category_image.url)
+            return format_html('<img src="{}" width="150" height="150" />', obj.category_image.url)
         return "No Image"
     category_image_tag.short_description = 'Category Image'
     category_image_tag.allow_tags = True
