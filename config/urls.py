@@ -6,6 +6,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('catalog/', include('catalog.urls', namespace='catalog')),
     path('admin/', admin.site.urls),
+    path('tinymce/', include('tinymce.urls')),
 ]
 
 if settings.DEBUG:

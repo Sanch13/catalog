@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 from settings import settings
 
@@ -22,6 +23,7 @@ INSTALLED_APPS = [
 # PACKAGES
 INSTALLED_APPS += [
     'imagekit',
+    'tinymce',
 ]
 
 MIDDLEWARE = [
@@ -96,7 +98,8 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
-# STATIC_ROOT = "/home/sanch/Projects/catalog/static"
+# STATIC_ROOT = '/home/sanch/PycharmProjects/catalog/static'
+
 MEDIA_URL = "media/"
 MEDIA_ROOT = BASE_DIR / "media/"
 

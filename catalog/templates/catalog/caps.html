@@ -1,0 +1,30 @@
+{% extends 'catalog/base.html' %}
+{% load static %}
+
+{% block title %}
+{% endblock title %}
+
+
+{% block content %}
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
+        {% for cap in caps %}
+            <div class="col">
+                <a href="#" style="text-decoration: none;">
+                    <div class="card card-link">
+                        {% if cap.cap_files.all %}
+                            {% for file in cap.cap_files.all %}
+                                {% if forloop.first %}
+                                    <img src="{{ file.file.url }}" class="card-img-top" alt="...">
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title text-center "
+                                style="text-transform: uppercase">{{ cap.name }}</h5>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
