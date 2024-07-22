@@ -1,12 +1,11 @@
 import os
 
 from django.db import models
+
 from .cap import Cap
 
 from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
-
-# from catalog.utils import get_file_upload_path_category
 
 
 def get_file_upload_path_cap(instance, filename):
@@ -22,7 +21,6 @@ class CapFile(models.Model):
                             on_delete=models.CASCADE,
                             related_name="cap_files",
                             verbose_name='Файл колпачка')
-
     file_type = models.CharField(max_length=5,
                                  choices=FileTypeChoices.choices,
                                  default=FileTypeChoices.IMAGE,

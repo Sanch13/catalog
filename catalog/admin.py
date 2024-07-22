@@ -6,8 +6,8 @@ from django.utils.safestring import mark_safe
 from .widgets import CustomClearableFileInput, CustomClearableFilesInput
 from tinymce.widgets import TinyMCE
 
-from catalog.models.catalog import Category
-from catalog.models.file import CapFile
+from catalog.models.category import Category
+from catalog.models.cap_file import CapFile
 from catalog.models.cap import Cap
 
 

@@ -3,7 +3,7 @@ from django.utils.text import slugify
 
 from tinymce.models import HTMLField
 
-from catalog.models.catalog import Category
+from catalog.models.category import Category
 
 
 class Cap(models.Model):

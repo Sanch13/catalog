@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 
-from catalog.models.catalog import Category
+from catalog.models.category import Category
 from catalog.models.cap import Cap
 
 
@@ -35,12 +35,12 @@ def get_category(request, category_slug):
     return render(request, 'catalog/category.html', {'category': category})
 
 
-
-
 # def get_product_detail(request, category_slug, series_slug=None, product_slug=None):
 #     if series_slug:
 #         product = get_object_or_404(Product,
-#                                     slug=product_slug, series__slug=series_slug, category__slug=category_slug)
+#                                     slug=product_slug,
+#                                     series__slug=series_slug,
+#                                     category__slug=category_slug)
     # else:
     #     product = get_object_or_404(Product, slug=product_slug, category__slug=category_slug)
     # context = {
