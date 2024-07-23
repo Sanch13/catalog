@@ -4,7 +4,7 @@ from django.utils.text import slugify
 from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
 
-from catalog.utils import get_file_upload_path_category, get_upload_path_category_images
+from catalog.utils import get_file_upload_path_category, get_upload_path_category_or_series
 
 
 class Category(models.Model):
@@ -24,7 +24,7 @@ class Category(models.Model):
     description = models.TextField(blank=True,
                                    null=True,
                                    verbose_name='Описание')
-    category_image = models.ImageField(upload_to=get_upload_path_category_images,
+    category_image = models.ImageField(upload_to=get_upload_path_category_or_series,
                                        blank=True,
                                        null=True,
                                        verbose_name='Изображение категории')

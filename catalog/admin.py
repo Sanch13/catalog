@@ -3,7 +3,7 @@ from django import forms
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
-from .models import Jar, JarFile
+from .models import Jar, JarFile, Series
 from .widgets import CustomClearableFileInput, CustomClearableFilesInput
 from tinymce.widgets import TinyMCE
 
@@ -99,6 +99,22 @@ class JarAdmin(admin.ModelAdmin):
         js = ('tinymce/tinymce.min.js', 'admin/js/tinymce_setup.js', 'admin/js/image-previews.js')
         css = {
             'all': ('admin/css/custom/styles.css',)
+        }
+
+
+##############################################
+# SERIES MODEL
+##############################################
+@admin.register(Series)
+class SeriesAdmin(admin.ModelAdmin):
+    list_display = ['id', 'name']
+    list_display_links = ('id', 'name',)
+    prepopulated_fields = {"slug": ("name",)}
+    ordering = ('id',)
+
+    class Media:
+        css = {
+            'all': ('admin/css/custom/styles.css',),
         }
 
 
