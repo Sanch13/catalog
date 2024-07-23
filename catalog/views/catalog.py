@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 
+from catalog.models import Jar
 from catalog.models.category import Category
 from catalog.models.cap import Cap
 
@@ -16,7 +17,6 @@ def get_catalog(request):
 
 def get_category(request, category_slug):
     category = get_object_or_404(Category, slug=category_slug)
-    print(category.name)
     if category.name == 'Флаконы':
         # flakons = Flakon.objects.filter(category=category)
         # context = {
@@ -24,11 +24,11 @@ def get_category(request, category_slug):
         # }
         return render(request, 'catalog/flakony.html', {})
     elif category.name == 'Баночки':
-        # jars = Jar.objects.filter(category=category)
+        jars = Jar.objects.filter(category=category)
         # context = {
         #     'jars': jars
         # }
-        return render(request, 'catalog/jars.html', {})
+        return render(request, 'catalog/jars.html', {'jars': jars})
     elif category.name == 'Колпачки':
         caps = Cap.objects.filter(category=category)
         return render(request, 'catalog/caps.html', {'caps': caps})

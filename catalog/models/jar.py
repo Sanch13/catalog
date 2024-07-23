@@ -34,6 +34,7 @@ class Jar(models.Model):
 
     category = models.ForeignKey(Category,
                                  on_delete=models.CASCADE,
+                                 related_name="jar_category",
                                  verbose_name='Категория')
     name = models.CharField(max_length=150,
                             verbose_name='Название')
@@ -52,7 +53,7 @@ class Jar(models.Model):
                               default=VolumeJar.TWO_HUNDRED,
                               verbose_name='Объем мл.')
     surface = models.CharField(max_length=10,
-                               choices=StatusJar.choices,
+                               choices=SurfaceJar.choices,
                                default=SurfaceJar.GLOSSY,
                                verbose_name="Поверхность")
     double_wall = models.CharField(max_length=3,

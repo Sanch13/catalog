@@ -3,7 +3,7 @@ from django import forms
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
-from .models import Jar
+from .models import Jar, JarFile
 from .widgets import CustomClearableFileInput, CustomClearableFilesInput
 from tinymce.widgets import TinyMCE
 
@@ -65,10 +65,41 @@ class CapAdmin(admin.ModelAdmin):
 ##############################################
 # JAR MODEL
 ##############################################
+
+class JarFileForm(forms.ModelForm):
+    model = JarFile
+    fields = ['file_type', 'file']
+    widgets = {
+        'file': CustomClearableFilesInput,
+    }
+
+
+class JarFileInline(admin.TabularInline):
+    model = JarFile
+    form = JarFileForm
+    extra = 5
+    readonly_fields = ['thumbnail_display']
+
+    def thumbnail_display(self, obj):
+        if obj.file:
+            return mark_safe(f'<img src="{obj.thumbnail.url}" width="150" height="150" />')
+        return "Нет изображения в Базе Данных"
+
+    thumbnail_display.short_description = 'Миниатюра изображения'
+
+
 @admin.register(Jar)
 class JarAdmin(admin.ModelAdmin):
-    list_display = ('name', )
+    form = JarFileForm
+    inlines = [JarFileInline]
+    list_display = ('name',)
     prepopulated_fields = {"slug": ("name",)}
+
+    class Media:
+        js = ('tinymce/tinymce.min.js', 'admin/js/tinymce_setup.js', 'admin/js/image-previews.js')
+        css = {
+            'all': ('admin/css/custom/styles.css',)
+        }
 
 
 ##############################################
@@ -86,12 +117,22 @@ class CategoryAdminForm(forms.ModelForm):
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     form = CategoryAdminForm
-    list_display = ('name', 'slug')
+    list_display = ('id', 'name', 'slug')
+    list_display_links = ('id', 'name',)
     prepopulated_fields = {"slug": ("name",)}
+    ordering = ('id',)
+
+    class Media:
+        css = {
+            'all': ('admin/css/custom/styles.css',),
+        }
 
     # def category_image_tag(self, obj):
     #     if obj.category_image:
-    #         return format_html('<img src="{}" width="150" height="150" />', obj.category_image.url)
+    #         return format_html('<img src="{}"
+    #         width="150"
+    #         height="150" />',
+    #         obj.category_image.url)
     #     return "No Image"
 
     # category_image_tag.short_description = 'Category Image'

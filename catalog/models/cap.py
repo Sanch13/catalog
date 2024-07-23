@@ -25,6 +25,7 @@ class Cap(models.Model):
 
     category = models.ForeignKey(Category,
                                  on_delete=models.CASCADE,
+                                 related_name="cap_category",
                                  verbose_name='Категория')
     name = models.CharField(max_length=150,
                             verbose_name='Название')

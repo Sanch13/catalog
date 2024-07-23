@@ -9,7 +9,7 @@ from imagekit.processors import ResizeToFill
 
 
 def get_file_upload_path_jar(instance, filename):
-    return os.path.join('files', instance.jar.category.name, instance.cap.name, filename)
+    return os.path.join('files', instance.jar.category.name, instance.jar.name, filename)
 
 
 class JarFile(models.Model):
