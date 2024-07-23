@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+{% load static %}
+
+<head>
+    {% block title %}
+        <title>Catalog</title>
+    {% endblock title %}
+
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet"/>
+    <link href="{% static 'css/style.css' %}" rel="stylesheet"/>
+
+    {% block css %}
+    {% endblock css %}
+
+</head>
+
+<body>
+<header class="header">
+    <div class="container-fluid px-5">
+        <div class="row align-items-center">
+{#            <div class="col-4">#}
+{#                <a href="#" class="link-logo"><img src="" alt="..."/></a>#}
+{#            </div>#}
+            <div class="col-12">
+                <ul class="main-menu">
+                    <li class="col-auto">
+                        <a href="#">
+                            <span> Link 1 </span>
+                        </a>
+                    </li>
+                    <li class="col-auto">
+                        <a href="#">
+                            <span> Link 1 </span>
+                        </a>
+                    </li>
+                    <li class="col-auto">
+                        <a href="#">
+                            <span> Link 1 </span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+<div class="container-fluid mt-4">
+{% block content %}
+{% endblock %}
+</div>
+
+</body>
+
+</html>

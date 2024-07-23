@@ -1,0 +1,26 @@
+{% extends 'catalog/base.html' %}
+{% load static %}
+
+{% block title %}
+    {{ category.name }}
+{% endblock title %}
+
+
+{% block content %}
+    <h1>{{ category.name }}</h1>
+
+{#    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">#}
+{#        {% for product in products %}#}
+{#            <div class="col">#}
+{#                <div class="card">#}
+{#                    <img src="{{ product.image.url }}" class="card-img-top" alt="..."> <!-- Предполагается, что у модели Product есть поле image -->#}
+{#                    <div class="card-body">#}
+{#                        <h5 class="card-title text-center">{{ product.name }}</h5>#}
+{#                        <p class="card-text text-center">{{ product.description }}</p>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+{#        {% endfor %}#}
+{#    </div>#}
+
+{% endblock %}

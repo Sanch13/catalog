@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 from settings import settings
 
@@ -15,12 +16,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'catalog',
 ]
 
 # PACKAGES
 INSTALLED_APPS += [
-    'easy_thumbnails',
-    'filer',
+    'imagekit',
+    'tinymce',
 ]
 
 MIDDLEWARE = [
@@ -85,7 +88,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru-ru'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
@@ -95,6 +98,8 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
+# STATIC_ROOT = '/home/sanch/PycharmProjects/catalog/static'
+
 MEDIA_URL = "media/"
 MEDIA_ROOT = BASE_DIR / "media/"
 
