@@ -3,6 +3,7 @@ from django import forms
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
+from .models import Jar
 from .widgets import CustomClearableFileInput, CustomClearableFilesInput
 from tinymce.widgets import TinyMCE
 
@@ -25,12 +26,15 @@ class CapFileForm(forms.ModelForm):
 class CapFileInline(admin.TabularInline):
     model = CapFile
     form = CapFileForm
-    extra = 1
+    extra = 5
+    readonly_fields = ['thumbnail_display']
 
-    def file_tag(self, obj):
+    def thumbnail_display(self, obj):
         if obj.file:
-            return format_html('<img src="{}" width="150" height="150" />', obj.file.url)
-        return "No image"
+            return mark_safe(f'<img src="{obj.thumbnail.url}" width="150" height="150" />')
+        return "Нет изображения в Базе Данных"
+
+    thumbnail_display.short_description = 'Миниатюра изображения'
 
 
 class CapAdminForm(forms.ModelForm):
@@ -59,6 +63,15 @@ class CapAdmin(admin.ModelAdmin):
 
 
 ##############################################
+# JAR MODEL
+##############################################
+@admin.register(Jar)
+class JarAdmin(admin.ModelAdmin):
+    list_display = ('name', )
+    prepopulated_fields = {"slug": ("name",)}
+
+
+##############################################
 # CATEGORY MODEL
 ##############################################
 class CategoryAdminForm(forms.ModelForm):
@@ -76,10 +89,10 @@ class CategoryAdmin(admin.ModelAdmin):
     list_display = ('name', 'slug')
     prepopulated_fields = {"slug": ("name",)}
 
-    def category_image_tag(self, obj):
-        if obj.category_image:
-            return format_html('<img src="{}" width="150" height="150" />', obj.category_image.url)
-        return "No Image"
+    # def category_image_tag(self, obj):
+    #     if obj.category_image:
+    #         return format_html('<img src="{}" width="150" height="150" />', obj.category_image.url)
+    #     return "No Image"
 
-    category_image_tag.short_description = 'Category Image'
-    category_image_tag.allow_tags = True
+    # category_image_tag.short_description = 'Category Image'
+    # category_image_tag.allow_tags = True

@@ -11,9 +11,12 @@ class CustomClearableFileInput(ClearableFileInput):
     def render(self, name, value, attrs=None, renderer=None):
         input_html = super().render(name, value, attrs)
         if value and hasattr(value, "url"):
-            unique_id = name.replace(':', '_')
             img_html = mark_safe(
-                f'<br><img src="{value.url}" width="150" height="150" id="image-preview-{unique_id}"'
+                f'<br>'
+                f'<img src="{value.url}" '
+                f'width="150" '
+                f'height="150" '
+                f'id="{value}"'
                 f'style="margin-top: 10px;"/>')
             return mark_safe(f'{input_html}{img_html}')
         return input_html
@@ -30,14 +33,19 @@ class CustomClearableFilesInput(ClearableFileInput):
 
     def render(self, name, value, attrs=None, renderer=None):
         input_html = super().render(name, value, attrs)
+        img_html = ''
         if value and hasattr(value, "url"):
-            # Уникальный идентификатор для элемента
             img_id = f"image-preview-{name.replace(':', '_')}"
             img_html = mark_safe(
-                f'<br><img src="{value.url}" width="150" height="150" id="{img_id}" '
-                f'class="image-preview" style="margin-top: 10px;"/>')
-            return mark_safe(f'{input_html}{img_html}')
-        return input_html
+                f'<br>'
+                f'<img src="{value.url}" '
+                f'width="150" '
+                f'height="150" '
+                f'id="{img_id}" '
+                f'class="image-preview" '
+                f'style="margin-top: 10px;"/>'
+            )
+        return mark_safe(f'{input_html}{img_html}')
 
     class Media:
         js = ('admin/js/image-previews.js',)
