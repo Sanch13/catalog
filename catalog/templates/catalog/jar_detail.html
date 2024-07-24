@@ -1,0 +1,28 @@
+{% extends 'catalog/base.html' %}
+{% load static %}
+
+{% block title %}
+{% endblock title %}
+
+{% block css %}
+{% endblock css %}
+
+{% block content %}
+<div class="product-card">
+        {% if jar.jar_files.all %}
+            {% for file in jar.jar_files.all %}
+                <div class="gallery">
+                    <a data-fancybox="gallery" href=""><img src="{{ file.file.url }}" alt="Product Image 1"></a>
+                </div>
+            {% endfor %}
+        {% endif %}
+        <div class="product-info">
+            <h1>{{ jar.name }}</h1>
+            <p class="description">{{ jar.description }}</p>
+        </div>
+    </div>
+
+
+<script src="{% static 'js/fancybox.umd.js' %}"></script>
+<script src="{% static 'js/jquery-3.7.1.min.js' %}"></script>
+{% endblock %}

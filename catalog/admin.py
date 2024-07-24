@@ -3,13 +3,9 @@ from django import forms
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
-from .models import Jar, JarFile, Series
+from .models import Category, Series, Bottle, BottleFile, Jar, JarFile, Cap, CapFile
 from .widgets import CustomClearableFileInput, CustomClearableFilesInput
 from tinymce.widgets import TinyMCE
-
-from catalog.models.category import Category
-from catalog.models.cap_file import CapFile
-from catalog.models.cap import Cap
 
 
 ##############################################
@@ -65,7 +61,6 @@ class CapAdmin(admin.ModelAdmin):
 ##############################################
 # JAR MODEL
 ##############################################
-
 class JarFileForm(forms.ModelForm):
     model = JarFile
     fields = ['file_type', 'file']
@@ -103,10 +98,59 @@ class JarAdmin(admin.ModelAdmin):
 
 
 ##############################################
+# BOTTLE MODEL
+##############################################
+class BottleFileForm(forms.ModelForm):
+    model = BottleFile
+    fields = ['file_type', 'file']
+    widgets = {
+        'file': CustomClearableFilesInput,
+    }
+
+
+class BottleFileInline(admin.TabularInline):
+    model = BottleFile
+    form = BottleFileForm
+    extra = 5
+    readonly_fields = ['thumbnail_display']
+
+    def thumbnail_display(self, obj):
+        if obj.file:
+            return mark_safe(f'<img src="{obj.thumbnail.url}" width="150" height="150" />')
+        return "Нет изображения в Базе Данных"
+
+    thumbnail_display.short_description = 'Миниатюра изображения'
+
+
+@admin.register(Bottle)
+class BottleAdmin(admin.ModelAdmin):
+    form = BottleFileForm
+    inlines = [BottleFileInline]
+    list_display = ('name',)
+    prepopulated_fields = {"slug": ("name",)}
+
+    class Media:
+        js = ('tinymce/tinymce.min.js', 'admin/js/tinymce_setup.js', 'admin/js/image-previews.js')
+        css = {
+            'all': ('admin/css/custom/styles.css',)
+        }
+
+
+##############################################
 # SERIES MODEL
 ##############################################
+class SeriesAdminForm(forms.ModelForm):
+    class Meta:
+        model = Series
+        fields = '__all__'
+        widgets = {
+            'series_image': CustomClearableFileInput,
+        }
+
+
 @admin.register(Series)
 class SeriesAdmin(admin.ModelAdmin):
+    form = SeriesAdminForm
     list_display = ['id', 'name']
     list_display_links = ('id', 'name',)
     prepopulated_fields = {"slug": ("name",)}

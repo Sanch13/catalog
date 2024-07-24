@@ -9,7 +9,9 @@ from imagekit.processors import ResizeToFill
 
 
 def get_file_upload_path_cap(instance, filename):
-    return os.path.join('files', instance.cap.category.name, instance.cap.name, filename)
+    category = instance.cap.category.name
+    cap_name = instance.cap.name
+    return os.path.join('files', category, cap_name, filename)
 
 
 class CapFile(models.Model):

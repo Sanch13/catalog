@@ -67,7 +67,7 @@ class Jar(models.Model):
     coffe_crumbs = models.CharField(max_length=3,
                                     choices=YesNoStatusJar.choices,
                                     default=YesNoStatusJar.NO,
-                                    verbose_name="Экодобавка 'кофейная крошка'")
+                                    verbose_name="Экодобавка «кофейная крошка»")
     refil = models.CharField(max_length=3,
                              choices=YesNoStatusJar.choices,
                              default=YesNoStatusJar.NO,
@@ -89,3 +89,9 @@ class Jar(models.Model):
         if not self.slug:
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        from django.urls import reverse
+
+        return reverse(viewname="catalog:product_detail_no_series",
+                       args=[self.category.slug, self.slug])

@@ -1,3 +1,5 @@
+import os
+
 from django.db import models
 from django.utils.text import slugify
 
@@ -5,15 +7,19 @@ from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
 
 from catalog.models.category import Category
-from catalog.utils import get_default_category, get_upload_path_category_or_series
+
+
+def get_upload_path_series(instance, filename):
+    category = instance.category.name
+    series_name = instance.name
+    return os.path.join('files', category, series_name, filename)
 
 
 class Series(models.Model):
     category = models.ForeignKey(Category,
                                  on_delete=models.CASCADE,
                                  related_name="series",
-                                 verbose_name="Категория товара",
-                                 default=get_default_category)
+                                 verbose_name="Категория товара")
     name = models.CharField(max_length=50,
                             verbose_name='Серия')
     slug = models.SlugField(max_length=50,
@@ -21,7 +27,7 @@ class Series(models.Model):
     description = models.TextField(blank=True,
                                    null=True,
                                    verbose_name='Описание')
-    series_image = models.ImageField(upload_to=get_upload_path_category_or_series,
+    series_image = models.ImageField(upload_to=get_upload_path_series,
                                      blank=True,
                                      null=True,
                                      verbose_name="Изображение серии")

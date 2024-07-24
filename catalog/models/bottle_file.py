@@ -2,32 +2,33 @@ import os
 
 from django.db import models
 
-from .jar import Jar
+from .bottle import Bottle
 
 from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
 
 
-def get_file_upload_path_jar(instance, filename):
-    category = instance.jar.category.name
-    jar_name = instance.jar.name
-    return os.path.join('files', category, jar_name, filename)
+def get_file_upload_path_bottle(instance, filename):
+    category = instance.bottle.category.name
+    series = instance.bottle.series.name
+    bottle_name = instance.bottle.name
+    return os.path.join('files', category, series, bottle_name, filename)
 
 
-class JarFile(models.Model):
+class BottleFile(models.Model):
     class FileTypeChoices(models.TextChoices):
         IMAGE = 'image', 'image'
         VIDEO = 'video', 'video'
 
-    jar = models.ForeignKey(Jar,
-                            on_delete=models.CASCADE,
-                            related_name="jar_files",
-                            verbose_name='Файл колпачка')
+    bottle = models.ForeignKey(Bottle,
+                               on_delete=models.CASCADE,
+                               related_name="bottle_files",
+                               verbose_name='Файл флакона')
     file_type = models.CharField(max_length=5,
                                  choices=FileTypeChoices.choices,
                                  default=FileTypeChoices.IMAGE,
                                  verbose_name='Тип файла')
-    file = models.FileField(upload_to=get_file_upload_path_jar,
+    file = models.FileField(upload_to=get_file_upload_path_bottle,
                             verbose_name='Файл')
     thumbnail = ImageSpecField(source='file',
                                processors=[ResizeToFill(150, 150)],

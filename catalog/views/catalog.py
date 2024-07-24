@@ -26,6 +26,8 @@ def get_category(request, category_slug):
     elif category.name == 'Колпачки':
         caps = Cap.objects.filter(category=category)
         return render(request, 'catalog/caps.html', {'caps': caps})
+    # elif category.name == 'Новинки':
+
     return render(request, 'catalog/category.html', {'category': category})
 
 
@@ -45,13 +47,23 @@ def get_category(request, category_slug):
     #               context=context)
 
 
-# def get_series_detail(request, category_slug, series_slug):
-#     category = get_object_or_404(Series, slug=series_slug, category__slug=category_slug)
-#     products = series.products.all()
-#     context = {
-#         "series": series,
-#         "products": products,
-#     }
-#     return render(request=request,
-#                   template_name="catalog/series_detail.html",
-#                   context=context)
+def get_product_detail(request, category_slug, product_slug):
+
+    if category_slug == "jars":
+        jar = get_object_or_404(Jar, slug=product_slug, category__slug=category_slug)
+        print(jar)
+        context = {
+            "jar": jar
+        }
+        return render(request=request,
+                      template_name="catalog/jar_detail.html",
+                      context=context)
+
+    # products = series.products.all()
+    # context = {
+    #     "series": series,
+    #     "products": products,
+    # }
+    # return render(request=request,
+    #               template_name="catalog/series_detail.html",
+    #               context=context)
