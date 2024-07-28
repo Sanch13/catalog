@@ -97,6 +97,9 @@ class Bottle(models.Model):
                                                 choices=YesNoStatusBottle.choices,
                                                 default=YesNoStatusBottle.NO,
                                                 verbose_name="Доступен полноцвет или шелкография")
+    description = HTMLField(blank=True,
+                            null=True,
+                            verbose_name='Описание')
     decoration = HTMLField(blank=True,
                            null=True,
                            verbose_name="Декорирование")
@@ -114,3 +117,9 @@ class Bottle(models.Model):
         if not self.slug:
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        from django.urls import reverse
+
+        return reverse(viewname="catalog:product_detail",
+                       args=[self.category.slug, self.series.slug, self.slug])

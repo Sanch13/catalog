@@ -9,7 +9,7 @@
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
         {% for cap in caps %}
             <div class="col">
-                <a href="#" style="text-decoration: none;">
+                <a href="{{ cap.get_absolute_url }}" style="text-decoration: none;">
                     <div class="card card-link">
                         {% if cap.cap_files.all %}
                             {% for file in cap.cap_files.all %}
@@ -22,6 +22,11 @@
                             <h5 class="card-title text-center "
                                 style="text-transform: uppercase">{{ cap.name }}</h5>
                         </div>
+                        {% if cap.status == 'Новинка' %}
+                            <span class="badge-new">НОВИНКА</span>
+                        {% elif cap.status == 'Бестселлер' %}
+                            <span class="badge-new">БЕСТСЕЛЛЕР</span>
+                        {% endif %}
                     </div>
                 </a>
             </div>

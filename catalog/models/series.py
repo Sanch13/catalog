@@ -16,6 +16,10 @@ def get_upload_path_series(instance, filename):
 
 
 class Series(models.Model):
+    class StatusSeries(models.TextChoices):
+        REGULAR = 'Обычный', 'Обычный'
+        NEW = 'Новинка', 'Новинка'
+        BESTSELLER = 'Бестселлер', 'Бестселлер'
     category = models.ForeignKey(Category,
                                  on_delete=models.CASCADE,
                                  related_name="series",
@@ -24,6 +28,10 @@ class Series(models.Model):
                             verbose_name='Серия')
     slug = models.SlugField(max_length=50,
                             unique=True)
+    status = models.CharField(max_length=10,
+                              choices=StatusSeries.choices,
+                              default=StatusSeries.REGULAR,
+                              verbose_name='Статус товара')
     description = models.TextField(blank=True,
                                    null=True,
                                    verbose_name='Описание')
@@ -51,4 +59,9 @@ class Series(models.Model):
     def get_absolute_url(self):
         from django.urls import reverse
 
-        pass
+        first_bottle = self.bottle.order_by('volume').first()
+        if first_bottle:
+            return reverse(viewname="catalog:product_detail",
+                           args=[self.category.slug, self.slug, first_bottle.slug])
+
+

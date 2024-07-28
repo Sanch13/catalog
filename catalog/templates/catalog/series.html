@@ -16,6 +16,11 @@
                             <h5 class="card-title text-center "
                                 style="text-transform: uppercase">{{ ser.name }}</h5>
                         </div>
+                        {% if ser.status == 'Новинка' %}
+                            <span class="badge-new rounded-2">НОВИНКА</span>
+                        {% elif ser.status == 'Бестселлер' %}
+                            <span class="badge-new rounded-2">БЕСТСЕЛЛЕР</span>
+                        {% endif %}
                     </div>
                 </a>
             </div>

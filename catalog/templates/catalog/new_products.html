@@ -1,0 +1,36 @@
+{% extends 'catalog/base.html' %}
+{% load static %}
+
+{% block title %}
+{% endblock title %}
+
+
+{% block content %}
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4 my-3">
+        {% for product in new_products %}
+            <div class="col">
+                <a href="
+{% url 'catalog:product_detail_no_series' product.category__slug product.slug %}"
+                   style="text-decoration:
+                none;">
+                    <div class="card card-link">
+                        {% if product.image %}
+                            <img src="/media/{{ product.image }}" class="card-img-top" alt=".
+                            ..">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title text-center "
+                                style="text-transform: uppercase">{{ product.name }}</h5>
+                            <h5>{{ product.category__name }}</h5>
+                        </div>
+                        {% if product.status == 'Новинка' %}
+                            <span class="badge-new">НОВИНКА</span>
+                        {% elif product.status == 'Бестселлер' %}
+                            <span class="badge-new">БЕСТСЕЛЛЕР</span>
+                        {% endif %}
+                    </div>
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

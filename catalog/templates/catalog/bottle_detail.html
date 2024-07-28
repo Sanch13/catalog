@@ -9,19 +9,20 @@
     <link href="{% static 'css/fancybox.css' %}" rel="stylesheet"/>
     <link href="{% static 'css/panzoom.css' %}" rel="stylesheet"/>
     <link href="{% static 'css/my_settings_carousel.css' %}" rel="stylesheet"/>
+
 {% endblock css %}
 
 {% block content %}
     <div class="container-xxl">
         <div class="product-card">
             <div class="row my-5">
-                <div class="col-lg-6 shadow-description rounded-4 my-2 px-2">
+                <div class="col-lg-6 shadow-description rounded-4 my-2 py-2">
                     <div class="carousel-container ">
                         <div class="f-carousel " id="myCarousel">
                             <div class="f-carousel__viewport  rounded-4">
                                 <div class="f-carousel__track">
-                                    {% if jar.jar_files.all %}
-                                        {% for file in jar.jar_files.all %}
+                                    {% if bottle.bottle_files.all %}
+                                        {% for file in bottle.bottle_files.all %}
                                             <div class="f-carousel__slide"
                                                  data-thumb-src="{{ file.file.url }}">
                                                 <a href="{{ file.file.url }}"
@@ -29,23 +30,24 @@
                                                     <img width="700" height="700" alt=""
                                                          data-lazy-src="{{ file.file.url }}"/>
                                                 </a>
+
                                             </div>
                                         {% endfor %}
                                     {% endif %}
                                 </div>
                             </div>
-                            {% if jar.status == 'Новинка' %}
+                            {% if bottle.status == 'Новинка' %}
                                 <span class="badge-new rounded-2">НОВИНКА</span>
-                            {% elif jar.status == 'Бестселлер' %}
+                            {% elif bottle.status == 'Бестселлер' %}
                                 <span class="badge-new rounded-2">БЕСТСЕЛЛЕР</span>
                             {% endif %}
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-6 shadow-description rounded-4 my-2 px-2">
-                    <div class="container px-2">
+                <div class="col-lg-6 shadow-description rounded-4 my-2 py-2">
+                    <div class="container">
                         <div>
-                            <h1 class="text-center my-2">{{ jar.name }}</h1>
+                            <h1 class="text-center my-2">{{ bottle.name }}</h1>
                         </div>
                         <div class="p-3 my-3 shadow-description rounded-4">
                             <div class="row">
@@ -55,27 +57,31 @@
                                             <tbody>
                                             <tr>
                                                 <td>Объем мл.</td>
-                                                <td>{{ jar.volume }}</td>
+                                                <td>{{ bottle.volume }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Форма</td>
+                                                <td>{{ bottle.shape }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Стандарт горла</td>
+                                                <td>{{ bottle.throat_standard }}</td>
                                             </tr>
                                             <tr>
                                                 <td>Поверхность</td>
-                                                <td>{{ jar.surface }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Двойная стенка</td>
-                                                <td>{{ jar.double_wall }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Флип-топ баночка</td>
-                                                <td>{{ jar.flip_top }}</td>
+                                                <td>{{ bottle.surface }}</td>
                                             </tr>
                                             <tr>
                                                 <td>Экодобавка «кофейная крошка»</td>
-                                                <td>{{ jar.flip_top }}</td>
+                                                <td>{{ bottle.coffe_crumbs }}</td>
                                             </tr>
                                             <tr>
-                                                <td>Рефил</td>
-                                                <td>{{ jar.refil }}</td>
+                                                <td>Доступен полноцвет или шелкография</td>
+                                                <td>{{ bottle.full_color_or_silkscreen }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Декорирование</td>
+                                                <td>{{ bottle.decoration|safe }}</td>
                                             </tr>
                                             </tbody>
                                         </table>
@@ -86,8 +92,8 @@
                                         <button type="button" class="btn btn-miran w-100"
                                                 onclick="window.print()">
                                             <svg xmlns="http://www.w3.org/2000/svg"
-                                                 width="22"
-                                                 height="22" fill="currentColor"
+                                                 width="30"
+                                                 height="30" fill="currentColor"
                                                  style="margin-right: 10px"
                                                  viewBox="0 0 16 16">
                                                 <path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z"></path>
@@ -113,7 +119,7 @@
 
 
                         <div class="shadow-description p-3 my-3 rounded-4">
-                            {{ jar.description|safe }}
+                            {{ bottle.description|safe }}
                         </div>
                     </div>
                 </div>

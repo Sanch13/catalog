@@ -22,6 +22,11 @@
                             <h5 class="card-title text-center "
                                 style="text-transform: uppercase">{{ jar.name }}</h5>
                         </div>
+                        {% if jar.status == 'Новинка' %}
+                            <span class="badge-new">НОВИНКА</span>
+                        {% elif jar.status == 'Бестселлер' %}
+                            <span class="badge-new">БЕСТСЕЛЛЕР</span>
+                        {% endif %}
                     </div>
                 </a>
             </div>
