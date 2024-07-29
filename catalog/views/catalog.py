@@ -85,12 +85,24 @@ def get_category(request, category_slug):
 
 
 def get_product_detail(request, category_slug, series_slug=None, product_slug=None):
-    bottle = get_object_or_404(Bottle,
-                               category__slug=category_slug,
-                               series__slug=series_slug,
-                               slug=product_slug)
+    volume = request.GET.get('volume')
+
+    if volume:
+        bottle = get_object_or_404(Bottle,
+                                   category__slug=category_slug,
+                                   series__slug=series_slug,
+                                   volume=volume,
+                                   slug=product_slug)
+    else:
+        bottle = get_object_or_404(Bottle,
+                                   category__slug=category_slug,
+                                   series__slug=series_slug,
+                                   slug=product_slug)
+
+    bottles = Bottle.objects.filter(series__slug=series_slug)
     context = {
-        "bottle": bottle
+        "bottle": bottle,
+        "bottles": bottles,
     }
     return render(request=request,
                   template_name="catalog/bottle_detail.html",

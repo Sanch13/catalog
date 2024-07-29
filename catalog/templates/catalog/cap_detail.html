@@ -16,7 +16,7 @@
     <div class="container-xxl">
         <div class="product-card">
             <div class="row my-5">
-                <div class="col-lg-6 shadow-description rounded-4 my-2 py-2">
+                <div class="col-lg-6 rounded-4 my-2 py-2">
                     <div class="carousel-container ">
                         <div class="f-carousel " id="myCarousel">
                             <div class="f-carousel__viewport  rounded-4">
@@ -37,19 +37,19 @@
                                 </div>
                             </div>
                             {% if cap.status == 'Новинка' %}
-                                <span class="badge-new rounded-2">НОВИНКА</span>
+                                <span class="badge-new rounded-5">НОВИНКА</span>
                             {% elif cap.status == 'Бестселлер' %}
-                                <span class="badge-new rounded-2">БЕСТСЕЛЛЕР</span>
+                                <span class="badge-new rounded-5">БЕСТСЕЛЛЕР</span>
                             {% endif %}
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-6 shadow-description rounded-4 my-2 py-2">
+                <div class="col-lg-6 my-2 py-2">
                     <div class="container">
                         <div>
                             <h1 class="text-center my-2">{{ cap.name }}</h1>
                         </div>
-                        <div class="p-3 my-3 shadow-description rounded-4">
+                        <div class="p-3 my-3 ">
                             <div class="row">
                                 <div class="col-md-8 col-12">
                                     <div class="table-responsive ">
@@ -98,7 +98,7 @@
                         </div>
 
 
-                        <div class="shadow-description p-3 my-3 rounded-4">
+                        <div class="p-3 my-3 ">
                             {{ cap.description|safe }}
                         </div>
                     </div>

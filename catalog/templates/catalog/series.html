@@ -13,25 +13,25 @@
         {% for ser in series %}
             <div class="col">
                 <a href="{{ ser.get_absolute_url }}" style="text-decoration: none;">
-                    <div class="card card-link">
-                        <img src="{{ ser.series_image.url }}" class="card-img-top" alt="...">
+                    <div class="card card-link rounded-5">
+                        <img src="{{ ser.series_image.url }}" class="card-img-top rounded-top-5" alt="...">
                         <div class="card-body">
                             <h5 class="card-title text-center "
                                 style="text-transform: uppercase">{{ ser.name }}</h5>
                         </div>
                         {% if ser.status == 'Новинка' %}
-                            <span class="badge-new rounded-2">НОВИНКА</span>
+                            <span class="badge-new rounded-5">НОВИНКА</span>
                         {% elif ser.status == 'Бестселлер' %}
-                            <span class="badge-new rounded-2">БЕСТСЕЛЛЕР</span>
+                            <span class="badge-new rounded-5">БЕСТСЕЛЛЕР</span>
                         {% endif %}
                     </div>
                 </a>
             </div>
         {% endfor %}
     </div>
-    <div class="container my-5">
-        <div class="d-flex justify-content-center">
-            {% include "catalog/pagination.html" with page=series %}
-        </div>
-    </div>
+{#    <div class="container my-5">#}
+{#        <div class="d-flex justify-content-center">#}
+{#            {% include "catalog/pagination.html" with page=series %}#}
+{#        </div>#}
+{#    </div>#}
 {% endblock %}

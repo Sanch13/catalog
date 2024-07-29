@@ -13,11 +13,11 @@
         {% for cap in caps %}
             <div class="col">
                 <a href="{{ cap.get_absolute_url }}" style="text-decoration: none;">
-                    <div class="card card-link">
+                    <div class="card card-link rounded-5">
                         {% if cap.cap_files.all %}
                             {% for file in cap.cap_files.all %}
                                 {% if forloop.first %}
-                                    <img src="{{ file.file.url }}" class="card-img-top" alt="...">
+                                    <img src="{{ file.file.url }}" class="card-img-top rounded-top-5" alt="...">
                                 {% endif %}
                             {% endfor %}
                         {% endif %}
@@ -26,18 +26,18 @@
                                 style="text-transform: uppercase">{{ cap.name }}</h5>
                         </div>
                         {% if cap.status == 'Новинка' %}
-                            <span class="badge-new">НОВИНКА</span>
+                            <span class="badge-new rounded-5">НОВИНКА</span>
                         {% elif cap.status == 'Бестселлер' %}
-                            <span class="badge-new">БЕСТСЕЛЛЕР</span>
+                            <span class="badge-new rounded-5">БЕСТСЕЛЛЕР</span>
                         {% endif %}
                     </div>
                 </a>
             </div>
         {% endfor %}
     </div>
-    <div class="container my-5">
-        <div class="d-flex justify-content-center">
-            {% include "catalog/pagination.html" with page=caps %}
-        </div>
-    </div>
+{#    <div class="container my-5">#}
+{#        <div class="d-flex justify-content-center">#}
+{#            {% include "catalog/pagination.html" with page=caps %}#}
+{#        </div>#}
+{#    </div>#}
 {% endblock %}
