@@ -56,6 +56,7 @@ class Cap(models.Model):
     class Meta:
         verbose_name = 'Колпачок'
         verbose_name_plural = 'Колпачки'
+        ordering = ["-ratings"]
 
     def __str__(self):
         return self.name

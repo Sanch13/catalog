@@ -1,5 +1,6 @@
 from django.db.models import OuterRef, Subquery
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, get_object_or_404
+from django.core.paginator import Paginator
 
 from catalog.models import Jar, Series, Cap, Category, Bottle, CapFile, JarFile, BottleFile
 
@@ -18,32 +19,63 @@ def get_category(request, category_slug):
     category = get_object_or_404(Category, slug=category_slug)
     if category.name == 'Флаконы':
         series = Series.objects.filter(category=category)
-        return render(request, 'catalog/series.html', {'series': series})
+
+        paginator = Paginator(series, 4)
+        page_number = request.GET.get('page', 1)
+        series = paginator.page(page_number)
+        context = {
+            'series': series
+        }
+        return render(request=request,
+                      template_name='catalog/series.html',
+                      context=context)
+
     elif category.name == 'Баночки':
         jars = Jar.objects.filter(category=category)
-        return render(request, 'catalog/jars.html', {'jars': jars})
+
+        paginator = Paginator(jars, 4)
+        page_number = request.GET.get('page', 1)
+        jars = paginator.page(page_number)
+        context = {
+            'jars': jars
+        }
+        return render(request=request,
+                      template_name='catalog/jars.html',
+                      context=context)
+
     elif category.name == 'Колпачки':
         caps = Cap.objects.filter(category=category)
-        return render(request, 'catalog/caps.html', {'caps': caps})
+
+        paginator = Paginator(caps, 4)
+        page_number = request.GET.get('page', 1)
+        caps = paginator.page(page_number)
+        context = {
+            'caps': caps
+        }
+        return render(request=request,
+                      template_name='catalog/caps.html',
+                      context=context)
+
     elif category.name == 'Новинки':
         cap_image_subquery = CapFile.objects.filter(cap=OuterRef('pk')).values('file')[:1]
         jar_image_subquery = JarFile.objects.filter(jar=OuterRef('pk')).values('file')[:1]
-        bottle_image_subquery = BottleFile.objects.filter(bottle=OuterRef('pk')).values('file')[
-                                :1]
+        bottle_image_subquery = BottleFile.objects.filter(
+            bottle=OuterRef('pk')).values('file')[:1]
 
         caps = Cap.objects.filter(status='Новинка').annotate(
-            image=Subquery(cap_image_subquery)).values('name', 'slug', 'status',
+            image=Subquery(cap_image_subquery)).values('name', 'slug', 'status', 'ratings',
                                                        'category__slug', 'image')
         jars = Jar.objects.filter(status='Новинка').annotate(
-            image=Subquery(jar_image_subquery)).values('name', 'slug', 'status',
+            image=Subquery(jar_image_subquery)).values('name', 'slug', 'status', 'ratings',
                                                        'category__slug', 'image')
         bottles = Bottle.objects.filter(status='Новинка').annotate(
-            image=Subquery(bottle_image_subquery)).values('name', 'slug', 'status',
+            image=Subquery(bottle_image_subquery)).values('name', 'slug', 'status', 'ratings',
                                                           'category__slug', 'image')
 
-        all_new_products = caps.union(jars, bottles)
-        for obj in all_new_products:
-            print(obj)
+        all_new_products = caps.union(jars, bottles).order_by('-ratings')
+        paginator = Paginator(all_new_products, 4)
+        page_number = request.GET.get('page', 1)
+        all_new_products = paginator.page(page_number)
         context = {
             'new_products': all_new_products
         }

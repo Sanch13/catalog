@@ -32,6 +32,10 @@ class Series(models.Model):
                               choices=StatusSeries.choices,
                               default=StatusSeries.REGULAR,
                               verbose_name='Статус товара')
+    ratings = models.PositiveSmallIntegerField(blank=True,
+                                               null=True,
+                                               default=1,
+                                               verbose_name='Рейтинг серии')
     description = models.TextField(blank=True,
                                    null=True,
                                    verbose_name='Описание')
@@ -47,6 +51,7 @@ class Series(models.Model):
     class Meta:
         verbose_name = 'Серия'
         verbose_name_plural = 'Серии'
+        ordering = ["-ratings"]
 
     def __str__(self):
         return self.name
@@ -63,5 +68,3 @@ class Series(models.Model):
         if first_bottle:
             return reverse(viewname="catalog:product_detail",
                            args=[self.category.slug, self.slug, first_bottle.slug])
-
-

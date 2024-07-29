@@ -4,6 +4,10 @@
 {% block title %}
 {% endblock title %}
 
+{% block css %}
+    <link href="{% static 'css/pagination_styles.css' %}" rel="stylesheet"/>
+{% endblock css %}
+
 
 {% block content %}
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
@@ -31,5 +35,10 @@
                 </a>
             </div>
         {% endfor %}
+    </div>
+    <div class="container my-5">
+        <div class="d-flex justify-content-center">
+            {% include "catalog/pagination.html" with page=jars %}
+        </div>
     </div>
 {% endblock %}

@@ -81,6 +81,7 @@ class Jar(models.Model):
     class Meta:
         verbose_name = 'Баночка'
         verbose_name_plural = 'Баночки'
+        ordering = ["-ratings"]
 
     def __str__(self):
         return self.name

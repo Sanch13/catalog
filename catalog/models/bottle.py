@@ -109,6 +109,7 @@ class Bottle(models.Model):
     class Meta:
         verbose_name = 'Флакон'
         verbose_name_plural = 'Флаконы'
+        ordering = ["-ratings"]
 
     def __str__(self):
         return self.name
