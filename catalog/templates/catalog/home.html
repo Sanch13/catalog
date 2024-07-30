@@ -1,0 +1,65 @@
+{% extends 'catalog/base.html' %}
+{% load static %}
+
+{% block title %}
+{% endblock title %}
+
+{% block css %}
+    <style>
+        .gap-5 {
+            gap: 10rem !important;
+        }
+
+        .btn-custom-size {
+            display: flex;
+            width: 300px;
+            height: 250px;
+            border: 2px solid #7F9A14;
+            color: black;
+            --bs-btn-active-bg: #7F9A14;
+            --bs-btn-active-border-color: #7F9A14;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            flex-direction: column;
+        }
+
+        .btn-custom-size:hover {
+            color: white;
+            background-color: #7F9A14;
+            border: 2px solid #7F9A14;
+        }
+
+        .rounded-5 {
+            --bs-border-radius-xxl: 2rem !important;
+        }
+
+        .header-text {
+            font-family: 'Roboto', arial, sans-serif;
+            font-size: 25px;
+            font-weight: 600;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+
+    <div class="container-fluid d-flex justify-content-center align-items-center"
+         style="margin-top: 300px;">
+        <div class="btn-groups d-flex gap-5 justify-content-center align-items-center">
+            <a href="{% url 'catalog:catalog' %}"
+               class="btn btn-custom-size rounded-5 header-text">
+                Подбор упаковки
+            </a>
+            <a href=""
+               class="btn btn-custom-size rounded-5 header-text">
+                О Миран
+            </a>
+            <a href=""
+               class="btn btn-custom-size rounded-5 header-text">
+                Свяжитесь со мной
+            </a>
+        </div>
+    </div>
+
+{% endblock %}

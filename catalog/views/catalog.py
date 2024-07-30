@@ -5,6 +5,11 @@ from django.core.paginator import Paginator
 from catalog.models import Jar, Series, Cap, Category, Bottle, CapFile, JarFile, BottleFile
 
 
+def home(request):
+    return render(request=request,
+                  template_name='catalog/home.html')
+
+
 def get_catalog(request):
     categories = Category.objects.all()
     context = {
