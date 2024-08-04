@@ -1,8 +1,8 @@
 from django.db.models import OuterRef, Subquery
 from django.shortcuts import render, get_object_or_404
-from django.core.paginator import Paginator
 
 from catalog.models import Jar, Series, Cap, Category, Bottle, CapFile, JarFile, BottleFile
+# from ..utils import get_objects_from_paginator
 
 
 def home(request):
@@ -25,9 +25,7 @@ def get_category(request, category_slug):
     if category.name == 'Флаконы':
         series = Series.objects.filter(category=category)
 
-        paginator = Paginator(series, 4)
-        page_number = request.GET.get('page', 1)
-        series = paginator.page(page_number)
+        # series = get_objects_from_paginator(request, per_page=4, model_objects_list=series)
         context = {
             'series': series
         }
@@ -38,9 +36,7 @@ def get_category(request, category_slug):
     elif category.name == 'Баночки':
         jars = Jar.objects.filter(category=category)
 
-        paginator = Paginator(jars, 4)
-        page_number = request.GET.get('page', 1)
-        jars = paginator.page(page_number)
+        # jars = get_objects_from_paginator(request, per_page=4, model_objects_list=jars)
         context = {
             'jars': jars
         }
@@ -51,9 +47,7 @@ def get_category(request, category_slug):
     elif category.name == 'Колпачки':
         caps = Cap.objects.filter(category=category)
 
-        paginator = Paginator(caps, 4)
-        page_number = request.GET.get('page', 1)
-        caps = paginator.page(page_number)
+        # caps = get_objects_from_paginator(request, per_page=4, model_objects_list=caps)
         context = {
             'caps': caps
         }
@@ -78,9 +72,9 @@ def get_category(request, category_slug):
                                                           'category__slug', 'image')
 
         all_new_products = caps.union(jars, bottles).order_by('-ratings')
-        paginator = Paginator(all_new_products, 4)
-        page_number = request.GET.get('page', 1)
-        all_new_products = paginator.page(page_number)
+        # all_new_products = get_objects_from_paginator(request,
+        #                                               per_page=4,
+        #                                               model_objects_list=all_new_products)
         context = {
             'new_products': all_new_products
         }

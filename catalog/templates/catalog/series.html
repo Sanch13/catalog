@@ -9,29 +9,42 @@
 {% endblock css %}
 
 {% block content %}
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4 mt-5">
         {% for ser in series %}
             <div class="col">
-                <a href="{{ ser.get_absolute_url }}" style="text-decoration: none;">
-                    <div class="card card-link rounded-5">
-                        <img src="{{ ser.series_image.url }}" class="card-img-top rounded-top-5" alt="...">
-                        <div class="card-body">
-                            <h5 class="card-title text-center "
-                                style="text-transform: uppercase">{{ ser.name }}</h5>
+                <div class="card rounded-5 h-100">
+                    <a href="{{ ser.get_absolute_url }}" class="text-decoration-none">
+                        <img src="{{ ser.series_image.url }}" class="card-img-top rounded-5"
+                             alt="...">
+                        <div class="card-body d-flex flex-column">
+                            <div class="card-title header-text text-center flex-grow-1">{{ ser.name }}</div>
                         </div>
-                        {% if ser.status == 'Новинка' %}
-                            <span class="badge-new rounded-5">НОВИНКА</span>
-                        {% elif ser.status == 'Бестселлер' %}
-                            <span class="badge-new rounded-5">БЕСТСЕЛЛЕР</span>
-                        {% endif %}
+                    </a>
+                    <div class="card-footer">
+                        <div class="capacity">Объем, мл</div>
+                        <div class="row capacity">
+                            <div class="value-item">
+                                {% for bottle in ser.bottle.all %}
+                                    <a href="{% url 'catalog:product_detail' bottle.category.slug bottle.series.slug bottle.slug %}"
+                                       >
+                                        {{ bottle.volume }}
+                                    </a>
+                                {% endfor %}
+                            </div>
+                        </div>
                     </div>
-                </a>
+                    {% if ser.status == 'Новинка' %}
+                        <span class="badge-new rounded-5">НОВИНКА</span>
+                    {% elif ser.status == 'Бестселлер' %}
+                        <span class="badge-new rounded-5">БЕСТСЕЛЛЕР</span>
+                    {% endif %}
+                </div>
             </div>
         {% endfor %}
     </div>
-{#    <div class="container my-5">#}
-{#        <div class="d-flex justify-content-center">#}
-{#            {% include "catalog/pagination.html" with page=series %}#}
-{#        </div>#}
-{#    </div>#}
+    {#    <div class="container my-5">#}
+    {#        <div class="d-flex justify-content-center">#}
+    {#            {% include "catalog/pagination.html" with page=series %}#}
+    {#        </div>#}
+    {#    </div>#}
 {% endblock %}

@@ -13,27 +13,27 @@ class Bottle(models.Model):
         NEW = 'Новинка', 'Новинка'
         BESTSELLER = 'Бестселлер', 'Бестселлер'
 
-    class VolumeBottle(models.TextChoices):
-        THIRTY = '30', '30'
-        FIFTY = '50', '50'
-        SIXTY_FIVE = '65', '65'
-        EIGHTY = '80', '80'
-        NINETY = '90', '90'
-        ONE_HUNDRED = '100', '100'
-        ONE_HUNDRED_TWENTY_FIVE = '125', '125'
-        ONE_HUNDRED_FIFTY = '150', '150'
-        TWO_HUNDRED = '200', '200'
-        TWO_HUNDRED_TEN = '210', '210'
-        TWO_HUNDRED_FIFTY = '250', '250'
-        THREE_HUNDRED = '300', '300'
-        THREE_HUNDRED_TEN = '310', '310'
-        THREE_HUNDRED_FIFTY = '350', '350'
-        THREE_HUNDRED_SEVENTY = '370', '370'
-        FOUR_HUNDRED = '400', '400'
-        FOUR_HUNDRED_FIFTY = '450', '450'
-        FIFE_HUNDRED = '500', '500'
-        SEVEN_HUNDRED_FIFTY = '750', '750'
-        ONE_THOUSAND = '1000', '1000'
+    class VolumeBottle(models.IntegerChoices):
+        THIRTY = 30, '30'
+        FIFTY = 50, '50'
+        SIXTY_FIVE = 65, '65'
+        EIGHTY = 80, '80'
+        NINETY = 90, '90'
+        ONE_HUNDRED = 100, '100'
+        ONE_HUNDRED_TWENTY_FIVE = 125, '125'
+        ONE_HUNDRED_FIFTY = 150, '150'
+        TWO_HUNDRED = 200, '200'
+        TWO_HUNDRED_TEN = 210, '210'
+        TWO_HUNDRED_FIFTY = 250, '250'
+        THREE_HUNDRED = 300, '300'
+        THREE_HUNDRED_TEN = 310, '310'
+        THREE_HUNDRED_FIFTY = 350, '350'
+        THREE_HUNDRED_SEVENTY = 370, '370'
+        FOUR_HUNDRED = 400, '400'
+        FOUR_HUNDRED_FIFTY = 450, '450'
+        FIFE_HUNDRED = 500, '500'
+        SEVEN_HUNDRED_FIFTY = 750, '750'
+        ONE_THOUSAND = 1000, '1000'
 
     class ShapeBottle(models.TextChoices):
         CYLINDER = 'цилиндричекая', 'цилиндричекая'
@@ -73,10 +73,9 @@ class Bottle(models.Model):
                                                null=True,
                                                default=1,
                                                verbose_name='Рейтинг товара')
-    volume = models.CharField(max_length=5,
-                              choices=VolumeBottle.choices,
-                              default=VolumeBottle.THREE_HUNDRED,
-                              verbose_name='Объем мл.')
+    volume = models.IntegerField(choices=VolumeBottle.choices,
+                                 default=VolumeBottle.THREE_HUNDRED,
+                                 verbose_name='Объем мл.')
     shape = models.CharField(max_length=15,
                              choices=ShapeBottle.choices,
                              default=ShapeBottle.CYLINDER,
@@ -109,7 +108,7 @@ class Bottle(models.Model):
     class Meta:
         verbose_name = 'Флакон'
         verbose_name_plural = 'Флаконы'
-        ordering = ["-ratings"]
+        ordering = ["-ratings", "volume"]
 
     def __str__(self):
         return self.name

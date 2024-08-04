@@ -13,8 +13,8 @@
 {% endblock css %}
 
 {% block content %}
-    <div class="container-xxl">
-        <div class="volume-buttons my-3 d-flex flex-wrap justify-content-center">
+    <section class="filter-buttons">
+        <div class="volume-buttons d-flex flex-wrap justify-content-center align-items-center">
             {% for item in bottles %}
                 <a class="btn btn-miran m-1 rounded-5" style="max-width: 100px;"
                    href="{% url 'catalog:product_detail' item.category.slug item.series.slug item.slug %}">
@@ -22,7 +22,8 @@
                 </a>
             {% endfor %}
         </div>
-    </div>
+    </section>
+
 
     <div class="container-xxl">
         <div class="product-card">

@@ -10,7 +10,7 @@
 
 
 {% block content %}
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4 my-3">
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4 mt-5">
         {% for product in new_products %}
             <div class="col">
                 <a href="
@@ -19,7 +19,7 @@
                 none;">
                     <div class="card card-link">
                         {% if product.image %}
-                            <img src="/media/{{ product.image }}" class="card-img-top" alt=".
+                            <img src="/media/{{ product.image }}" class="card-img-top rounded-5" alt=".
                             ..">
                         {% endif %}
                         <div class="card-body">
@@ -37,10 +37,10 @@
             </div>
         {% endfor %}
     </div>
-    <div class="container my-5">
-        <div class="d-flex justify-content-center">
-            {% include "catalog/pagination.html" with page=new_products %}
-        </div>
-    </div>
+{#    <div class="container my-5">#}
+{#        <div class="d-flex justify-content-center">#}
+{#            {% include "catalog/pagination.html" with page=new_products %}#}
+{#        </div>#}
+{#    </div>#}
 
 {% endblock %}

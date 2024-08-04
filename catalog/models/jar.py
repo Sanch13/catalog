@@ -12,17 +12,17 @@ class Jar(models.Model):
         NEW = 'Новинка', 'Новинка'
         BESTSELLER = 'Бестселлер', 'Бестселлер'
 
-    class VolumeJar(models.TextChoices):
-        FIFTY = '50', '50'
-        SEVENTY_FIVE = '75', '75'
-        ONE_HUNDRED = '100', '100'
-        ONE_HUNDRED_TWENTY = '120', '120'
-        ONE_HUNDRED_FIFTY = '150', '150'
-        TWO_HUNDRED = '200', '200'
-        TWO_HUNDRED_FIFTY = '250', '250'
-        THREE_HUNDRED = '300', '300'
-        FOUR_HUNDRED = '400', '400'
-        FIFE_HUNDRED = '500', '500'
+    class VolumeJar(models.IntegerChoices):
+        FIFTY = 50, '50'
+        SEVENTY_FIVE = 75, '75'
+        ONE_HUNDRED = 100, '100'
+        ONE_HUNDRED_TWENTY = 120, '120'
+        ONE_HUNDRED_FIFTY = 150, '150'
+        TWO_HUNDRED = 200, '200'
+        TWO_HUNDRED_FIFTY = 250, '250'
+        THREE_HUNDRED = 300, '300'
+        FOUR_HUNDRED = 400, '400'
+        FIFE_HUNDRED = 500, '500'
 
     class SurfaceJar(models.TextChoices):
         GLOSSY = 'глянцевая', 'глянцевая'
@@ -48,10 +48,9 @@ class Jar(models.Model):
                                                null=True,
                                                default=1,
                                                verbose_name='Рейтинг товара')
-    volume = models.CharField(max_length=4,
-                              choices=VolumeJar.choices,
-                              default=VolumeJar.TWO_HUNDRED,
-                              verbose_name='Объем мл.')
+    volume = models.IntegerField(choices=VolumeJar.choices,
+                                 default=VolumeJar.TWO_HUNDRED,
+                                 verbose_name='Объем мл.')
     surface = models.CharField(max_length=10,
                                choices=SurfaceJar.choices,
                                default=SurfaceJar.GLOSSY,
@@ -81,7 +80,7 @@ class Jar(models.Model):
     class Meta:
         verbose_name = 'Баночка'
         verbose_name_plural = 'Баночки'
-        ordering = ["-ratings"]
+        ordering = ["-ratings", "volume"]
 
     def __str__(self):
         return self.name
