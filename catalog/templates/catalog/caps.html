@@ -13,7 +13,7 @@
         {% for cap in caps %}
             <div class="col">
                 <a href="{{ cap.get_absolute_url }}" style="text-decoration: none;">
-                    <div class="card card-link rounded-5">
+                    <div class="card card-link">
                         {% if cap.cap_files.all %}
                             {% for file in cap.cap_files.all %}
                                 {% if forloop.first %}

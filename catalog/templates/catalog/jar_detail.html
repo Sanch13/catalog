@@ -18,7 +18,7 @@
                 <div class="col-lg-6 my-2 px-2">
                     <div class="carousel-container ">
                         <div class="f-carousel " id="myCarousel">
-                            <div class="f-carousel__viewport  rounded-5">
+                            <div class="f-carousel__viewport">
                                 <div class="f-carousel__track">
                                     {% if jar.jar_files.all %}
                                         {% for file in jar.jar_files.all %}
@@ -131,7 +131,7 @@
                 Thumbs: {
                     type: "classic",
                 },
-                Navigation: false,
+                Navigation: true,
             }, {Thumbs});
 
             Fancybox.bind('[data-fancybox="gallery"]', {

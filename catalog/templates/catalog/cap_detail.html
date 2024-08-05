@@ -19,7 +19,7 @@
                 <div class="col-lg-6 rounded-4 my-2 py-2">
                     <div class="carousel-container ">
                         <div class="f-carousel " id="myCarousel">
-                            <div class="f-carousel__viewport  rounded-4">
+                            <div class="f-carousel__viewport">
                                 <div class="f-carousel__track">
                                     {% if cap.cap_files.all %}
                                         {% for file in cap.cap_files.all %}
@@ -117,7 +117,7 @@
                 Thumbs: {
                     type: "classic",
                 },
-                Navigation: false,
+                Navigation: true,
             }, {Thumbs});
 
             Fancybox.bind('[data-fancybox="gallery"]', {
