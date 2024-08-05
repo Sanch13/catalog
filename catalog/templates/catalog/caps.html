@@ -22,8 +22,10 @@
                             {% endfor %}
                         {% endif %}
                         <div class="card-body">
-                            <h5 class="card-title text-center "
-                                style="text-transform: uppercase">{{ cap.name }}</h5>
+                            <div class="text-center">
+                                <h5 class="card-title">{{ cap.name }}</h5>
+                            </div>
+
                         </div>
                         {% if cap.status == 'Новинка' %}
                             <span class="badge-new rounded-5">НОВИНКА</span>

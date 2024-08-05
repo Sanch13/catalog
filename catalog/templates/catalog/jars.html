@@ -24,7 +24,9 @@
                             {% endfor %}
                         {% endif %}
                         <div class="card-body">
-                            <h5 class="card-title text-center">{{ jar.name }}</h5>
+                            <div class="text-center">
+                                <h5 class="card-title">{{ jar.name }}</h5>
+                            </div>
                         </div>
                         {% if jar.status == 'Новинка' %}
                             <span class="badge-new rounded-5">НОВИНКА</span>

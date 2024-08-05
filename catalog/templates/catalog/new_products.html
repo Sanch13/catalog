@@ -23,9 +23,9 @@
                             ..">
                         {% endif %}
                         <div class="card-body">
-                            <h5 class="card-title text-center "
-                                style="text-transform: uppercase">{{ product.name }}</h5>
-                            <h5>{{ product.category__name }}</h5>
+                            <div class="text-center">
+                                <h5 class="card-title">{{ product.name }}</h5>
+                            </div>
                         </div>
                         {% if product.status == 'Новинка' %}
                             <span class="badge-new rounded-5">НОВИНКА</span>
