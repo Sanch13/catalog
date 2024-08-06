@@ -52,7 +52,15 @@ def get_category(request, category_slug):
         types_of_closure = [choice[0] for choice in Cap.TypeOfClosure.choices]
         throat_standards = [choice[0] for choice in Cap.ThroatStandard.choices]
 
-        # caps = get_objects_from_paginator(request, per_page=4, model_objects_list=caps)
+        type_of_closure_filter = request.GET.getlist('type_of_closure')
+        throat_standard_filter = request.GET.getlist('throat_standard')
+        print(type_of_closure_filter, throat_standard_filter)
+
+        if type_of_closure_filter:
+            caps = caps.filter(type_of_closure__in=type_of_closure_filter)
+        if throat_standard_filter:
+            caps = caps.filter(throat_standard__in=throat_standard_filter)
+
         context = {
             'caps': caps,
             'types_of_closure': types_of_closure,
