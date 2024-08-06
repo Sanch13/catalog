@@ -14,9 +14,14 @@
         {% for product in new_products %}
             <div class="col">
                 <a href="
-{% url 'catalog:product_detail_no_series' product.category__slug product.slug %}"
-                   style="text-decoration:
-                none;">
+                {% if product.category__slug == 'bottles' %}
+                {% url 'catalog:product_detail' product.category__slug product.series_slug product.slug %}
+                {% else %}
+                {% url 'catalog:product_detail_no_series' product.category__slug product.slug %}
+                {% endif %}
+                "
+                style="text-decoration:none;"
+                >
                     <div class="card card-link">
                         {% if product.image %}
                             <img src="/media/{{ product.image }}" class="card-img-top rounded-5" alt=".

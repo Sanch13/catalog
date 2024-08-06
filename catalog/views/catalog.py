@@ -1,4 +1,5 @@
-from django.db.models import OuterRef, Subquery
+from django.db.models import OuterRef, Subquery, Value
+from django.db.models.functions import Coalesce
 from django.shortcuts import render, get_object_or_404
 
 from catalog.models import Jar, Series, Cap, Category, Bottle, CapFile, JarFile, BottleFile
@@ -68,14 +69,19 @@ def get_category(request, category_slug):
             bottle=OuterRef('pk')).values('file')[:1]
 
         caps = Cap.objects.filter(status='Новинка').annotate(
-            image=Subquery(cap_image_subquery)).values('name', 'slug', 'status', 'ratings',
-                                                       'category__slug', 'image')
+            image=Subquery(cap_image_subquery),
+            series_slug=Value('')
+        ).values('name', 'slug', 'status', 'ratings', 'series_slug', 'category__slug', 'image')
+
         jars = Jar.objects.filter(status='Новинка').annotate(
-            image=Subquery(jar_image_subquery)).values('name', 'slug', 'status', 'ratings',
-                                                       'category__slug', 'image')
+            image=Subquery(jar_image_subquery),
+            series_slug=Value('')
+        ).values('name', 'slug', 'status', 'ratings', 'series_slug', 'category__slug', 'image')
+
         bottles = Bottle.objects.filter(status='Новинка').annotate(
-            image=Subquery(bottle_image_subquery)).values('name', 'slug', 'status', 'ratings',
-                                                          'category__slug', 'image')
+            image=Subquery(bottle_image_subquery),
+            series_slug=Coalesce('series__slug', Value(''))
+        ).values('name', 'slug', 'status', 'ratings', 'series_slug', 'category__slug', 'image')
 
         all_new_products = caps.union(jars, bottles).order_by('-ratings')
         # all_new_products = get_objects_from_paginator(request,
