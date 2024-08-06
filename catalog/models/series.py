@@ -1,6 +1,7 @@
 import os
 
 from django.db import models
+from django.db.models import Case, When, Value, IntegerField
 from django.utils.text import slugify
 
 from imagekit.models import ImageSpecField
@@ -13,6 +14,19 @@ def get_upload_path_series(instance, filename):
     category = instance.category.name
     series_name = instance.name
     return os.path.join('files', category, series_name, filename)
+
+
+class SeriesManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().annotate(
+            status_order=Case(
+                When(status='Новинка', then=Value(1)),
+                When(status='Бестселлер', then=Value(2)),
+                When(status='Обычный', then=Value(3)),
+                default=Value(3),
+                output_field=IntegerField(),
+            )
+        ).order_by('status_order', '-ratings')
 
 
 class Series(models.Model):
@@ -47,6 +61,8 @@ class Series(models.Model):
                                processors=[ResizeToFill(150, 150)],
                                format='JPEG',
                                options={'quality': 60})
+
+    objects = SeriesManager()
 
     class Meta:
         verbose_name = 'Серия'

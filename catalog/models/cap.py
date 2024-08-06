@@ -1,9 +1,23 @@
 from django.db import models
+from django.db.models import Case, When, Value, IntegerField
 from django.utils.text import slugify
 
 from tinymce.models import HTMLField
 
 from catalog.models.category import Category
+
+
+class CapManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().annotate(
+            status_order=Case(
+                When(status='Новинка', then=Value(1)),
+                When(status='Бестселлер', then=Value(2)),
+                When(status='Обычный', then=Value(3)),
+                default=Value(3),
+                output_field=IntegerField(),
+            )
+        ).order_by('status_order', '-ratings')
 
 
 class Cap(models.Model):
@@ -53,10 +67,11 @@ class Cap(models.Model):
     uploaded_at = models.DateTimeField(auto_now_add=True,
                                        verbose_name='Дата загрузки')
 
+    objects = CapManager()
+
     class Meta:
         verbose_name = 'Колпачок'
         verbose_name_plural = 'Колпачки'
-        ordering = ["-ratings"]
 
     def __str__(self):
         return self.name

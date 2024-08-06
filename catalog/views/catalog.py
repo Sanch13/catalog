@@ -2,6 +2,8 @@ from django.db.models import OuterRef, Subquery
 from django.shortcuts import render, get_object_or_404
 
 from catalog.models import Jar, Series, Cap, Category, Bottle, CapFile, JarFile, BottleFile
+
+
 # from ..utils import get_objects_from_paginator
 
 
@@ -46,10 +48,14 @@ def get_category(request, category_slug):
 
     elif category.name == 'Колпачки':
         caps = Cap.objects.filter(category=category)
+        types_of_closure = [choice[0] for choice in Cap.TypeOfClosure.choices]
+        throat_standards = [choice[0] for choice in Cap.ThroatStandard.choices]
 
         # caps = get_objects_from_paginator(request, per_page=4, model_objects_list=caps)
         context = {
-            'caps': caps
+            'caps': caps,
+            'types_of_closure': types_of_closure,
+            'throat_standards': throat_standards
         }
         return render(request=request,
                       template_name='catalog/caps.html',
