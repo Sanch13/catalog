@@ -24,14 +24,7 @@
 <header class="header">
     <div class="container-fluid px-5">
         <div class="row align-items-center justify-content-between">
-            <div class="col-2 d-flex justify-content-center">
-                <div class="text-start" id="backButton" style="cursor: pointer">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"
-                         fill="currentColor" class="bi bi-arrow-90deg-left" viewBox="0 0 16 16">
-                        <path fill-rule="evenodd"
-                              d="M1.146 4.854a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 4H12.5A2.5 2.5 0 0 1 15 6.5v8a.5.5 0 0 1-1 0v-8A1.5 1.5 0 0 0 12.5 5H2.707l3.147 3.146a.5.5 0 1 1-.708.708z"/>
-                    </svg>
-                </div>
+            <div class="col-2 d-flex">
             </div>
             <div class="col-8 d-flex justify-content-center">
                 <ul class="main-menu d-flex justify-content-center">
@@ -52,14 +45,24 @@
                     </li>
                 </ul>
             </div>
-            <div class="col-2 d-flex justify-content-center">
-                <a href="{% url 'home' %}"
-                   class="link-logo d-flex justify-content-center align-items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"
+            <div class="col-2 d-flex">
+                <div class="text-start back-button" id="backButton">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60"
+                         fill="currentColor" class="bi bi-arrow-90deg-left" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd"
+                              d="M1.146 4.854a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 4H12.5A2.5 2.5 0 0 1 15 6.5v8a.5.5 0 0 1-1 0v-8A1.5 1.5 0 0 0 12.5 5H2.707l3.147 3.146a.5.5 0 1 1-.708.708z"/>
+                    </svg>
+                </div>
+                <div class="text-end home-button" >
+                    <a href="{% url 'home' %}"
+                   class="link-logo d-flex">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60"
                          fill="black" class="bi bi-house" viewBox="0 0 16 16">
                         <path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L2 8.207V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V8.207l.646.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293zM13 7.207V13.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V7.207l5-5z"/>
                     </svg>
                 </a>
+                </div>
+
             </div>
         </div>
     </div>
@@ -68,10 +71,11 @@
 <script src="{% static 'js/jquery-3.7.1.min.js' %}"></script>
 <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
 
-<div class="container-fluid p-0 mx-auto">
+
+<main class="main">
     {% block content %}
     {% endblock %}
-</div>
+</main>
 
 <script>
     document.getElementById('backButton').addEventListener('click', function() {

@@ -35,9 +35,9 @@
                                 </div>
                             </div>
                             {% if jar.status == 'Новинка' %}
-                                <span class="badge-new rounded-5">НОВИНКА</span>
+                                <span class="badge-new">НОВИНКА</span>
                             {% elif jar.status == 'Бестселлер' %}
-                                <span class="badge-new rounded-5">БЕСТСЕЛЛЕР</span>
+                                <span class="badge-best">БЕСТСЕЛЛЕР</span>
                             {% endif %}
                         </div>
                     </div>
@@ -108,10 +108,7 @@
                                     </div>
                                 </div>
                             </div>
-
                         </div>
-
-
                         <div class="p-3 my-3">
                             {{ jar.description|safe }}
                         </div>

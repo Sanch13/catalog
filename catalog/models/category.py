@@ -25,6 +25,10 @@ class Category(models.Model):
                             verbose_name='Название')
     slug = models.SlugField(max_length=50,
                             unique=True)
+    rating = models.PositiveSmallIntegerField(blank=True,
+                                              null=True,
+                                              default=1,
+                                              verbose_name='Рейтинг Категории')
     description = models.TextField(blank=True,
                                    null=True,
                                    verbose_name='Описание')
@@ -40,6 +44,9 @@ class Category(models.Model):
     class Meta:
         verbose_name = 'Категория'
         verbose_name_plural = 'Категории'
+        ordering = [
+            "-rating",
+        ]
 
     def __str__(self):
         return self.name
