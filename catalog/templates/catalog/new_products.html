@@ -10,42 +10,39 @@
 
 
 {% block content %}
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4 mt-5 p-3">
-        {% for product in new_products %}
-            <div class="col">
-                <a href="
+    <div class="container">
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4">
+            {% for product in new_products %}
+                <div class="col">
+                    <a href="
                 {% if product.category__slug == 'bottles' %}
                 {% url 'catalog:product_detail' product.category__slug product.series_slug product.slug %}
                 {% else %}
                 {% url 'catalog:product_detail_no_series' product.category__slug product.slug %}
                 {% endif %}
                 "
-                style="text-decoration:none;"
-                >
-                    <div class="card card-link">
-                        {% if product.image %}
-                            <img src="/media/{{ product.image }}" class="card-img-top rounded-5" alt=".
-                            ..">
-                        {% endif %}
-                        <div class="card-body">
-                            <div class="text-center">
-                                <h5 class="card-title">{{ product.name }}</h5>
+                       style="text-decoration:none;"
+                    >
+                        <div class="card">
+                            {% if product.image %}
+                                <img src="/media/{{ product.image }}" class="card-img-top"
+                                     alt="...">
+                            {% endif %}
+                            <div class="card-body">
+                                <div class="text-center">
+                                    <h5 class="card-title">{{ product.name }}</h5>
+                                </div>
                             </div>
+                            {% if product.status == 'Новинка' %}
+                                <span class="badge-new rounded-5">НОВИНКА</span>
+                            {% elif product.status == 'Бестселлер' %}
+                                <span class="badge-new rounded-5">БЕСТСЕЛЛЕР</span>
+                            {% endif %}
                         </div>
-                        {% if product.status == 'Новинка' %}
-                            <span class="badge-new rounded-5">НОВИНКА</span>
-                        {% elif product.status == 'Бестселлер' %}
-                            <span class="badge-new rounded-5">БЕСТСЕЛЛЕР</span>
-                        {% endif %}
-                    </div>
-                </a>
-            </div>
-        {% endfor %}
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
     </div>
-{#    <div class="container my-5">#}
-{#        <div class="d-flex justify-content-center">#}
-{#            {% include "catalog/pagination.html" with page=new_products %}#}
-{#        </div>#}
-{#    </div>#}
 
 {% endblock %}

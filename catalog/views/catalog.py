@@ -2,6 +2,7 @@ from django.db.models import OuterRef, Subquery, Value
 from django.db.models.functions import Coalesce
 from django.shortcuts import render, get_object_or_404
 
+from catalog.forms import CapFilterForm
 from catalog.models import Jar, Series, Cap, Category, Bottle, CapFile, JarFile, BottleFile
 
 
@@ -48,21 +49,24 @@ def get_category(request, category_slug):
                       context=context)
 
     elif category.name == 'Колпачки':
+        form = CapFilterForm(request.GET or None)
         caps = Cap.objects.filter(category=category)
+
         types_of_closure = [choice[0] for choice in Cap.TypeOfClosure.choices]
         throat_standards = [choice[0] for choice in Cap.ThroatStandard.choices]
 
-        type_of_closure_filter = request.GET.getlist('type_of_closure')
-        throat_standard_filter = request.GET.getlist('throat_standard')
-        print(type_of_closure_filter, throat_standard_filter)
-
-        if type_of_closure_filter:
-            caps = caps.filter(type_of_closure__in=type_of_closure_filter)
-        if throat_standard_filter:
-            caps = caps.filter(throat_standard__in=throat_standard_filter)
+        if form.is_valid():
+            throat_standard = form.cleaned_data.get('throat_standard')
+            type_of_closure = form.cleaned_data.get('type_of_closure')
+            print(throat_standard, type_of_closure)
+            if throat_standard:
+                caps = caps.filter(throat_standard__in=throat_standard)
+            if type_of_closure:
+                caps = caps.filter(type_of_closure__in=type_of_closure)
 
         context = {
             'caps': caps,
+            'form': form,
             'types_of_closure': types_of_closure,
             'throat_standards': throat_standards
         }
