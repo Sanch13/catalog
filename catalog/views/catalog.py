@@ -1,6 +1,7 @@
 from django.db.models import OuterRef, Subquery, Value
 from django.db.models.functions import Coalesce
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse
 
 from catalog.forms import CapFilterForm
 from catalog.models import Jar, Series, Cap, Category, Bottle, CapFile, JarFile, BottleFile
@@ -52,23 +53,30 @@ def get_category(request, category_slug):
         form = CapFilterForm(request.GET or None)
         caps = Cap.objects.filter(category=category)
 
-        types_of_closure = [choice[0] for choice in Cap.TypeOfClosure.choices]
-        throat_standards = [choice[0] for choice in Cap.ThroatStandard.choices]
+        # types_of_closure = [choice[0] for choice in Cap.TypeOfClosure.choices]
+        # throat_standards = [choice[0] for choice in Cap.ThroatStandard.choices]
+
+        if 'clear_filter' in request.GET:
+            print('clear_filter')
+            return redirect(reverse(viewname='catalog:category', args=[]))
 
         if form.is_valid():
             throat_standard = form.cleaned_data.get('throat_standard')
             type_of_closure = form.cleaned_data.get('type_of_closure')
-            print(throat_standard, type_of_closure)
+            surface = form.cleaned_data.get('surface')
+            print(throat_standard, type_of_closure, surface)
             if throat_standard:
                 caps = caps.filter(throat_standard__in=throat_standard)
             if type_of_closure:
                 caps = caps.filter(type_of_closure__in=type_of_closure)
+            if surface:
+                caps = caps.filter(surface__in=surface)
 
         context = {
             'caps': caps,
             'form': form,
-            'types_of_closure': types_of_closure,
-            'throat_standards': throat_standards
+            # 'types_of_closure': types_of_closure,
+            # 'throat_standards': throat_standards
         }
         return render(request=request,
                       template_name='catalog/caps.html',

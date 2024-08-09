@@ -11,53 +11,76 @@
 {% block content %}
 
     <section class="filter__block">
-        <form id="filter-form">
-            <div class="filter__buttons">
-                <a class="btn btn-miran-filter"
-                   href="{% url 'catalog:category' caps.first.category.slug %}"
-                   data-filter-name="all"
-                   data-filter-value="all">
-                    <div class="check">
-                        <svg version="1.1" xmlns="http://www.w3.org/2000/svg"
-                             viewBox="0 0 26 26"
-                             xmlns:xlink="http://www.w3.org/1999/xlink"
-                             enable-background="new 0 0 26 26">
-                            <path d="m.3,14c-0.2-0.2-0.3-0.5-0.3-0.7s0.1-0.5 0.3-0.7l1.4-1.4c0.4-0.4 1-0.4 1.4,0l.1,.1 5.5,5.9c0.2,0.2 0.5,0.2 0.7,0l13.4-13.9h0.1v-8.88178e-16c0.4-0.4 1-0.4 1.4,0l1.4,1.4c0.4,0.4 0.4,1 0,1.4l0,0-16,16.6c-0.2,0.2-0.4,0.3-0.7,0.3-0.3,0-0.5-0.1-0.7-0.3l-7.8-8.4-.2-.3z"></path>
-                        </svg>
-                    </div>
-                    Все</a>
-                {% for throat in form.fields.throat_standard.choices %}
-                    <a class="btn btn-miran-filter"
-                       data-filter-name="throat_standard"
-                       data-filter-value="{{ throat.0 }}"
-                       href="#">
-                        <div class="check">
-                            <svg version="1.1" xmlns="http://www.w3.org/2000/svg"
-                                 viewBox="0 0 26 26"
-                                 xmlns:xlink="http://www.w3.org/1999/xlink"
-                                 enable-background="new 0 0 26 26">
-                                <path d="m.3,14c-0.2-0.2-0.3-0.5-0.3-0.7s0.1-0.5 0.3-0.7l1.4-1.4c0.4-0.4 1-0.4 1.4,0l.1,.1 5.5,5.9c0.2,0.2 0.5,0.2 0.7,0l13.4-13.9h0.1v-8.88178e-16c0.4-0.4 1-0.4 1.4,0l1.4,1.4c0.4,0.4 0.4,1 0,1.4l0,0-16,16.6c-0.2,0.2-0.4,0.3-0.7,0.3-0.3,0-0.5-0.1-0.7-0.3l-7.8-8.4-.2-.3z"></path>
-                            </svg>
-                        </div>
-                        {{ throat.1 }}</a>
-                {% endfor %}
-                {% for type in form.fields.type_of_closure.choices %}
-                    <a class="btn btn-miran-filter"
-                       data-filter-name="type_of_closure"
-                       data-filter-value="{{ type.0 }}"
-                       href="#">
-                        <div class="check">
-                            <svg version="1.1" xmlns="http://www.w3.org/2000/svg"
-                                 viewBox="0 0 26 26"
-                                 xmlns:xlink="http://www.w3.org/1999/xlink"
-                                 enable-background="new 0 0 26 26">
-                                <path d="m.3,14c-0.2-0.2-0.3-0.5-0.3-0.7s0.1-0.5 0.3-0.7l1.4-1.4c0.4-0.4 1-0.4 1.4,0l.1,.1 5.5,5.9c0.2,0.2 0.5,0.2 0.7,0l13.4-13.9h0.1v-8.88178e-16c0.4-0.4 1-0.4 1.4,0l1.4,1.4c0.4,0.4 0.4,1 0,1.4l0,0-16,16.6c-0.2,0.2-0.4,0.3-0.7,0.3-0.3,0-0.5-0.1-0.7-0.3l-7.8-8.4-.2-.3z"></path>
-                            </svg>
-                        </div>
-                        {{ type.1 }}</a>
-                {% endfor %}
-            </div>
-        </form>
+    <form  method="get">
+        <div class="filter__buttons">
+        {{ form.as_p }}
+        <button type="submit" class="btn" name="clear_filter">Empty Filter</button>
+        <button type="submit" class="btn">Send data</button>
+
+        </div>
+    </form>
+{#        <form action="{% url 'catalog:category' caps.first.category.slug %}" id="filter-form" method="get">#}
+{#            <div class="filter__buttons">#}
+{#                <a class="btn btn-miran-filter" type="submit"#}
+{#                   href="{% url 'catalog:category' caps.first.category.slug %}"#}
+{#                   data-filter-name="all"#}
+{#                   data-filter-value="all">#}
+{#                    <div class="check">#}
+{#                        <svg version="1.1" xmlns="http://www.w3.org/2000/svg"#}
+{#                             viewBox="0 0 26 26"#}
+{#                             xmlns:xlink="http://www.w3.org/1999/xlink"#}
+{#                             enable-background="new 0 0 26 26">#}
+{#                            <path d="m.3,14c-0.2-0.2-0.3-0.5-0.3-0.7s0.1-0.5 0.3-0.7l1.4-1.4c0.4-0.4 1-0.4 1.4,0l.1,.1 5.5,5.9c0.2,0.2 0.5,0.2 0.7,0l13.4-13.9h0.1v-8.88178e-16c0.4-0.4 1-0.4 1.4,0l1.4,1.4c0.4,0.4 0.4,1 0,1.4l0,0-16,16.6c-0.2,0.2-0.4,0.3-0.7,0.3-0.3,0-0.5-0.1-0.7-0.3l-7.8-8.4-.2-.3z"></path>#}
+{#                        </svg>#}
+{#                    </div>#}
+{#                    Все</a>#}
+{#                {% for throat in form.fields.throat_standard.choices %}#}
+{#                    <a class="btn btn-miran-filter" type="submit"#}
+{#                       data-filter-name="throat_standard"#}
+{#                       data-filter-value="{{ throat.0 }}"#}
+{#                       href="#">#}
+{#                        <div class="check">#}
+{#                            <svg version="1.1" xmlns="http://www.w3.org/2000/svg"#}
+{#                                 viewBox="0 0 26 26"#}
+{#                                 xmlns:xlink="http://www.w3.org/1999/xlink"#}
+{#                                 enable-background="new 0 0 26 26">#}
+{#                                <path d="m.3,14c-0.2-0.2-0.3-0.5-0.3-0.7s0.1-0.5 0.3-0.7l1.4-1.4c0.4-0.4 1-0.4 1.4,0l.1,.1 5.5,5.9c0.2,0.2 0.5,0.2 0.7,0l13.4-13.9h0.1v-8.88178e-16c0.4-0.4 1-0.4 1.4,0l1.4,1.4c0.4,0.4 0.4,1 0,1.4l0,0-16,16.6c-0.2,0.2-0.4,0.3-0.7,0.3-0.3,0-0.5-0.1-0.7-0.3l-7.8-8.4-.2-.3z"></path>#}
+{#                            </svg>#}
+{#                        </div>#}
+{#                        {{ throat.1 }}</a>#}
+{#                {% endfor %}#}
+{#                {% for type in form.fields.type_of_closure.choices %}#}
+{#                    <a class="btn btn-miran-filter" type="submit"#}
+{#                       data-filter-name="type_of_closure"#}
+{#                       data-filter-value="{{ type.0 }}"#}
+{#                       href="#">#}
+{#                        <div class="check">#}
+{#                            <svg version="1.1" xmlns="http://www.w3.org/2000/svg"#}
+{#                                 viewBox="0 0 26 26"#}
+{#                                 xmlns:xlink="http://www.w3.org/1999/xlink"#}
+{#                                 enable-background="new 0 0 26 26">#}
+{#                                <path d="m.3,14c-0.2-0.2-0.3-0.5-0.3-0.7s0.1-0.5 0.3-0.7l1.4-1.4c0.4-0.4 1-0.4 1.4,0l.1,.1 5.5,5.9c0.2,0.2 0.5,0.2 0.7,0l13.4-13.9h0.1v-8.88178e-16c0.4-0.4 1-0.4 1.4,0l1.4,1.4c0.4,0.4 0.4,1 0,1.4l0,0-16,16.6c-0.2,0.2-0.4,0.3-0.7,0.3-0.3,0-0.5-0.1-0.7-0.3l-7.8-8.4-.2-.3z"></path>#}
+{#                            </svg>#}
+{#                        </div>#}
+{#                        {{ type.1 }}</a>#}
+{#                {% endfor %}#}
+{#                {% for type in form.fields.surface.choices %}#}
+{#                    <a class="btn btn-miran-filter" type="submit"#}
+{#                       data-filter-name="type_of_closure"#}
+{#                       data-filter-value="{{ type.0 }}"#}
+{#                       href="#">#}
+{#                        <div class="check">#}
+{#                            <svg version="1.1" xmlns="http://www.w3.org/2000/svg"#}
+{#                                 viewBox="0 0 26 26"#}
+{#                                 xmlns:xlink="http://www.w3.org/1999/xlink"#}
+{#                                 enable-background="new 0 0 26 26">#}
+{#                                <path d="m.3,14c-0.2-0.2-0.3-0.5-0.3-0.7s0.1-0.5 0.3-0.7l1.4-1.4c0.4-0.4 1-0.4 1.4,0l.1,.1 5.5,5.9c0.2,0.2 0.5,0.2 0.7,0l13.4-13.9h0.1v-8.88178e-16c0.4-0.4 1-0.4 1.4,0l1.4,1.4c0.4,0.4 0.4,1 0,1.4l0,0-16,16.6c-0.2,0.2-0.4,0.3-0.7,0.3-0.3,0-0.5-0.1-0.7-0.3l-7.8-8.4-.2-.3z"></path>#}
+{#                            </svg>#}
+{#                        </div>#}
+{#                        {{ type.1 }}</a>#}
+{#                {% endfor %}#}
+{#            </div>#}
+{#        </form>#}
     </section>
 
     <div class="container">
@@ -161,4 +184,3 @@
 
 
 {% endblock %}
-

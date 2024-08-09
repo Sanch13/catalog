@@ -14,3 +14,8 @@ class CapFilterForm(forms.Form):
         required=False,
         widget=forms.CheckboxSelectMultiple
     )
+    surface = forms.MultipleChoiceField(
+        choices=Cap.SurfaceCap.choices,
+        required=False,
+        widget=forms.CheckboxSelectMultiple
+    )

@@ -32,6 +32,10 @@ class Cap(models.Model):
         TWENTY_FOUR_ANOTHER = '24/415', '24/415'
         TWENTY_EIGHT = '28/410', '28/410'
 
+    class SurfaceCap(models.TextChoices):
+        GLOSSY = 'глянцевая', 'глянцевая'
+        MATTE = 'матовая', 'матовая'
+
     class StatusCap(models.TextChoices):
         REGULAR = 'Обычный', 'Обычный'
         NEW = 'Новинка', 'Новинка'
@@ -56,11 +60,15 @@ class Cap(models.Model):
     type_of_closure = models.CharField(max_length=20,
                                        choices=TypeOfClosure.choices,
                                        default=TypeOfClosure.FLIP_TOP,
-                                       verbose_name='Вид укупорки')
+                                       verbose_name='Тип колпачка')
     throat_standard = models.CharField(max_length=10,
                                        choices=ThroatStandard.choices,
                                        default=ThroatStandard.TWENTY_FOUR,
                                        verbose_name='Стандарт горла')
+    surface = models.CharField(max_length=10,
+                               choices=SurfaceCap.choices,
+                               default=SurfaceCap.GLOSSY,
+                               verbose_name="Поверхность")
     description = HTMLField(blank=True,
                             null=True,
                             verbose_name='Описание')
