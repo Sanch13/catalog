@@ -52,13 +52,11 @@ def get_category(request, category_slug):
     elif category.name == 'Колпачки':
         form = CapFilterForm(request.GET or None)
         caps = Cap.objects.filter(category=category)
-
-        # types_of_closure = [choice[0] for choice in Cap.TypeOfClosure.choices]
-        # throat_standards = [choice[0] for choice in Cap.ThroatStandard.choices]
+        print(caps)
 
         if 'clear_filter' in request.GET:
             print('clear_filter')
-            return redirect(reverse(viewname='catalog:category', args=[]))
+            return redirect(reverse(viewname='catalog:category', args=[category_slug]))
 
         if form.is_valid():
             throat_standard = form.cleaned_data.get('throat_standard')
