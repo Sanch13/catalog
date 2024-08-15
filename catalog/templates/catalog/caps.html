@@ -11,80 +11,51 @@
 {% block content %}
 
     <section class="filter__block">
-        <form method="get">
-            <div class="filter__buttons">
+        <div class="filter__buttons">
+            <form method="get">
+                <a class="btn btn-miran-filter"
+                   href="{% url 'catalog:category' caps.first.category.slug %}"
+                   id="allButton">
+                    <div class="check">
+                        <svg version="1.1" xmlns="http://www.w3.org/2000/svg"
+                             viewBox="0 0 26 26"
+                             xmlns:xlink="http://www.w3.org/1999/xlink"
+                             enable-background="new 0 0 26 26">
+                            <path d="m.3,14c-0.2-0.2-0.3-0.5-0.3-0.7s0.1-0.5 0.3-0.7l1.4-1.4c0.4-0.4 1-0.4 1.4,0l.1,.1 5.5,5.9c0.2,0.2 0.5,0.2 0.7,0l13.4-13.9h0.1v-8.88178e-16c0.4-0.4 1-0.4 1.4,0l1.4,1.4c0.4,0.4 0.4,1 0,1.4l0,0-16,16.6c-0.2,0.2-0.4,0.3-0.7,0.3-0.3,0-0.5-0.1-0.7-0.3l-7.8-8.4-.2-.3z"></path>
+                        </svg>
+                    </div>
+                    <label for="all">
+                        <input type="checkbox"
+                               name="all"
+                               value="all"
+                               id="all"
+                               >
+                        Все</label>
+                    </a>
+                {% for field in form %}
+                    {% for item in field %}
+                        <a class="btn btn-miran-filter"
+                           onclick="toggleCheckbox(`{{ item.id_for_label }}`)">
+                            <div class="check">
+                                <svg version="1.1" xmlns="http://www.w3.org/2000/svg"
+                                     viewBox="0 0 26 26"
+                                     xmlns:xlink="http://www.w3.org/1999/xlink"
+                                     enable-background="new 0 0 26 26">
+                                    <path d="m.3,14c-0.2-0.2-0.3-0.5-0.3-0.7s0.1-0.5 0.3-0.7l1.4-1.4c0.4-0.4 1-0.4 1.4,0l.1,.1 5.5,5.9c0.2,0.2 0.5,0.2 0.7,0l13.4-13.9h0.1v-8.88178e-16c0.4-0.4 1-0.4 1.4,0l1.4,1.4c0.4,0.4 0.4,1 0,1.4l0,0-16,16.6c-0.2,0.2-0.4,0.3-0.7,0.3-0.3,0-0.5-0.1-0.7-0.3l-7.8-8.4-.2-.3z"></path>
+                                </svg>
+                            </div>
+                            {{ item }}
+                        </a>
+                    {% endfor %}
+                {% endfor %}
 
-
-                {{ form.as_table }}
-                <div>
+                <div class="button-group">
                     <button type="submit" class="btn" name="clear_filter">Empty Filter</button>
                     <button type="submit" class="btn">Send data</button>
                 </div>
+            </form>
+        </div>
 
-            </div>
-        </form>
-        {#        <form action="{% url 'catalog:category' caps.first.category.slug %}" id="filter-form" method="get">#}
-        {#            <div class="filter__buttons">#}
-        {#                <a class="btn btn-miran-filter" type="submit"#}
-        {#                   href="{% url 'catalog:category' caps.first.category.slug %}"#}
-        {#                   data-filter-name="all"#}
-        {#                   data-filter-value="all">#}
-        {#                    <div class="check">#}
-        {#                        <svg version="1.1" xmlns="http://www.w3.org/2000/svg"#}
-        {#                             viewBox="0 0 26 26"#}
-        {#                             xmlns:xlink="http://www.w3.org/1999/xlink"#}
-        {#                             enable-background="new 0 0 26 26">#}
-        {#                            <path d="m.3,14c-0.2-0.2-0.3-0.5-0.3-0.7s0.1-0.5 0.3-0.7l1.4-1.4c0.4-0.4 1-0.4 1.4,0l.1,.1 5.5,5.9c0.2,0.2 0.5,0.2 0.7,0l13.4-13.9h0.1v-8.88178e-16c0.4-0.4 1-0.4 1.4,0l1.4,1.4c0.4,0.4 0.4,1 0,1.4l0,0-16,16.6c-0.2,0.2-0.4,0.3-0.7,0.3-0.3,0-0.5-0.1-0.7-0.3l-7.8-8.4-.2-.3z"></path>#}
-        {#                        </svg>#}
-        {#                    </div>#}
-        {#                    Все</a>#}
-        {#                {% for throat in form.fields.throat_standard.choices %}#}
-        {#                    <a class="btn btn-miran-filter" type="submit"#}
-        {#                       data-filter-name="throat_standard"#}
-        {#                       data-filter-value="{{ throat.0 }}"#}
-        {#                       href="#">#}
-        {#                        <div class="check">#}
-        {#                            <svg version="1.1" xmlns="http://www.w3.org/2000/svg"#}
-        {#                                 viewBox="0 0 26 26"#}
-        {#                                 xmlns:xlink="http://www.w3.org/1999/xlink"#}
-        {#                                 enable-background="new 0 0 26 26">#}
-        {#                                <path d="m.3,14c-0.2-0.2-0.3-0.5-0.3-0.7s0.1-0.5 0.3-0.7l1.4-1.4c0.4-0.4 1-0.4 1.4,0l.1,.1 5.5,5.9c0.2,0.2 0.5,0.2 0.7,0l13.4-13.9h0.1v-8.88178e-16c0.4-0.4 1-0.4 1.4,0l1.4,1.4c0.4,0.4 0.4,1 0,1.4l0,0-16,16.6c-0.2,0.2-0.4,0.3-0.7,0.3-0.3,0-0.5-0.1-0.7-0.3l-7.8-8.4-.2-.3z"></path>#}
-        {#                            </svg>#}
-        {#                        </div>#}
-        {#                        {{ throat.1 }}</a>#}
-        {#                {% endfor %}#}
-        {#                {% for type in form.fields.type_of_closure.choices %}#}
-        {#                    <a class="btn btn-miran-filter" type="submit"#}
-        {#                       data-filter-name="type_of_closure"#}
-        {#                       data-filter-value="{{ type.0 }}"#}
-        {#                       href="#">#}
-        {#                        <div class="check">#}
-        {#                            <svg version="1.1" xmlns="http://www.w3.org/2000/svg"#}
-        {#                                 viewBox="0 0 26 26"#}
-        {#                                 xmlns:xlink="http://www.w3.org/1999/xlink"#}
-        {#                                 enable-background="new 0 0 26 26">#}
-        {#                                <path d="m.3,14c-0.2-0.2-0.3-0.5-0.3-0.7s0.1-0.5 0.3-0.7l1.4-1.4c0.4-0.4 1-0.4 1.4,0l.1,.1 5.5,5.9c0.2,0.2 0.5,0.2 0.7,0l13.4-13.9h0.1v-8.88178e-16c0.4-0.4 1-0.4 1.4,0l1.4,1.4c0.4,0.4 0.4,1 0,1.4l0,0-16,16.6c-0.2,0.2-0.4,0.3-0.7,0.3-0.3,0-0.5-0.1-0.7-0.3l-7.8-8.4-.2-.3z"></path>#}
-        {#                            </svg>#}
-        {#                        </div>#}
-        {#                        {{ type.1 }}</a>#}
-        {#                {% endfor %}#}
-        {#                {% for type in form.fields.surface.choices %}#}
-        {#                    <a class="btn btn-miran-filter" type="submit"#}
-        {#                       data-filter-name="type_of_closure"#}
-        {#                       data-filter-value="{{ type.0 }}"#}
-        {#                       href="#">#}
-        {#                        <div class="check">#}
-        {#                            <svg version="1.1" xmlns="http://www.w3.org/2000/svg"#}
-        {#                                 viewBox="0 0 26 26"#}
-        {#                                 xmlns:xlink="http://www.w3.org/1999/xlink"#}
-        {#                                 enable-background="new 0 0 26 26">#}
-        {#                                <path d="m.3,14c-0.2-0.2-0.3-0.5-0.3-0.7s0.1-0.5 0.3-0.7l1.4-1.4c0.4-0.4 1-0.4 1.4,0l.1,.1 5.5,5.9c0.2,0.2 0.5,0.2 0.7,0l13.4-13.9h0.1v-8.88178e-16c0.4-0.4 1-0.4 1.4,0l1.4,1.4c0.4,0.4 0.4,1 0,1.4l0,0-16,16.6c-0.2,0.2-0.4,0.3-0.7,0.3-0.3,0-0.5-0.1-0.7-0.3l-7.8-8.4-.2-.3z"></path>#}
-        {#                            </svg>#}
-        {#                        </div>#}
-        {#                        {{ type.1 }}</a>#}
-        {#                {% endfor %}#}
-        {#            </div>#}
-        {#        </form>#}
     </section>
 
     <div class="container">
@@ -119,10 +90,38 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const filterForm = document.getElementById('filter-form');
+        function toggleCheckbox(id) {
+            const checkbox = document.getElementById(id);
+            checkbox.checked = !checkbox.checked;
+
+            const button = checkbox.closest('.btn-miran-filter');
+            button.classList.toggle('active', checkbox.checked);
+
+            updateAllButtonState();
+        }
+
+        function updateAllButtonState() {
+            const filterButtons = document.querySelectorAll('.btn-miran-filter');
+            const allButton = document.getElementById('allButton');
+            let anyButtonActive = false;
+
+            filterButtons.forEach(button => {
+                if (button !== allButton && button.classList.contains('active')) {
+                    anyButtonActive = true;
+                }
+            });
+
+            if (anyButtonActive) {
+                allButton.classList.remove('active');
+            } else {
+                allButton.classList.add('active');
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
             const filterButtons = document.querySelectorAll('.btn-miran-filter');
             const allButton = document.querySelector('.btn-miran-filter[data-filter-value="all"]');
+            console.log("filterButtons", filterButtons)
 
             filterButtons.forEach(button => {
                 if (button.classList.contains('active')) {
@@ -132,56 +131,122 @@
                 }
             });
 
-            filterButtons.forEach(button => {
-                button.addEventListener('click', function (event) {
-                    event.preventDefault();
 
-                    const filterName = this.getAttribute('data-filter-name');
-                    const filterValue = this.getAttribute('data-filter-value');
-                    let params = new URLSearchParams(new FormData(filterForm));
-
-                    if (this === allButton) {
-                        // Нажата кнопка "Все"
-                        allButton.classList.add('active');
-                        filterButtons.forEach(btn => {
-                            if (btn !== allButton) btn.classList.remove('active');
-                        });
-                        params = new URLSearchParams(); // Убираем все фильтры, так как выбрано "Все"
-                    } else {
-                        // Нажата любая другая кнопка
-                        allButton.classList.remove('active');
-                        this.classList.toggle('active');
-
-                        // Обновляем параметры формы
-                        if (this.classList.contains('active')) {
-                            params.append(filterName, filterValue);
-                        } else {
-                            const values = params.getAll(filterName).filter(v => v !== filterValue);
-                            params.delete(filterName);
-                            values.forEach(v => params.append(filterName, v));
-                        }
-
-                        // Проверяем, если нет активных кнопок, активируем "Все"
-                        const anyActive = Array.from(filterButtons).some(btn => btn !== allButton && btn.classList.contains('active'));
-                        if (!anyActive) {
-                            allButton.classList.add('active');
-                            params = new URLSearchParams(); // Убираем все фильтры
-                        }
-                    }
-
-                    console.log(params.toString());
-                    // Отправляем GET-запрос с новыми параметрами
-                    fetch(window.location.pathname + '?' + params.toString(), {
-                        method: 'GET',
-                    })
-                        .then(response => response.text())
-                        .then(html => {
-                            // Обновляем контейнер с результатами
-                            document.querySelector('.container').innerHTML = new DOMParser().parseFromString(html, 'text/html').querySelector('.container').innerHTML;
-                        });
-                });
-            });
         });
+
+    </script>
+
+
+
+    {#    function updateAllButtonState() {#}
+    {#            const filterButtons = document.querySelectorAll('.btn-miran-filter');#}
+    {#            const allButton = document.getElementById('allButton');#}
+    {#            let anyButtonActive = false;#}
+    {##}
+    {#            filterButtons.forEach(button => {#}
+    {#                if (button !== allButton && button.classList.contains('active')) {#}
+    {#                    anyButtonActive = true;#}
+    {#                }#}
+    {#            });#}
+    {##}
+    {#            if (anyButtonActive) {#}
+    {#                allButton.classList.remove('active');#}
+    {#            } else {#}
+    {#                allButton.classList.add('active');#}
+    {#            }#}
+    {#        }#}
+
+    {#            filterButtons.forEach(button => {#}
+    {#                button.addEventListener('click', function (e) {#}
+    {#                    if (button.id === 'allButton') {#}
+    {#                        filterButtons.forEach(btn => {#}
+    {#                            if (btn !== allButton) {#}
+    {#                                const associatedCheckbox = btn.querySelector('input[type="checkbox"]');#}
+    {#                                if (associatedCheckbox) {#}
+    {#                                    associatedCheckbox.checked = false;#}
+    {#                                    btn.classList.remove('active');#}
+    {#                                }#}
+    {#                            }#}
+    {#                        });#}
+    {#                    } else {#}
+    {#                        const associatedCheckbox = button.querySelector('input[type="checkbox"]');#}
+    {#                        if (associatedCheckbox) {#}
+    {#                            associatedCheckbox.checked = !associatedCheckbox.checked;#}
+    {#                            button.classList.toggle('active', associatedCheckbox.checked);#}
+    {#                            updateAllButtonState();#}
+    {#                        }#}
+    {#                    }#}
+    {##}
+    {#                    // Предотвращаем выполнение стандартного действия href у тега <a>#}
+    {#                    e.preventDefault();#}
+    {#                });#}
+    {#            });#}
+    {##}
+    {#            updateAllButtonState();#}
+
+    {#document.addEventListener('DOMContentLoaded', function () {#}
+    {#    const filterForm = document.getElementById('filter-form');#}
+    {#    const filterButtons = document.querySelectorAll('.btn-miran-filter');#}
+    {#    const allButton = document.querySelector('.btn-miran-filter[data-filter-value="all"]');#}
+    {##}
+    {#    filterButtons.forEach(button => {#}
+    {#        if (button.classList.contains('active')) {#}
+    {#            allButton.classList.remove('active');#}
+    {#        } else {#}
+    {#            allButton.classList.add('active');#}
+    {#        }#}
+    {#    });#}
+    {##}
+    {#    filterButtons.forEach(button => {#}
+    {#        button.addEventListener('click', function (event) {#}
+    {#            event.preventDefault();#}
+    {##}
+    {#            const filterName = this.getAttribute('data-filter-name');#}
+    {#            const filterValue = this.getAttribute('data-filter-value');#}
+    {#            let params = new URLSearchParams(new FormData(filterForm));#}
+    {##}
+    {#            if (this === allButton) {#}
+    {#                // Нажата кнопка "Все"#}
+    {#                allButton.classList.add('active');#}
+    {#                filterButtons.forEach(btn => {#}
+    {#                    if (btn !== allButton) btn.classList.remove('active');#}
+    {#                });#}
+    {#                params = new URLSearchParams(); // Убираем все фильтры, так как выбрано "Все"#}
+    {#            } else {#}
+    {#                // Нажата любая другая кнопка#}
+    {#                allButton.classList.remove('active');#}
+    {#                this.classList.toggle('active');#}
+    {##}
+    {#                // Обновляем параметры формы#}
+    {#                if (this.classList.contains('active')) {#}
+    {#                    params.append(filterName, filterValue);#}
+    {#                } else {#}
+    {#                    const values = params.getAll(filterName).filter(v => v !== filterValue);#}
+    {#                    params.delete(filterName);#}
+    {#                    values.forEach(v => params.append(filterName, v));#}
+    {#                }#}
+    {##}
+    {#                // Проверяем, если нет активных кнопок, активируем "Все"#}
+    {#                const anyActive = Array.from(filterButtons).some(btn => btn !== allButton && btn.classList.contains('active'));#}
+    {#                if (!anyActive) {#}
+    {#                    allButton.classList.add('active');#}
+    {#                    params = new URLSearchParams(); // Убираем все фильтры#}
+    {#                }#}
+    {#            }#}
+    {##}
+    {#            console.log(params.toString());#}
+    {#            // Отправляем GET-запрос с новыми параметрами#}
+    {#            fetch(window.location.pathname + '?' + params.toString(), {#}
+    {#                method: 'GET',#}
+    {#            })#}
+    {#                .then(response => response.text())#}
+    {#                .then(html => {#}
+    {#                    // Обновляем контейнер с результатами#}
+    {#                    document.querySelector('.container').innerHTML = new DOMParser().parseFromString(html, 'text/html').querySelector('.container').innerHTML;#}
+    {#                });#}
+    {#        });#}
+    {#    });#}
+    {#});#}
 
     </script>
 

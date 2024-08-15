@@ -17,5 +17,5 @@ class CapFilterForm(forms.Form):
     surface = forms.MultipleChoiceField(
         choices=Cap.SurfaceCap.choices,
         required=False,
-        widget=forms.RadioSelect
+        widget=forms.CheckboxSelectMultiple
     )
