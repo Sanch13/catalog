@@ -54,10 +54,6 @@ def get_category(request, category_slug):
         caps = Cap.objects.filter(category=category)
         print(caps)
 
-        if 'clear_filter' in request.GET:
-            print('clear_filter')
-            return redirect(reverse(viewname='catalog:category', args=[category_slug]))
-
         if form.is_valid():
             throat_standard = form.cleaned_data.get('throat_standard')
             type_of_closure = form.cleaned_data.get('type_of_closure')
@@ -73,8 +69,6 @@ def get_category(request, category_slug):
         context = {
             'caps': caps,
             'form': form,
-            # 'types_of_closure': types_of_closure,
-            # 'throat_standards': throat_standards
         }
         return render(request=request,
                       template_name='catalog/caps.html',
