@@ -3,7 +3,7 @@ from django.db.models.functions import Coalesce
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 
-from catalog.forms import CapFilterForm
+from catalog.forms import CapFilterForm, JarFilterForm, BottlesFilterForm
 from catalog.models import Jar, Series, Cap, Category, Bottle, CapFile, JarFile, BottleFile
 
 
@@ -28,22 +28,52 @@ def get_catalog(request):
 def get_category(request, category_slug):
     category = get_object_or_404(Category, slug=category_slug)
     if category.name == 'Флаконы':
+        form = BottlesFilterForm(request.GET or None)
         series = Series.objects.filter(category=category)
 
-        # series = get_objects_from_paginator(request, per_page=4, model_objects_list=series)
+        if form.is_valid():
+            throat_standard = form.cleaned_data.get('throat_standard')
+            volume = form.cleaned_data.get("volume")
+            status_decoration = form.cleaned_data.get("status_decoration")
+            surface = form.cleaned_data.get("surface")
+            # print(f'volume: {volume} \nsurface: {surface} \ndecoration: \
+            # {status_decoration}\nthroat_standard: {throat_standard}')
+            if throat_standard:
+                series = series.filter(bottle__throat_standard__in=throat_standard).distinct()
+            if volume:
+                series = series.filter(bottle__volume__range=volume).distinct()
+            if status_decoration:
+                series = series.filter(bottle__status_decoration=status_decoration).distinct()
+            if surface:
+                series = series.filter(bottle__surface__in=surface).distinct()
+
         context = {
-            'series': series
+            'series': series,
+            'form': form
         }
         return render(request=request,
                       template_name='catalog/series.html',
                       context=context)
 
     elif category.name == 'Баночки':
+        form = JarFilterForm(request.GET or None)
         jars = Jar.objects.filter(category=category)
 
-        # jars = get_objects_from_paginator(request, per_page=4, model_objects_list=jars)
+        if form.is_valid():
+            volume = form.cleaned_data.get('volume')
+            surface = form.cleaned_data.get('surface')
+            status_decoration = form.cleaned_data.get('status_decoration')
+            # print(f'volume:{volume}  | surface:{surface}  | decoration:{status_decoration}')
+            if volume:
+                jars = jars.filter(volume__range=volume)
+            if surface:
+                jars = jars.filter(surface__in=surface)
+            if status_decoration:
+                jars = jars.filter(status_decoration=status_decoration)
+
         context = {
-            'jars': jars
+            'jars': jars,
+            'form': form,
         }
         return render(request=request,
                       template_name='catalog/jars.html',
@@ -52,13 +82,12 @@ def get_category(request, category_slug):
     elif category.name == 'Колпачки':
         form = CapFilterForm(request.GET or None)
         caps = Cap.objects.filter(category=category)
-        print(caps)
 
         if form.is_valid():
             throat_standard = form.cleaned_data.get('throat_standard')
             type_of_closure = form.cleaned_data.get('type_of_closure')
             surface = form.cleaned_data.get('surface')
-            print(throat_standard, type_of_closure, surface)
+            # print(throat_standard, type_of_closure, surface)
             if throat_standard:
                 caps = caps.filter(throat_standard__in=throat_standard)
             if type_of_closure:
@@ -96,9 +125,6 @@ def get_category(request, category_slug):
         ).values('name', 'slug', 'status', 'ratings', 'series_slug', 'category__slug', 'image')
 
         all_new_products = caps.union(jars, bottles).order_by('-ratings')
-        # all_new_products = get_objects_from_paginator(request,
-        #                                               per_page=4,
-        #                                               model_objects_list=all_new_products)
         context = {
             'new_products': all_new_products
         }

@@ -13,6 +13,11 @@ class Bottle(models.Model):
         NEW = 'Новинка', 'Новинка'
         BESTSELLER = 'Бестселлер', 'Бестселлер'
 
+    class VolumeFilterBottle(models.TextChoices):
+        THIRTY_TWO_HUNDRED = '30-200', '30-200 мл'
+        SEVENTY_FIVE_ONE_HUNDRED_FIFTY = '250-400', '250-400 мл'
+        FIVE_HUNDRED_ONE_THOUSAND = '500-1000', '500 - 1000 мл'
+
     class VolumeBottle(models.IntegerChoices):
         THIRTY = 30, '30'
         FIFTY = 50, '50'
@@ -46,8 +51,11 @@ class Bottle(models.Model):
         TWENTY_EIGHT = '28/410', '28/410'
 
     class SurfaceBottle(models.TextChoices):
-        SOFT_TOUCH = 'софт тач', 'софт тач'
-        NO_SOFT_TOUCH = 'без софт тач', 'без софт тач'
+        SOFT_TOUCH = 'софт-тач', 'софт-тач'
+        NO_SOFT_TOUCH = 'без софт-тач', 'без софт-тач'
+
+    class DecorationFilterBottle(models.TextChoices):
+        DECORATION = 'декорирование', 'декорирование'
 
     class YesNoStatusBottle(models.TextChoices):
         YES = 'да', 'да'
@@ -99,6 +107,10 @@ class Bottle(models.Model):
     description = HTMLField(blank=True,
                             null=True,
                             verbose_name='Описание')
+    status_decoration = models.CharField(max_length=3,
+                                         choices=YesNoStatusBottle.choices,
+                                         default=YesNoStatusBottle.YES,
+                                         verbose_name='Статус Декорирования')
     decoration = HTMLField(blank=True,
                            null=True,
                            verbose_name="Декорирование")

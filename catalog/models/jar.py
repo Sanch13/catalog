@@ -26,6 +26,15 @@ class Jar(models.Model):
         NEW = 'Новинка', 'Новинка'
         BESTSELLER = 'Бестселлер', 'Бестселлер'
 
+    class VolumeFilterJar(models.TextChoices):
+        FIFTY = '50', '50 мл'
+        SEVENTY_FIVE_ONE_HUNDRED_FIFTY = '75-150', '75-150 мл'
+        TWO_HUNDRED_THREE_HUNDRED = '200-300', '200-300 мл'
+        FOUR_HUNDRED_FIFE_HUNDRED = '400-500', '400-500 мл'
+
+    class DecorationFilterJar(models.TextChoices):
+        DECORATION = 'декорирование', 'декорирование'
+
     class VolumeJar(models.IntegerChoices):
         FIFTY = 50, '50'
         SEVENTY_FIVE = 75, '75'
@@ -88,6 +97,14 @@ class Jar(models.Model):
     description = HTMLField(blank=True,
                             null=True,
                             verbose_name='Описание')
+    status_decoration = models.CharField(max_length=3,
+                                         choices=YesNoStatusJar.choices,
+                                         default=YesNoStatusJar.YES,
+                                         verbose_name='Статус Декорирования')
+    decoration = HTMLField(blank=True,
+                           null=True,
+                           verbose_name="Декорирование")
+
     uploaded_at = models.DateTimeField(auto_now_add=True,
                                        verbose_name='Дата загрузки')
 
