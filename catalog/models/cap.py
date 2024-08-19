@@ -1,9 +1,23 @@
 from django.db import models
+from django.db.models import Case, When, Value, IntegerField
 from django.utils.text import slugify
 
 from tinymce.models import HTMLField
 
 from catalog.models.category import Category
+
+
+class CapManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().annotate(
+            status_order=Case(
+                When(status='Новинка', then=Value(1)),
+                When(status='Бестселлер', then=Value(2)),
+                When(status='Обычный', then=Value(3)),
+                default=Value(3),
+                output_field=IntegerField(),
+            )
+        ).order_by('status_order', '-ratings')
 
 
 class Cap(models.Model):
@@ -17,6 +31,10 @@ class Cap(models.Model):
         TWENTY_FOUR = '24/410', '24/410'
         TWENTY_FOUR_ANOTHER = '24/415', '24/415'
         TWENTY_EIGHT = '28/410', '28/410'
+
+    class SurfaceCap(models.TextChoices):
+        GLOSSY = 'глянцевая', 'глянцевая'
+        MATTE = 'матовая', 'матовая'
 
     class StatusCap(models.TextChoices):
         REGULAR = 'Обычный', 'Обычный'
@@ -42,16 +60,22 @@ class Cap(models.Model):
     type_of_closure = models.CharField(max_length=20,
                                        choices=TypeOfClosure.choices,
                                        default=TypeOfClosure.FLIP_TOP,
-                                       verbose_name='Вид укупорки')
+                                       verbose_name='Тип колпачка')
     throat_standard = models.CharField(max_length=10,
                                        choices=ThroatStandard.choices,
                                        default=ThroatStandard.TWENTY_FOUR,
                                        verbose_name='Стандарт горла')
+    surface = models.CharField(max_length=10,
+                               choices=SurfaceCap.choices,
+                               default=SurfaceCap.GLOSSY,
+                               verbose_name="Поверхность")
     description = HTMLField(blank=True,
                             null=True,
                             verbose_name='Описание')
     uploaded_at = models.DateTimeField(auto_now_add=True,
                                        verbose_name='Дата загрузки')
+
+    objects = CapManager()
 
     class Meta:
         verbose_name = 'Колпачок'
@@ -64,3 +88,9 @@ class Cap(models.Model):
         if not self.slug:
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        from django.urls import reverse
+
+        return reverse(viewname="catalog:product_detail_no_series",
+                       args=[self.category.slug, self.slug])

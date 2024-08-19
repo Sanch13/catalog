@@ -1,10 +1,14 @@
+import os
+
 from django.db import models
 from django.utils.text import slugify
 
 from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
 
-from catalog.utils import get_file_upload_path_category, get_upload_path_category_images
+
+def get_upload_path_category(instance, filename):
+    return os.path.join('files', instance.name, filename)
 
 
 class Category(models.Model):
@@ -21,10 +25,14 @@ class Category(models.Model):
                             verbose_name='Название')
     slug = models.SlugField(max_length=50,
                             unique=True)
+    rating = models.PositiveSmallIntegerField(blank=True,
+                                              null=True,
+                                              default=1,
+                                              verbose_name='Рейтинг Категории')
     description = models.TextField(blank=True,
                                    null=True,
                                    verbose_name='Описание')
-    category_image = models.ImageField(upload_to=get_upload_path_category_images,
+    category_image = models.ImageField(upload_to=get_upload_path_category,
                                        blank=True,
                                        null=True,
                                        verbose_name='Изображение категории')
@@ -36,6 +44,9 @@ class Category(models.Model):
     class Meta:
         verbose_name = 'Категория'
         verbose_name_plural = 'Категории'
+        ordering = [
+            "-rating",
+        ]
 
     def __str__(self):
         return self.name

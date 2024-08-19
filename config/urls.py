@@ -3,7 +3,10 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
+from catalog.views import catalog
+
 urlpatterns = [
+    path('', catalog.home, name='home'),
     path('catalog/', include('catalog.urls', namespace='catalog')),
     path('admin/', admin.site.urls),
     path('tinymce/', include('tinymce.urls')),
