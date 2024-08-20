@@ -16,15 +16,23 @@
 
         .btn-custom-size {
             display: flex;
-            width: 400px;
-            height: 250px;
-            border: 2px solid #BDD006;
-            background-color: #BDD006;
-            color: black;
             justify-content: center;
             align-items: center;
             text-align: center;
             flex-direction: column;
+
+            width: 400px;
+            height: 300px;
+
+            border: 2px solid #BDD006;
+            background-color: #BDD006;
+            color: black;
+            border-radius: 25px;
+
+            font-family: 'Roboto', arial, sans-serif;
+            font-size: 40px;
+            font-weight: 700;
+            text-decoration: none;
         }
 
         .btn-custom-size:hover {
@@ -39,16 +47,6 @@
             background-color: #E0F043;
             border: 2px solid #E0F043;
             outline: none;
-        }
-
-        .rounded-5 {
-            --bs-border-radius-xxl: 2rem !important;
-        }
-
-        .header-text {
-            font-family: 'Roboto', arial, sans-serif;
-            font-size: 40px;
-            font-weight: 700;
         }
 
         .video-container {
@@ -69,6 +67,13 @@
             z-index: -100;
             transform: translateX(-50%) translateY(-50%);
         }
+
+        .container-fluid {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
     </style>
 </head>
 
@@ -78,19 +83,18 @@
     <video autoplay loop muted playsinline>
         <source src="{% static 'video/rolik-dlya-polskogo-sayta-15-secmp4' %}" type="video/mp4">
     </video>
-    <div class=" container-fluid d-flex justify-content-center align-items-center"
-         style="margin-top: 300px;">
+    <div class=" container-fluid d-flex justify-content-center align-items-center">
         <div class="btn-groups d-flex gap-5 justify-content-center align-items-center">
             <a href="{% url 'catalog:catalog' %}"
-               class="btn btn-custom-size">
+               class="btn-custom-size">
                 Подбор упаковки
             </a>
             <a href=""
-               class="btn btn-custom-size">
+               class="btn-custom-size">
                 О Миран
             </a>
             <a href=""
-               class="btn btn-custom-size rounded-5 header-text">
+               class="btn-custom-size">
                 Свяжитесь со мной
             </a>
         </div>
