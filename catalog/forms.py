@@ -80,3 +80,8 @@ class BottlesFilterForm(forms.Form):
     def clean_status_decoration(self):
         data = self.cleaned_data['status_decoration']
         return Bottle.YesNoStatusBottle.YES if 'декорирование' in data else None
+
+
+class SendDataToEmail(forms.Form):
+    name = forms.CharField(max_length=100, label='Ваше ФИО')
+    email = forms.EmailField(label='Ваш Email')

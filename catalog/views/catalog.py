@@ -2,8 +2,9 @@ from django.db.models import OuterRef, Subquery, Value
 from django.db.models.functions import Coalesce
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
+from django.http import JsonResponse
 
-from catalog.forms import CapFilterForm, JarFilterForm, BottlesFilterForm
+from catalog.forms import CapFilterForm, JarFilterForm, BottlesFilterForm, SendDataToEmail
 from catalog.models import Jar, Series, Cap, Category, Bottle, CapFile, JarFile, BottleFile
 
 
@@ -160,10 +161,12 @@ def get_product_detail(request, category_slug, series_slug=None, product_slug=No
 
 def product_detail_no_series(request, category_slug, product_slug):
     if category_slug == "jars":
+        form = SendDataToEmail()
         jar = get_object_or_404(Jar,
                                 category__slug=category_slug,
                                 slug=product_slug)
         context = {
+            "form": form,
             "jar": jar
         }
         return render(request=request,
@@ -191,3 +194,19 @@ def product_detail_no_series(request, category_slug, product_slug):
         return render(request=request,
                       template_name='catalog/bottle_detail.html',
                       context=context)
+
+
+def send_data_to_email(request):
+    if request.method == 'POST':
+        form = SendDataToEmail(request.POST)
+        if form.is_valid():
+            print("Form is valid")
+            # Здесь можно добавить логику для сохранения данных или отправки email
+            cd = form.cleaned_data.items()
+            ids = request.POST.get('ids')
+
+            print(request.POST.get('ids'), ids)
+            print(cd)
+            return JsonResponse({'success': True})
+        else:
+            return JsonResponse({'success': False, 'errors': form.errors})
