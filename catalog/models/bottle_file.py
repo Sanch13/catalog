@@ -41,6 +41,7 @@ class BottleFile(models.Model):
     def save(self, *args, **kwargs):
         image_content = convert_img_to_webp(image=self.file)
         self.file.save(image_content.name, image_content, save=False)
+        print(self.file.path)  # fullpath to file
         super().save(*args, **kwargs)
 
     def __str__(self):
