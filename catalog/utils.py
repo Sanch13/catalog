@@ -1,9 +1,19 @@
+from email.utils import encode_rfc2231
 from io import BytesIO
+from pathlib import Path
+import smtplib
+import ssl
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from email.mime.base import MIMEBase
+from email import encoders
 
 from PIL import Image
 
 from django.core.paginator import Paginator
 from django.core.files.base import ContentFile
+
+from settings import settings
 
 
 def get_objects_from_paginator(request, per_page=1, model_objects_list=None):
@@ -39,3 +49,43 @@ def convert_img_to_webp(image):
     image_content = ContentFile(image_io.getvalue(),
                                 name=f'{filename.rsplit(".", 1)[0]}.webp')
     return image_content
+
+
+def send_email():
+    message = MIMEMultipart()
+    message['Subject'] = settings.SUBJECT
+    message['From'] = settings.FROM
+    message['To'] = settings.TO
+
+    message.attach(MIMEText(settings.BODY, 'plain', 'utf-8'))
+
+    path_to_pdf_dir = Path(__file__).resolve().parent
+    file_path = path_to_pdf_dir / "Баночка «Боди-150»_5.pdf"
+    print(file_path)
+    filename = str(file_path).rsplit("/", 1)[-1]
+    print(filename)
+
+    with open(file_path, "rb") as attachment:
+        # Создаем MIMEBase объект
+        file_data = MIMEBase("application", "octet-stream")
+        file_data.set_payload(attachment.read())
+
+    encoders.encode_base64(file_data)
+    encoded_filename = encode_rfc2231(filename, charset='utf-8')
+    print(encoded_filename)
+
+    # Добавляем заголовки
+    file_data.add_header(
+        "Content-Disposition",
+        f'attachment; filename*="{encoded_filename}"',
+    )
+
+    # Прикрепляем файл к сообщению
+    message.attach(file_data)
+
+    context = ssl.create_default_context()
+    with smtplib.SMTP(settings.SMTP_SERVER, settings.PORT_TLS) as server:
+        server.starttls(context=context)
+        server.login(settings.FROM, settings.PASSWORD_EMAIL)
+        server.sendmail(settings.FROM, settings.TO, message.as_string())
+    print("sent email")

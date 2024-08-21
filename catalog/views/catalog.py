@@ -6,6 +6,7 @@ from django.http import JsonResponse
 
 from catalog.forms import CapFilterForm, JarFilterForm, BottlesFilterForm, SendDataToEmail
 from catalog.models import Jar, Series, Cap, Category, Bottle, CapFile, JarFile, BottleFile
+from catalog.utils import send_email
 
 
 # from ..utils import get_objects_from_paginator
@@ -201,6 +202,7 @@ def send_data_to_email(request):
         form = SendDataToEmail(request.POST)
         if form.is_valid():
             print("Form is valid")
+            send_email()
             # Здесь можно добавить логику для сохранения данных или отправки email
             cd = form.cleaned_data.items()
             ids = request.POST.get('ids')

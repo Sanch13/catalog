@@ -18,6 +18,17 @@ class Settings(BaseSettings):
     REDIS_PORT: int
     REDIS_DB: int
 
+    SMTP_SERVER: str
+    FROM: str
+    PASSWORD_EMAIL: str
+    SUBJECT: str
+    BODY: str
+    PORT_TLS: int
+    TO: str
+
+
+
+
     # CORS_ORIGIN_ALLOW_ALL: bool
     # CORS_ALLOW_CREDENTIALS: bool
     # CORS_ALLOW_HEADERS: str
