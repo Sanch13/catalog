@@ -2,10 +2,11 @@ import os
 
 from django.db import models
 
-from .bottle import Bottle
-
 from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
+
+from .bottle import Bottle
+from catalog.utils import convert_img_to_webp
 
 
 def get_file_upload_path_bottle(instance, filename):
@@ -36,6 +37,11 @@ class BottleFile(models.Model):
                                options={'quality': 60})
     uploaded_at = models.DateTimeField(auto_now_add=True,
                                        verbose_name='Дата загрузки')
+
+    def save(self, *args, **kwargs):
+        image_content = convert_img_to_webp(image=self.file)
+        self.file.save(image_content.name, image_content, save=False)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return '| --->'.join(f"{self.file}".rsplit('/', 2)[-2:])

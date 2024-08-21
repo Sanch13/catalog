@@ -6,6 +6,8 @@ from django.utils.text import slugify
 from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
 
+from catalog.utils import convert_img_to_webp
+
 
 def get_upload_path_category(instance, filename):
     return os.path.join('files', instance.name, filename)
@@ -54,6 +56,10 @@ class Category(models.Model):
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.name)
+
+        image_content = convert_img_to_webp(image=self.category_image)
+        self.category_image.save(image_content.name, image_content, save=False)
+
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):

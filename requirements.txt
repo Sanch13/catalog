@@ -19,6 +19,8 @@ identify==2.5.36
 lxml==5.2.2
 mccabe==0.7.0
 nodeenv==1.9.1
+numpy==2.0.0
+opencv-python==4.10.0.84
 pilkit==3.0
 pillow==10.4.0
 pillow_heif==0.17.0
