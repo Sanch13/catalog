@@ -103,4 +103,9 @@ STATICFILES_DIRS = [
 MEDIA_URL = "media/"
 MEDIA_ROOT = BASE_DIR / "media/"
 
+PDF_DIR = str(MEDIA_ROOT) + "/" + "pdf" + "/"
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CELERY_BROKER_URL = settings.CELERY_BROKER_URL
+CELERY_RESULT_BACKEND = settings.CELERY_RESULT_BACKEND

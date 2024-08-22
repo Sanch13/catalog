@@ -1,17 +1,14 @@
-from email.utils import encode_rfc2231
+import os
 from io import BytesIO
 from pathlib import Path
-import smtplib
-import ssl
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-from email.mime.base import MIMEBase
-from email import encoders
 
 from PIL import Image
+from bs4 import BeautifulSoup
+from fpdf import FPDF, XPos, YPos
 
 from django.core.paginator import Paginator
 from django.core.files.base import ContentFile
+from django.conf import settings as config_settings
 
 from settings import settings
 
@@ -51,41 +48,122 @@ def convert_img_to_webp(image):
     return image_content
 
 
-def send_email():
-    message = MIMEMultipart()
-    message['Subject'] = settings.SUBJECT
-    message['From'] = settings.FROM
-    message['To'] = settings.TO
+def get_jar_data_from_db(id_item):
+    from catalog.models import Jar
 
-    message.attach(MIMEText(settings.BODY, 'plain', 'utf-8'))
+    jar = Jar.objects.prefetch_related('jar_files').filter(id=id_item).first()
 
-    path_to_pdf_dir = Path(__file__).resolve().parent
-    file_path = path_to_pdf_dir / "Баночка «Боди-150»_5.pdf"
-    print(file_path)
-    filename = str(file_path).rsplit("/", 1)[-1]
-    print(filename)
+    if jar:
+        params = {
+            'name': jar.name,
+            'volume': jar.volume,
+            'surface': jar.surface,
+            'status_decoration': jar.status_decoration,
+            'description': BeautifulSoup(jar.description, "html.parser").get_text(),
+            'files': [open(file, 'rb').read() for file in
+                      [file.file.path for file in jar.jar_files.all()]]
 
-    with open(file_path, "rb") as attachment:
-        # Создаем MIMEBase объект
-        file_data = MIMEBase("application", "octet-stream")
-        file_data.set_payload(attachment.read())
+        }
 
-    encoders.encode_base64(file_data)
-    encoded_filename = encode_rfc2231(filename, charset='utf-8')
-    print(encoded_filename)
+        return params
 
-    # Добавляем заголовки
-    file_data.add_header(
-        "Content-Disposition",
-        f'attachment; filename*="{encoded_filename}"',
-    )
 
-    # Прикрепляем файл к сообщению
-    message.attach(file_data)
+def convert_webp_to_jpeg_bytes(file):
+    # Открываем WEBP-изображение из байтового потока
+    with Image.open(BytesIO(file)) as img:
+        # Преобразуем изображение в формат JPEG и сохраняем его в байтовый поток
+        jpeg_io = BytesIO()
+        img.convert('RGB').save(jpeg_io, format='JPEG')
+        jpeg_io.seek(0)  # Возвращаемся к началу потока
+        return jpeg_io
 
-    context = ssl.create_default_context()
-    with smtplib.SMTP(settings.SMTP_SERVER, settings.PORT_TLS) as server:
-        server.starttls(context=context)
-        server.login(settings.FROM, settings.PASSWORD_EMAIL)
-        server.sendmail(settings.FROM, settings.TO, message.as_string())
-    print("sent email")
+
+def create_pdf_from_data(params):
+    image_bytes_list = params["files"]
+    font_path = str(Path(__file__).resolve().parent) + "/" + "DejaVuSans.ttf"
+    print("font_path", font_path)
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.add_font('DejaVu', '', font_path)
+    page_width = pdf.w  # Ширина страницы (210 мм для A4)
+    page_height = pdf.h  # Высота страницы (297 мм для A4)
+    margin = 3
+    images_per_row = 3
+
+    available_width = (page_width - 2 * margin) / images_per_row  # 68 mm
+
+    image_width = available_width
+    image_height = image_width  # Если хотите, чтобы изображения были квадратными
+
+    x_start = margin
+    y_start = margin
+    x = x_start
+    y = y_start
+    current_image_in_row = 0
+
+    for image_bytes in image_bytes_list[:6]:
+        if y + image_height > page_height - margin:  # Если не помещается на страницу
+            pdf.add_page()  # Добавляем новую страницу
+            x = x_start
+            y = y_start
+            current_image_in_row = 0  # Сброс текущей позиции в ряду
+
+        # Преобразуем изображение и сохраняем его в PDF
+        jpeg_io = convert_webp_to_jpeg_bytes(image_bytes)
+        pdf.image(jpeg_io, x=x, y=y, w=image_width, h=image_height)
+
+        current_image_in_row += 1
+        if current_image_in_row < images_per_row:
+            # Сдвиг по горизонтали для следующего изображения
+            x += image_width
+        else:
+            # Переход на следующую линию
+            x = x_start
+            y += image_height
+            current_image_in_row = 0
+
+    height_y_photo = image_height if len(image_bytes_list) <= 3 else image_height * 2
+
+    header_font_size = 24
+    pdf.set_font("DejaVu", '', size=header_font_size)
+
+    text_width = pdf.get_string_width(params["name"])
+    x_position = (page_width - text_width) / 2  # Смещение для центрирования
+
+    # Вставка текста по центру строки
+    pdf.set_y(height_y_photo + 6)  # Установка вертикальной позиции после изображений
+    pdf.set_x(x_position)          # Установка горизонтальной позиции для центрирования
+    pdf.cell(text_width, 10, params["name"], new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+    pdf.set_y(height_y_photo + 20)
+    pdf.set_font("DejaVu", size=16)
+
+    table_width = page_width - 2 * margin   # Ширина таблицы с учетом отступов
+    col1_width = table_width * 0.3          # 30% ширины страницы для первой колонки
+    col2_width = table_width * 0.7          # 70% ширины страницы для второй колонки
+
+    text_items = [
+        ("Объем мл.", params['volume']),
+        ("Поверхность", params['surface']),
+        ("Декорирование", params['status_decoration']),
+    ]
+
+    row_height = 10  # Настройка высоты строки таблицы
+
+    # Создание строк таблицы
+    for label, value in text_items:
+        pdf.set_x(margin)  # Начало строки таблицы по оси X
+        pdf.cell(col1_width, row_height, label, border=1, align='L')  # Первая колонка
+        pdf.cell(col2_width, row_height, str(value), border=1, align='L')  # Вторая колонка
+        pdf.ln(row_height)  # Переход на следующую строку
+
+    pdf.ln(10)  # Добавляем небольшой отступ перед описанием
+    description = params['description']
+    pdf.multi_cell(0, 10, description)  # Добавление описания
+
+    pdf.output(f"{config_settings.PDF_DIR}/{params['name']}.pdf")
+    filename = f"{params['name']}.pdf"
+    return Path(config_settings.PDF_DIR, filename)
+
+
+def file_exists_in_directory(directory, filename):
+    return Path(directory, filename).is_file()

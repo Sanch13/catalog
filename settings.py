@@ -18,6 +18,9 @@ class Settings(BaseSettings):
     REDIS_PORT: int
     REDIS_DB: int
 
+    CELERY_BROKER_URL: str
+    CELERY_RESULT_BACKEND: str
+
     SMTP_SERVER: str
     FROM: str
     PASSWORD_EMAIL: str
@@ -25,9 +28,6 @@ class Settings(BaseSettings):
     BODY: str
     PORT_TLS: int
     TO: str
-
-
-
 
     # CORS_ORIGIN_ALLOW_ALL: bool
     # CORS_ALLOW_CREDENTIALS: bool
