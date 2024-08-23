@@ -84,6 +84,9 @@
 
     <script>
     document.addEventListener('DOMContentLoaded', function () {
+        const data_jars = JSON.parse('{{ serialized_jars|escapejs }}');
+        console.log(data_jars);
+
         const form = document.getElementById('filter-jars-form');
         const filterItems = document.querySelectorAll('#filter-jars-form div.btn-miran-filter');
         const allButton = document.getElementById('All');

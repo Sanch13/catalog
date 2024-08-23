@@ -1,16 +1,18 @@
+import json
+import os
+from pathlib import Path
+
 from django.db.models import OuterRef, Subquery, Value
 from django.db.models.functions import Coalesce
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.http import JsonResponse
+from django.conf import settings as config_settings
 
 from catalog.forms import CapFilterForm, JarFilterForm, BottlesFilterForm, SendDataToEmail
 from catalog.models import Jar, Series, Cap, Category, Bottle, CapFile, JarFile, BottleFile
 from catalog.tasks import send_email
-from catalog.utils import get_jar_data_from_db, create_pdf_from_data
-
-
-# from ..utils import get_objects_from_paginator
+from catalog.utils import get_jar_data_from_db, create_pdf_from_data, file_exists_in_directory
 
 
 def home(request):
@@ -61,6 +63,7 @@ def get_category(request, category_slug):
     elif category.name == 'Баночки':
         form = JarFilterForm(request.GET or None)
         jars = Jar.objects.filter(category=category)
+        serialized_jars = []
 
         if form.is_valid():
             volume = form.cleaned_data.get('volume')
@@ -74,9 +77,18 @@ def get_category(request, category_slug):
             if status_decoration:
                 jars = jars.filter(status_decoration=status_decoration)
 
+        for jar in jars:
+            jar_data = {
+                'id': jar.id,
+                'name': jar.name,
+                'jar_files': [{'file': file.file.url} for file in jar.jar_files.all()]
+            }
+            serialized_jars.append(jar_data)
+
         context = {
             'jars': jars,
             'form': form,
+            'serialized_jars': json.dumps(serialized_jars),
         }
         return render(request=request,
                       template_name='catalog/jars.html',
@@ -203,16 +215,29 @@ def send_data_to_email(request):
         form = SendDataToEmail(request.POST)
         if form.is_valid():
             cd = form.cleaned_data
-            print("Form is valid")
-            print(cd)
             name = cd["name"]
             email = cd["email"]
 
             ids = request.POST.get('ids')
             params = get_jar_data_from_db(id_item=ids)
 
-            send_email.delay(params, email, name)
+            send_email.delay(params, email, text_body=name)
 
             return JsonResponse({'success': True})
         else:
             return JsonResponse({'success': False, 'errors': form.errors})
+
+
+def get_size_pdf_file(request):
+    if request.method == 'POST':
+        object_id = request.POST.get('ids')
+        params = get_jar_data_from_db(id_item=object_id)
+        if file_exists_in_directory(directory=config_settings.PDF_DIR, filename=params['name']):
+            pdf_file_path = Path(config_settings.PDF_DIR, params['name'])
+        else:
+            pdf_file_path = create_pdf_from_data(params=params)
+
+        file_size = os.path.getsize(pdf_file_path) / 1000
+        file_size = f"{file_size} Кбайт"
+
+        return JsonResponse({'success': True, 'file_size': file_size})

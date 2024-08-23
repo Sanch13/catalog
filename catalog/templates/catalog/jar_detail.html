@@ -95,6 +95,9 @@
                                                       method="post">
                                                     {% csrf_token %}
                                                     {{ form.as_p }}
+                                                    <div style="margin-bottom: 16px;">
+                                                        <span id="fileSizeDisplay" ></span>
+                                                    </div>
                                                     <button type="submit">Отправить</button>
                                                 </form>
 
@@ -149,6 +152,30 @@
     <script>
         document.getElementById('openPopup').addEventListener('click', function () {
             document.getElementById('popupForm').style.display = 'flex';
+            const data = new FormData();
+            data.append("ids", {{ jar.id }});
+
+            fetch("{% url 'catalog:get_size_pdf_file' %}", {
+                method: 'POST',
+                body: data,
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Если ответ успешный, вставляем размер файла в блок div
+                        document.getElementById('fileSizeDisplay').innerText = `Размер файла: ${data.file_size} `;
+                    } else {
+                        // Если возникла ошибка, отображаем сообщение об ошибке
+                        document.getElementById('fileSizeDisplay').innerText = "Ошибка при получении размера файла.";
+                    }
+                })
+                .catch(error => {
+                    console.error('Ошибка:', error);
+                    document.getElementById('fileSizeDisplay').innerText = "Произошла ошибка при выполнении запроса.";
+                });
         });
 
         document.getElementById('closePopup').addEventListener('click', function () {
@@ -175,6 +202,7 @@
             event.preventDefault();
             let formData = new FormData(this);
             formData.append("ids", {{ jar.id }});
+
             fetch("{% url 'catalog:send_data_to_email' %}", {
                 method: 'POST',
                 body: formData,

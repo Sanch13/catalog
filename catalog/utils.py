@@ -1,4 +1,3 @@
-import os
 from io import BytesIO
 from pathlib import Path
 
@@ -9,8 +8,6 @@ from fpdf import FPDF, XPos, YPos
 from django.core.paginator import Paginator
 from django.core.files.base import ContentFile
 from django.conf import settings as config_settings
-
-from settings import settings
 
 
 def get_objects_from_paginator(request, per_page=1, model_objects_list=None):
@@ -80,11 +77,12 @@ def convert_webp_to_jpeg_bytes(file):
 
 def create_pdf_from_data(params):
     image_bytes_list = params["files"]
-    font_path = str(Path(__file__).resolve().parent) + "/" + "DejaVuSans.ttf"
-    print("font_path", font_path)
+    # font_path = str(Path(__file__).resolve().parent) + "/" + "DejaVuSans.ttf"
+    font_path = Path(config_settings.FONT_DIR, "dejavu-sans", "DejaVuSans.ttf")
+
     pdf = FPDF()
     pdf.add_page()
-    pdf.add_font('DejaVu', '', font_path)
+    pdf.add_font('DejaVu', '', str(font_path))
     page_width = pdf.w  # Ширина страницы (210 мм для A4)
     page_height = pdf.h  # Высота страницы (297 мм для A4)
     margin = 3
@@ -93,7 +91,7 @@ def create_pdf_from_data(params):
     available_width = (page_width - 2 * margin) / images_per_row  # 68 mm
 
     image_width = available_width
-    image_height = image_width  # Если хотите, чтобы изображения были квадратными
+    image_height = image_width
 
     x_start = margin
     y_start = margin
@@ -135,7 +133,7 @@ def create_pdf_from_data(params):
     pdf.set_x(x_position)          # Установка горизонтальной позиции для центрирования
     pdf.cell(text_width, 10, params["name"], new_x=XPos.LMARGIN, new_y=YPos.NEXT)
     pdf.set_y(height_y_photo + 20)
-    pdf.set_font("DejaVu", size=16)
+    pdf.set_font("DejaVu", size=14)
 
     table_width = page_width - 2 * margin   # Ширина таблицы с учетом отступов
     col1_width = table_width * 0.3          # 30% ширины страницы для первой колонки

@@ -95,15 +95,13 @@ USE_TZ = True
 
 # STATIC AND MEDIA
 STATIC_URL = 'static/'
-STATICFILES_DIRS = [
-    BASE_DIR / 'static',
-]
-# STATIC_ROOT = '/home/sanch/PycharmProjects/catalog/static'
+STATICFILES_DIRS = [Path(BASE_DIR, "static")]
 
 MEDIA_URL = "media/"
-MEDIA_ROOT = BASE_DIR / "media/"
+MEDIA_ROOT = Path(BASE_DIR, "media")
 
-PDF_DIR = str(MEDIA_ROOT) + "/" + "pdf" + "/"
+PDF_DIR = Path(MEDIA_ROOT, "pdf")
+FONT_DIR = Path(BASE_DIR, 'static', 'fonts')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
