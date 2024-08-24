@@ -1,5 +1,4 @@
 import json
-import os
 from pathlib import Path
 
 from django.db.models import OuterRef, Subquery, Value
@@ -12,7 +11,12 @@ from django.conf import settings as config_settings
 from catalog.forms import CapFilterForm, JarFilterForm, BottlesFilterForm, SendDataToEmail
 from catalog.models import Jar, Series, Cap, Category, Bottle, CapFile, JarFile, BottleFile
 from catalog.tasks import send_email
-from catalog.utils import get_jar_data_from_db, create_pdf_from_data, file_exists_in_directory
+from catalog.utils import (
+    get_jar_data_from_db,
+    create_pdf_from_data,
+    file_exists_in_directory,
+    get_formatted_file_size
+)
 
 
 def home(request):
@@ -61,14 +65,14 @@ def get_category(request, category_slug):
                       context=context)
 
     elif category.name == 'Баночки':
-        form = JarFilterForm(request.GET or None)
+        form_filter = JarFilterForm(request.GET or None)
+        form_data_to_email = SendDataToEmail()
         jars = Jar.objects.filter(category=category)
-        serialized_jars = []
 
-        if form.is_valid():
-            volume = form.cleaned_data.get('volume')
-            surface = form.cleaned_data.get('surface')
-            status_decoration = form.cleaned_data.get('status_decoration')
+        if form_filter.is_valid():
+            volume = form_filter.cleaned_data.get('volume')
+            surface = form_filter.cleaned_data.get('surface')
+            status_decoration = form_filter.cleaned_data.get('status_decoration')
             # print(f'volume:{volume}  | surface:{surface}  | decoration:{status_decoration}')
             if volume:
                 jars = jars.filter(volume__range=volume)
@@ -77,18 +81,10 @@ def get_category(request, category_slug):
             if status_decoration:
                 jars = jars.filter(status_decoration=status_decoration)
 
-        for jar in jars:
-            jar_data = {
-                'id': jar.id,
-                'name': jar.name,
-                'jar_files': [{'file': file.file.url} for file in jar.jar_files.all()]
-            }
-            serialized_jars.append(jar_data)
-
         context = {
             'jars': jars,
-            'form': form,
-            'serialized_jars': json.dumps(serialized_jars),
+            'form_filter': form_filter,
+            'form_data_to_email': form_data_to_email,
         }
         return render(request=request,
                       template_name='catalog/jars.html',
@@ -232,12 +228,10 @@ def get_size_pdf_file(request):
     if request.method == 'POST':
         object_id = request.POST.get('ids')
         params = get_jar_data_from_db(id_item=object_id)
-        if file_exists_in_directory(directory=config_settings.PDF_DIR, filename=params['name']):
-            pdf_file_path = Path(config_settings.PDF_DIR, params['name'])
-        else:
-            pdf_file_path = create_pdf_from_data(params=params)
+        if not file_exists_in_directory(directory=config_settings.PDF_DIR, filename=params['name']):
+            create_pdf_from_data(params=params)
 
-        file_size = os.path.getsize(pdf_file_path) / 1000
-        file_size = f"{file_size} Кбайт"
+        pdf_file_path = Path(config_settings.PDF_DIR, f"{params['name']}.pdf")
+        file_size = get_formatted_file_size(pdf_file_path)
 
         return JsonResponse({'success': True, 'file_size': file_size})

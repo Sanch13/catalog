@@ -90,17 +90,22 @@
                                             <div class="popup-content">
                                                 <span id="closePopup">&times;</span>
                                                 <h2>Заполните форму и нажмите отправить</h2>
-                                                <form id="contactForm"
+                                                <form class="form-send-data-to-email"
+                                                      id="contactForm"
                                                       action="{% url 'catalog:send_data_to_email' %}"
                                                       method="post">
                                                     {% csrf_token %}
-                                                    {{ form.as_p }}
-                                                    <div style="margin-bottom: 16px;">
-                                                        <span id="fileSizeDisplay" ></span>
+                                                    {% for field in form %}
+                                                        <div class="form-group">
+                                                            {{ field.label_tag }}
+                                                            {{ field }}
+                                                        </div>
+                                                    {% endfor %}
+                                                    <div class="fileSizeDisplay">
+                                                        <span id="fileSizeDisplay"></span>
                                                     </div>
                                                     <button type="submit">Отправить</button>
                                                 </form>
-
                                             </div>
                                         </div>
 
@@ -150,6 +155,7 @@
         });
     </script>
     <script>
+        {# Запрос на размер отправляемого файла #}
         document.getElementById('openPopup').addEventListener('click', function () {
             document.getElementById('popupForm').style.display = 'flex';
             const data = new FormData();
@@ -178,6 +184,7 @@
                 });
         });
 
+        {# Закрытие попапа по кнопке Х #}
         document.getElementById('closePopup').addEventListener('click', function () {
             document.getElementById('popupForm').style.display = 'none';
         });
@@ -190,6 +197,7 @@
             }
         });
 
+        {# Закрытие успешного попапа по кнопке Х или мимо попапа #}
         document.addEventListener('click', function (event) {
             let popup = document.querySelector('.success-popup-content');
             let formPopup = document.getElementById('successPopup');
@@ -198,6 +206,7 @@
             }
         });
 
+        {# Отправка форма по нажатию на кнопку Отправить #}
         document.getElementById('contactForm').addEventListener('submit', function (event) {
             event.preventDefault();
             let formData = new FormData(this);

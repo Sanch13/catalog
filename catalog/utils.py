@@ -154,14 +154,33 @@ def create_pdf_from_data(params):
         pdf.cell(col2_width, row_height, str(value), border=1, align='L')  # Вторая колонка
         pdf.ln(row_height)  # Переход на следующую строку
 
-    pdf.ln(10)  # Добавляем небольшой отступ перед описанием
+    pdf.ln(5)  # Добавляем небольшой отступ перед описанием
+    available_width_description = page_width - margin * 2
     description = params['description']
-    pdf.multi_cell(0, 10, description)  # Добавление описания
+    pdf.set_x(margin)
+    pdf.multi_cell(w=available_width_description, h=10, max_line_height=8, text=description)  # Добавление описания
 
-    pdf.output(f"{config_settings.PDF_DIR}/{params['name']}.pdf")
     filename = f"{params['name']}.pdf"
-    return Path(config_settings.PDF_DIR, filename)
+    path_pdf_file = Path(config_settings.PDF_DIR, filename)
+    pdf.output(str(path_pdf_file))
+    return path_pdf_file
 
 
 def file_exists_in_directory(directory, filename):
     return Path(directory, filename).is_file()
+
+
+def get_formatted_file_size(file_path):
+    size_bytes = file_path.stat().st_size
+
+    if size_bytes < 1024:
+        return f"{size_bytes} байт"
+    elif size_bytes < 1024**2:  # Менее 1 МБ
+        size_kb = size_bytes / 1024
+        return f"{size_kb:.2f} КБайт"
+    elif size_bytes < 1024**3:  # Менее 1 ГБ
+        size_mb = size_bytes / (1024**2)
+        return f"{size_mb:.2f} МБайт"
+    else:
+        size_gb = size_bytes / (1024**3)
+        return f"{size_gb:.2f} ГБайт"

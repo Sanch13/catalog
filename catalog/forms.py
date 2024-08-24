@@ -85,3 +85,8 @@ class BottlesFilterForm(forms.Form):
 class SendDataToEmail(forms.Form):
     name = forms.CharField(max_length=100, label='Ваше ФИО')
     email = forms.EmailField(label='Ваш Email')
+
+    def __init__(self, *args, **kwargs):
+        super(SendDataToEmail, self).__init__(*args, **kwargs)
+        for field_name, filed in self.fields.items():
+            filed.widget.attrs['class'] = 'my-form-control'

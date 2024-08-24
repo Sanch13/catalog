@@ -7,6 +7,7 @@
 {% block css %}
     <link href="{% static 'css/pagination_styles.css' %}" rel="stylesheet"/>
     <link href="{% static 'css/my_settings_carousel.css' %}" rel="stylesheet"/>
+    <link href="{% static 'css/popup_styles.css' %}" rel="stylesheet"/>
 {% endblock css %}
 
 
@@ -32,7 +33,7 @@
                 </label>
             </div>
             <form method="get" id="filter-jars-form">
-                {% for field in form %}
+                {% for field in form_filter %}
                     {% for item in field %}
                         <div class="btn-miran-filter">
                             <div class="check">
@@ -52,11 +53,11 @@
     </section>
 
     <div class="container">
-        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4">
+        <div class="row my-row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4">
             {% for jar in jars %}
                 <div class="col">
                     <a href="{{ jar.get_absolute_url }}">
-                        <div class="card">
+                        <div class="card" id="{{ jar.id }}">
                             {% if jar.jar_files.all %}
                                 {% for file in jar.jar_files.all %}
                                     {% if forloop.first %}
@@ -82,89 +83,157 @@
         </div>
     </div>
 
+    <!-- Фиксированная кнопка -->
+    <button class="fixed-button" id="openPopup">Отправить на Email</button>
+
+    <!-- Попап для отправки выбранных продуктов -->
+    <div id="popupForm" class="popup" style="display: none;">
+        <div class="popup-content">
+            <span id="closePopup">&times;</span>
+            <h2>Заполните форму и нажмите отправить</h2>
+            <form class="form-send-data-to-email" id="contactForm"
+                  action="{% url 'catalog:send_data_to_email' %}"
+                  method="post">
+                {% csrf_token %}
+                {% for field in form_data_to_email %}
+                    <div class="form-group">
+                        {{ field.label_tag }}
+                        {{ field }}
+                    </div>
+                {% endfor %}
+                <div class="fileSizeDisplay">
+                    <span id="fileSizeDisplay"></span>
+                </div>
+                <button type="submit">Отправить</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="successPopup" class="popup" style="display: none;">
+        <div class="success-popup-content d-flex justify-content-center align-items-center">
+            <div id="successMessage">
+                Спасибо!<br>Ваше сообщение отправлено.
+            </div>
+        </div>
+    </div>
+
     <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const data_jars = JSON.parse('{{ serialized_jars|escapejs }}');
-        console.log(data_jars);
+        document.getElementById('openPopup').addEventListener('click', function () {
+            document.getElementById('popupForm').style.display = 'flex';
+            const cards = document.querySelectorAll('.card');
+            const ids = [];
 
-        const form = document.getElementById('filter-jars-form');
-        const filterItems = document.querySelectorAll('#filter-jars-form div.btn-miran-filter');
-        const allButton = document.getElementById('All');
-        const allCheckbox = allButton.querySelector('input[type="checkbox"]');
-
-        function updateAllButtonState() {
-            const hasActiveItem = Array.from(filterItems).some(item => item.classList.contains('active'));
-
-            if (hasActiveItem) {
-                allButton.classList.remove('active');
-                allCheckbox.checked = false;
-            } else {
-                allButton.classList.add('active');
-                allCheckbox.checked = true;
-            }
-        }
-
-        // Начальная проверка состояния кнопок
-        filterItems.forEach(item => {
-            const checkbox = item.querySelector('input[type="checkbox"]');
-
-            if (checkbox.checked) {
-                item.classList.add('active');
-            }
-        });
-
-        updateAllButtonState();
-
-        filterItems.forEach(item => {
-            const checkbox = item.querySelector('input[type="checkbox"]');
-
-            item.addEventListener('click', function () {
-                // Переключение состояния чекбокса
-                checkbox.checked = !checkbox.checked;
-
-                // Переключение класса active
-                if (checkbox.checked) {
-                    item.classList.add('active');
-                } else {
-                    item.classList.remove('active');
-                }
-
-                updateAllButtonState();
-
-                // Запуск формы для отправки данных
-                form.dispatchEvent(new Event('change'));
+            cards.forEach(function (card) {
+                ids.push(card.id);
             });
+
+            console.log(ids);
+
+
         });
 
-        form.addEventListener('change', function (e) {
-            const hasActiveItem = Array.from(filterItems).some(item => item.classList.contains('active'));
+        {# Закрытие попапа по кнопке Х #}
+        document.getElementById('closePopup').addEventListener('click', function () {
+            document.getElementById('popupForm').style.display = 'none';
+        });
 
-            if (!hasActiveItem) {
-                // Если нет активных кнопок, загружаем текущую страницу
-                window.location.href = window.location.pathname;
-            } else {
-                // Считываем данные формы
-                const formData = new FormData(form);
-                const params = new URLSearchParams(formData);
-
-                // Генерируем URL с параметрами
-                const queryString = params.toString();
-                const actionUrl = window.location.pathname;
-                window.location.href = `${actionUrl}?${queryString}`;
+        document.addEventListener('click', function (event) {
+            let popup = document.querySelector('.popup-content');
+            let formPopup = document.getElementById('popupForm');
+            if (formPopup.style.display === 'flex' && !popup.contains(event.target) && event.target.id !== 'openPopup') {
+                formPopup.style.display = 'none';
             }
         });
 
-        allButton.addEventListener('click', function () {
+        document.addEventListener('click', function (event) {
+            let popup = document.querySelector('.success-popup-content');
+            let formPopup = document.getElementById('successPopup');
+            if (formPopup.style.display === 'flex' && !popup.contains(event.target) && event.target.id !== 'openPopup') {
+                formPopup.style.display = 'none';
+            }
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('filter-jars-form');
+            const filterItems = document.querySelectorAll('#filter-jars-form div.btn-miran-filter');
+            const allButton = document.getElementById('All');
+            const allCheckbox = allButton.querySelector('input[type="checkbox"]');
+
+            function updateAllButtonState() {
+                const hasActiveItem = Array.from(filterItems).some(item => item.classList.contains('active'));
+
+                if (hasActiveItem) {
+                    allButton.classList.remove('active');
+                    allCheckbox.checked = false;
+                } else {
+                    allButton.classList.add('active');
+                    allCheckbox.checked = true;
+                }
+            }
+
+            // Начальная проверка состояния кнопок
             filterItems.forEach(item => {
                 const checkbox = item.querySelector('input[type="checkbox"]');
-                item.classList.remove('active');
-                checkbox.checked = false;
+
+                if (checkbox.checked) {
+                    item.classList.add('active');
+                }
             });
 
             updateAllButtonState();
 
-            form.dispatchEvent(new Event('change'));
+            filterItems.forEach(item => {
+                const checkbox = item.querySelector('input[type="checkbox"]');
+
+                item.addEventListener('click', function () {
+                    // Переключение состояния чекбокса
+                    checkbox.checked = !checkbox.checked;
+
+                    // Переключение класса active
+                    if (checkbox.checked) {
+                        item.classList.add('active');
+                    } else {
+                        item.classList.remove('active');
+                    }
+
+                    updateAllButtonState();
+
+                    // Запуск формы для отправки данных
+                    form.dispatchEvent(new Event('change'));
+                });
+            });
+
+            form.addEventListener('change', function (e) {
+                const hasActiveItem = Array.from(filterItems).some(item => item.classList.contains('active'));
+
+                if (!hasActiveItem) {
+                    // Если нет активных кнопок, загружаем текущую страницу
+                    window.location.href = window.location.pathname;
+                } else {
+                    // Считываем данные формы
+                    const formData = new FormData(form);
+                    const params = new URLSearchParams(formData);
+
+                    // Генерируем URL с параметрами
+                    const queryString = params.toString();
+                    const actionUrl = window.location.pathname;
+                    window.location.href = `${actionUrl}?${queryString}`;
+                }
+            });
+
+            allButton.addEventListener('click', function () {
+                filterItems.forEach(item => {
+                    const checkbox = item.querySelector('input[type="checkbox"]');
+                    item.classList.remove('active');
+                    checkbox.checked = false;
+                });
+
+                updateAllButtonState();
+
+                form.dispatchEvent(new Event('change'));
+            });
         });
-    });
     </script>
 {% endblock %}

@@ -133,6 +133,8 @@
     {% endblock %}
 </main>
 
+<button id="scrollToTopBtn" class="scroll-to-top">&#8679;</button>
+
 <div id="inactivity-popup">
     <div style="font-size: 22px;"><b>Вы хотите остаться на сайте?</b></div>
     <div class="buttons-container">
@@ -143,6 +145,22 @@
         секунд</div>
 </div>
 
+<script>
+    // Показать кнопку при прокрутке вниз
+    window.onscroll = function() {
+        const scrollBtn = document.getElementById("scrollToTopBtn");
+        if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
+            scrollBtn.style.display = "block";
+        } else {
+            scrollBtn.style.display = "none";
+        }
+    };
+
+    // Плавная прокрутка страницы вверх при нажатии на кнопку
+    document.getElementById("scrollToTopBtn").onclick = function() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+</script>
 <script>
     document.getElementById('backButton').addEventListener('click', function () {
         history.back();
