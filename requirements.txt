@@ -45,6 +45,7 @@ pydantic==2.6.3
 pydantic-settings==2.2.1
 pydantic_core==2.16.3
 pyflakes==3.2.0
+pypdf==4.3.1
 python-dateutil==2.9.0.post0
 python-dotenv==1.0.1
 PyYAML==6.0.1

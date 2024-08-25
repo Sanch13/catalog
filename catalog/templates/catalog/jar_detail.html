@@ -14,7 +14,7 @@
 
 {% block content %}
     <div class="container-xxl">
-        <div class="product-card">
+        <div class="product-card" id="{{ jar.id }}">
             <div class="row my-5">
                 <div class="col-lg-6 my-2 px-2">
                     <div class="carousel-container ">
@@ -155,11 +155,23 @@
         });
     </script>
     <script>
+        {# Возвращает список ids #}
+        function get_ids() {
+            const cards = document.querySelectorAll('.product-card');
+            const ids = [];
+
+            cards.forEach(function (card) {
+                ids.push(card.id);
+            });
+            return ids
+        }
+
         {# Запрос на размер отправляемого файла #}
         document.getElementById('openPopup').addEventListener('click', function () {
             document.getElementById('popupForm').style.display = 'flex';
+
             const data = new FormData();
-            data.append("ids", {{ jar.id }});
+            data.append("ids", JSON.stringify(get_ids()));
 
             fetch("{% url 'catalog:get_size_pdf_file' %}", {
                 method: 'POST',
@@ -189,6 +201,7 @@
             document.getElementById('popupForm').style.display = 'none';
         });
 
+        {# Закрытие попапа по клику вне окна #}
         document.addEventListener('click', function (event) {
             let popup = document.querySelector('.popup-content');
             let formPopup = document.getElementById('popupForm');
@@ -197,24 +210,25 @@
             }
         });
 
-        {# Закрытие успешного попапа по кнопке Х или мимо попапа #}
+        {# Закрытие успешного попапа по клику вне окна #}
         document.addEventListener('click', function (event) {
             let popup = document.querySelector('.success-popup-content');
             let formPopup = document.getElementById('successPopup');
             if (formPopup.style.display === 'flex' && !popup.contains(event.target) && event.target.id !== 'openPopup') {
                 formPopup.style.display = 'none';
+                console.log("CLose")
             }
         });
 
         {# Отправка форма по нажатию на кнопку Отправить #}
         document.getElementById('contactForm').addEventListener('submit', function (event) {
             event.preventDefault();
-            let formData = new FormData(this);
-            formData.append("ids", {{ jar.id }});
+            let data = new FormData(this);
+            data.append("ids", JSON.stringify(get_ids()));
 
             fetch("{% url 'catalog:send_data_to_email' %}", {
                 method: 'POST',
-                body: formData,
+                body: data,
                 headers: {
                     'X-CSRFToken': '{{ csrf_token }}'
                 }

@@ -3,19 +3,20 @@ from pathlib import Path
 
 from django.db.models import OuterRef, Subquery, Value
 from django.db.models.functions import Coalesce
-from django.shortcuts import render, get_object_or_404, redirect
-from django.urls import reverse
+from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
 from django.conf import settings as config_settings
 
 from catalog.forms import CapFilterForm, JarFilterForm, BottlesFilterForm, SendDataToEmail
 from catalog.models import Jar, Series, Cap, Category, Bottle, CapFile, JarFile, BottleFile
-from catalog.tasks import send_email
+from catalog.tasks import send_email, send_email_list_products
 from catalog.utils import (
     get_jar_data_from_db,
     create_pdf_from_data,
     file_exists_in_directory,
-    get_formatted_file_size
+    get_formatted_file_size,
+    convert_to_numbers,
+    get_list_params_jars_from_db
 )
 
 
@@ -214,10 +215,18 @@ def send_data_to_email(request):
             name = cd["name"]
             email = cd["email"]
 
-            ids = request.POST.get('ids')
-            params = get_jar_data_from_db(id_item=ids)
-
-            send_email.delay(params, email, text_body=name)
+            ids = convert_to_numbers(json.loads(request.POST.get('ids', [])))
+            if len(ids) == 1:
+                params = get_jar_data_from_db(id_item=ids[0])
+                filename = f"{params['name']}.pdf"
+                pdf_file_path = str(Path(config_settings.PDF_DIR) / filename)
+                send_email.delay(params, pdf_file_path, filename, email, text_body=name)
+            else:
+                list_params = get_list_params_jars_from_db(ids)
+                list_of_path_pdf = [params['path_to_pdf'] for params in list_params]
+                send_email_list_products.delay(list_of_path_pdf,
+                                               email,
+                                               text_body=name)
 
             return JsonResponse({'success': True})
         else:
@@ -226,12 +235,34 @@ def send_data_to_email(request):
 
 def get_size_pdf_file(request):
     if request.method == 'POST':
-        object_id = request.POST.get('ids')
-        params = get_jar_data_from_db(id_item=object_id)
-        if not file_exists_in_directory(directory=config_settings.PDF_DIR, filename=params['name']):
+        ids = convert_to_numbers(json.loads(request.POST.get('ids', [])))
+        params = get_jar_data_from_db(id_item=ids[0])
+        filename = f"{params['name']}.pdf"
+        pdf_file_path = Path(config_settings.PDF_DIR) / filename
+        if not file_exists_in_directory(pdf_file_path):
             create_pdf_from_data(params=params)
 
-        pdf_file_path = Path(config_settings.PDF_DIR, f"{params['name']}.pdf")
-        file_size = get_formatted_file_size(pdf_file_path)
+        size_bytes = pdf_file_path.stat().st_size
+        file_size = get_formatted_file_size(size_bytes)
 
+        return JsonResponse({'success': True, 'file_size': file_size})
+
+
+def get_size_list_pdf_files(request):
+    if request.method == 'POST':
+        ids = convert_to_numbers(json.loads(request.POST.get('ids', [])))
+        list_params = get_list_params_jars_from_db(ids)
+
+        all_size = 0
+        for params in list_params:
+            filename = f"{params['name']}.pdf"
+            pdf_file_path = Path(config_settings.PDF_DIR) / filename
+
+            if not file_exists_in_directory(pdf_file_path):
+                pdf_file_path = create_pdf_from_data(params=params)
+
+            size = pdf_file_path.stat().st_size
+            all_size += size
+
+        file_size = get_formatted_file_size(size_bytes=all_size)
         return JsonResponse({'success': True, 'file_size': file_size})

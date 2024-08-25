@@ -8,6 +8,7 @@ from fpdf import FPDF, XPos, YPos
 from django.core.paginator import Paginator
 from django.core.files.base import ContentFile
 from django.conf import settings as config_settings
+from pypdf import PdfWriter, PdfReader
 
 
 def get_objects_from_paginator(request, per_page=1, model_objects_list=None):
@@ -45,7 +46,7 @@ def convert_img_to_webp(image):
     return image_content
 
 
-def get_jar_data_from_db(id_item):
+def get_jar_data_from_db(id_item: int) -> dict:
     from catalog.models import Jar
 
     jar = Jar.objects.prefetch_related('jar_files').filter(id=id_item).first()
@@ -63,6 +64,30 @@ def get_jar_data_from_db(id_item):
         }
 
         return params
+
+
+def get_list_params_jars_from_db(ids: list[int]) -> list:
+    from catalog.models import Jar
+
+    pdf_dir = config_settings.PDF_DIR
+    params = []
+    jars = Jar.objects.prefetch_related('jar_files').filter(id__in=ids)
+
+    for jar in jars:
+        filename = f"{jar.name}.pdf"
+        item = {
+            'name': jar.name,
+            'volume': jar.volume,
+            'surface': jar.surface,
+            'status_decoration': jar.status_decoration,
+            'description': BeautifulSoup(jar.description, "html.parser").get_text(),
+            'files': [open(file, 'rb').read() for file in
+                      [file.file.path for file in jar.jar_files.all()]],
+            'path_to_pdf': str(pdf_dir / filename)
+        }
+        params.append(item)
+
+    return params
 
 
 def convert_webp_to_jpeg_bytes(file):
@@ -166,13 +191,11 @@ def create_pdf_from_data(params):
     return path_pdf_file
 
 
-def file_exists_in_directory(directory, filename):
-    return Path(directory, filename).is_file()
+def file_exists_in_directory(file_path):
+    return Path(file_path).is_file()
 
 
-def get_formatted_file_size(file_path):
-    size_bytes = file_path.stat().st_size
-
+def get_formatted_file_size(size_bytes: int) -> str:
     if size_bytes < 1024:
         return f"{size_bytes} байт"
     elif size_bytes < 1024**2:  # Менее 1 МБ
@@ -184,3 +207,28 @@ def get_formatted_file_size(file_path):
     else:
         size_gb = size_bytes / (1024**3)
         return f"{size_gb:.2f} ГБайт"
+
+
+def convert_to_numbers(strings: list[str]) -> list:
+    numbers = []
+    for s in strings:
+        try:
+            num = int(s)
+            numbers.append(num)
+        except ValueError:
+            continue
+    return numbers
+
+
+def merge_pdfs_to_stream(pdf_paths: list[str]):
+    writer = PdfWriter()
+    output_stream = BytesIO()
+
+    for pdf in pdf_paths:
+        reader = PdfReader(pdf)
+        for page in reader.pages:
+            writer.add_page(page)
+
+    writer.write(output_stream)
+    output_stream.seek(0)
+    return output_stream
