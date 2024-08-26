@@ -6,6 +6,8 @@ app_name = "catalog"
 
 
 urlpatterns = [
+    path('about/', catalog.about_miran, name="about_miran"),
+    path('contact/', catalog.contact_me, name="contact_me"),
     path('', catalog.get_catalog, name="catalog"),
     path('<slug:category_slug>/', catalog.get_category, name="category"),
     path('<slug:category_slug>/<slug:series_slug>/<slug:product_slug>/', catalog.get_product_detail,
@@ -17,6 +19,5 @@ urlpatterns = [
     path('send_data_to_email', catalog.send_data_to_email, name="send_data_to_email"),
     path('get_size_pdf_file', catalog.get_size_pdf_file, name="get_size_pdf_file"),
     path('get_size_list_files', catalog.get_size_list_pdf_files, name="get_size_list_files"),
-
 
 ]

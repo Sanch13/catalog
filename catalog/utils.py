@@ -3,6 +3,7 @@ from pathlib import Path
 
 from PIL import Image
 from bs4 import BeautifulSoup
+from django.db.models import Q
 from fpdf import FPDF, XPos, YPos
 
 from django.core.paginator import Paginator
@@ -18,7 +19,7 @@ def get_objects_from_paginator(request, per_page=1, model_objects_list=None):
         return paginator.page(page_number)
 
 
-def get_min_max_volumes(data: list) -> tuple[int, int]:
+def get_validate_list_values(data: list) -> list[int]:
     filtered_data = []
     for el in data:
         if '-' in el:
@@ -30,7 +31,16 @@ def get_min_max_volumes(data: list) -> tuple[int, int]:
 
     sorted_volumes = sorted(filtered_data)
     if sorted_volumes:
-        return sorted_volumes[0], sorted_volumes[-1]
+        return sorted_volumes
+
+
+def get_query_for_request_to_db(list_volumes: list[int]):
+    query = Q()
+    # Проходим по  парам
+    for start, end in zip(list_volumes[::2], list_volumes[1::2]):
+        query |= Q(volume__range=(start, end))
+
+    return query
 
 
 def convert_img_to_webp(image):

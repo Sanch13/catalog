@@ -4,7 +4,7 @@ from catalog.models import Bottle
 from catalog.models.cap import Cap
 from catalog.models.jar import Jar
 
-from catalog.utils import get_min_max_volumes
+from catalog.utils import get_validate_list_values
 
 
 class CapFilterForm(forms.Form):
@@ -44,7 +44,7 @@ class JarFilterForm(forms.Form):
 
     def clean_volume(self):
         data = self.cleaned_data['volume']
-        return get_min_max_volumes(data=data)
+        return get_validate_list_values(data=data)
 
     def clean_status_decoration(self):
         data = self.cleaned_data['status_decoration']
@@ -75,7 +75,7 @@ class BottlesFilterForm(forms.Form):
 
     def clean_volume(self):
         data = self.cleaned_data['volume']
-        return get_min_max_volumes(data=data)
+        return get_validate_list_values(data=data)
 
     def clean_status_decoration(self):
         data = self.cleaned_data['status_decoration']

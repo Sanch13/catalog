@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 
-from django.db.models import OuterRef, Subquery, Value
+from django.db.models import OuterRef, Subquery, Value, Q
 from django.db.models.functions import Coalesce
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
@@ -16,7 +16,8 @@ from catalog.utils import (
     file_exists_in_directory,
     get_formatted_file_size,
     convert_to_numbers,
-    get_list_params_jars_from_db
+    get_list_params_jars_from_db,
+    get_query_for_request_to_db
 )
 
 
@@ -43,15 +44,19 @@ def get_category(request, category_slug):
 
         if form.is_valid():
             throat_standard = form.cleaned_data.get('throat_standard')
-            volume = form.cleaned_data.get("volume")
+            volumes = form.cleaned_data.get("volume")
             status_decoration = form.cleaned_data.get("status_decoration")
             surface = form.cleaned_data.get("surface")
-            # print(f'volume: {volume} \nsurface: {surface} \ndecoration: \
-            # {status_decoration}\nthroat_standard: {throat_standard}')
+
+            if volumes:
+                query = Q()
+
+                for start, end in zip(volumes[::2], volumes[1::2]):
+                    query |= Q(bottle__volume__range=(start, end))
+
+                series = series.filter(query).distinct()
             if throat_standard:
                 series = series.filter(bottle__throat_standard__in=throat_standard).distinct()
-            if volume:
-                series = series.filter(bottle__volume__range=volume).distinct()
             if status_decoration:
                 series = series.filter(bottle__status_decoration=status_decoration).distinct()
             if surface:
@@ -71,12 +76,13 @@ def get_category(request, category_slug):
         jars = Jar.objects.filter(category=category)
 
         if form_filter.is_valid():
-            volume = form_filter.cleaned_data.get('volume')
+            volumes = form_filter.cleaned_data.get('volume')
             surface = form_filter.cleaned_data.get('surface')
             status_decoration = form_filter.cleaned_data.get('status_decoration')
-            # print(f'volume:{volume}  | surface:{surface}  | decoration:{status_decoration}')
-            if volume:
-                jars = jars.filter(volume__range=volume)
+
+            if volumes:
+                query = get_query_for_request_to_db(list_volumes=volumes)
+                jars = jars.filter(query)
             if surface:
                 jars = jars.filter(surface__in=surface)
             if status_decoration:
@@ -266,3 +272,13 @@ def get_size_list_pdf_files(request):
 
         file_size = get_formatted_file_size(size_bytes=all_size)
         return JsonResponse({'success': True, 'file_size': file_size})
+
+
+def about_miran(request):
+    return render(request=request,
+                  template_name="catalog/about_miran.html")
+
+
+def contact_me(request):
+    return render(request=request,
+                  template_name="catalog/contact_me.html")

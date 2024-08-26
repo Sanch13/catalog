@@ -12,6 +12,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet"/>
     <link href="{% static 'css/style.css' %}" rel="stylesheet"/>
+    <link href="{% static 'css/social_networks.css' %}" rel="stylesheet"/>
     <style>
         /* Стили для попапа */
         #inactivity-popup {
@@ -85,18 +86,18 @@
             <div class="col-8 d-flex justify-content-center">
                 <ul class="main-menu d-flex justify-content-center">
                     <li class="col-auto">
-                        <a href="{% url 'catalog:catalog' %}">
-                            <span class="header-text">Подбор упаковки</span>
+                        <a href="{% url 'catalog:catalog' %}" class="btn-menu-header" id="menu-catalog">
+                            <div class="header-text">Подбор упаковки</div>
                         </a>
                     </li>
                     <li class="col-auto">
-                        <a href="#">
-                            <span class="header-text">О Миран</span>
+                        <a href="{% url 'catalog:about_miran' %}" class="btn-menu-header" id="menu-about">
+                            <div class="header-text">О Миран</div>
                         </a>
                     </li>
                     <li class="col-auto">
-                        <a href="#">
-                            <span class="header-text">Свяжитесь со мной</span>
+                        <a href="{% url 'catalog:contact_me' %}" class="btn-menu-header" id="menu-contact">
+                            <div class="header-text">Свяжитесь со мной</div>
                         </a>
                     </li>
                 </ul>
@@ -142,12 +143,43 @@
         <button class="popup-button btn-danger" id="leave-button">НЕТ</button>
     </div>
     <div class="" style="font-size: 22px;">Перенаправление через <span id="popup-timer"></span>
-        секунд</div>
+        секунд
+    </div>
+</div>
+
+<div class="floating-container">
+    <div class="image-container">
+        <img src="path_to_your_image1.jpg" class="thumbnail" alt="Image 1" onclick="showPopup(this)">
+        <img src="path_to_your_image2.jpg" class="thumbnail" alt="Image 2" onclick="showPopup(this)">
+        <img src="path_to_your_image2.jpg" class="thumbnail" alt="Image 2" onclick="showPopup(this)">
+        <!-- Добавьте больше картинок по необходимости -->
+    </div>
+    <div class="popup-1" id="popup-1">
+        <img src="" alt="Popup Image" id="popupImage-1">
+    </div>
 </div>
 
 <script>
+    function showPopup(thumbnail) {
+    const popupSocial = document.getElementById("popup-1");
+    const popupImage = document.getElementById("popupImage-1");
+
+    // Задаем путь к картинке, которую надо отобразить в всплывающем окне
+    popupImage.src = "path_to_larger_image.jpg"; // Путь к большой картинке
+
+    // Показать всплывающее окно
+    popupSocial.style.display = "block";
+
+    // Закрыть всплывающее окно при клике
+    popupSocial.onclick = function() {
+        popupSocial.style.display = "none";
+    }
+}
+
+</script>
+<script>
     // Показать кнопку при прокрутке вниз
-    window.onscroll = function() {
+    window.onscroll = function () {
         const scrollBtn = document.getElementById("scrollToTopBtn");
         if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
             scrollBtn.style.display = "block";
@@ -157,8 +189,8 @@
     };
 
     // Плавная прокрутка страницы вверх при нажатии на кнопку
-    document.getElementById("scrollToTopBtn").onclick = function() {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+    document.getElementById("scrollToTopBtn").onclick = function () {
+        window.scrollTo({top: 0, behavior: 'smooth'});
     };
 </script>
 <script>
@@ -237,6 +269,26 @@
             video.addEventListener('ended', resetInactivityTimer);
         });
     });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const currentUrl = window.location.pathname;
+
+        const menuCatalog = document.getElementById('menu-catalog');
+        const menuAbout = document.getElementById('menu-about');
+        const menuContact = document.getElementById('menu-contact');
+
+        // Проверяем, какой URL и назначаем соответствующий класс active
+        if (currentUrl.endsWith('/catalog/about/')){
+            menuAbout.classList.add('active');
+        } else if (currentUrl.endsWith('/catalog/contact/')) {
+            menuContact.classList.add('active');
+        } else {
+            menuCatalog.classList.add('active');
+        }
+    });
+
+
 </script>
 
 </body>
