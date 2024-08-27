@@ -149,32 +149,57 @@
 
 <div class="floating-container">
     <div class="image-container">
-        <img src="path_to_your_image1.jpg" class="thumbnail" alt="Image 1" onclick="showPopup(this)">
-        <img src="path_to_your_image2.jpg" class="thumbnail" alt="Image 2" onclick="showPopup(this)">
-        <img src="path_to_your_image2.jpg" class="thumbnail" alt="Image 2" onclick="showPopup(this)">
+        <img src="{% static 'img/instagram.svg' %}" class="thumbnail" alt="Instagram" onclick="togglePopup(this)" data-popup-id="popup-1">
+        <img src="{% static 'img/telegram.svg' %}" class="thumbnail" alt="Telegram" onclick="togglePopup(this)" data-popup-id="popup-2">
+        <img src="{% static 'img/youtube.svg' %}" class="thumbnail" alt="YouTube" onclick="togglePopup(this)" data-popup-id="popup-3">
         <!-- Добавьте больше картинок по необходимости -->
     </div>
-    <div class="popup-1" id="popup-1">
-        <img src="" alt="Popup Image" id="popupImage-1">
+    <div class="popup-qr" id="popup-1">
+        <img src="{% static 'img/instagram.svg' %}" alt="Popup Image" id="popupImage-1">
+    </div>
+    <div class="popup-qr" id="popup-2">
+        <img src="{% static 'img/telegram.svg' %}" alt="Popup Image" id="popupImage-2">
+    </div>
+    <div class="popup-qr" id="popup-3">
+        <img src="{% static 'img/youtube.svg' %}" alt="Popup Image" id="popupImage-3">
     </div>
 </div>
 
 <script>
-    function showPopup(thumbnail) {
-    const popupSocial = document.getElementById("popup-1");
-    const popupImage = document.getElementById("popupImage-1");
+    function togglePopup(thumbnail) {
+        const popupId = thumbnail.getAttribute('data-popup-id');
+        const popup = document.getElementById(popupId);
+        const popupImage = popup.querySelector('img');
 
-    // Задаем путь к картинке, которую надо отобразить в всплывающем окне
-    popupImage.src = "path_to_larger_image.jpg"; // Путь к большой картинке
+        if (popup.style.display === "none") {
+            popup.style.display = "block";
+        } else {
+            popup.style.display = "none";
+        }
 
-    // Показать всплывающее окно
-    popupSocial.style.display = "block";
+        // Если всплывающее окно уже отображается и нажатая картинка та же, что и в окне
+        if (popup.style.display === "block" && popupImage.src === thumbnail.src) {
+            popup.style.display = "none";
+        } else {
+            popupImage.src = thumbnail.src;
 
-    // Закрыть всплывающее окно при клике
-    popupSocial.onclick = function() {
-        popupSocial.style.display = "none";
+            // Позиционирование всплывающего окна
+            const rect = thumbnail.getBoundingClientRect();
+            popup.style.left = `${rect.left}px`;
+            popup.style.top = `${rect.bottom + window.scrollY}px`;
+
+            popup.style.display = "block";
+        }
     }
-}
+
+    window.onclick = function (event) {
+        const popups = document.querySelectorAll('.popup');
+        popups.forEach(popup => {
+            if (event.target !== popup && !popup.contains(event.target)) {
+                popup.style.display = "none";
+            }
+        });
+    }
 
 </script>
 <script>
@@ -279,7 +304,7 @@
         const menuContact = document.getElementById('menu-contact');
 
         // Проверяем, какой URL и назначаем соответствующий класс active
-        if (currentUrl.endsWith('/catalog/about/')){
+        if (currentUrl.endsWith('/catalog/about/')) {
             menuAbout.classList.add('active');
         } else if (currentUrl.endsWith('/catalog/contact/')) {
             menuContact.classList.add('active');
