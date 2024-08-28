@@ -82,44 +82,41 @@
     <div class="container-fluid px-5">
         <div class="row align-items-center justify-content-between">
             <div class="col-2 d-flex">
+                <a href="{% url 'home' %}" class="link-logo">
+                    <img src="{% static 'img/logo.svg' %}" alt="logo">
+                </a>
             </div>
             <div class="col-8 d-flex justify-content-center">
                 <ul class="main-menu d-flex justify-content-center">
                     <li class="col-auto">
-                        <a href="{% url 'catalog:catalog' %}" class="btn-menu-header" id="menu-catalog">
+                        <a href="{% url 'catalog:catalog' %}" class="btn-menu-header"
+                           id="menu-catalog">
                             <div class="header-text">Подбор упаковки</div>
                         </a>
                     </li>
                     <li class="col-auto">
-                        <a href="{% url 'catalog:about_miran' %}" class="btn-menu-header" id="menu-about">
+                        <a href="{% url 'catalog:about_miran' %}" class="btn-menu-header"
+                           id="menu-about">
                             <div class="header-text">О Миран</div>
                         </a>
                     </li>
                     <li class="col-auto">
-                        <a href="{% url 'catalog:contact_me' %}" class="btn-menu-header" id="menu-contact">
+                        <a href="{% url 'catalog:contact_me' %}" class="btn-menu-header"
+                           id="menu-contact">
                             <div class="header-text">Свяжитесь со мной</div>
                         </a>
                     </li>
                 </ul>
             </div>
-            <div class="col-2 d-flex">
-                <div class="text-start back-button" id="backButton">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60"
-                         fill="currentColor" class="bi bi-arrow-90deg-left" viewBox="0 0 16 16">
+            <div class="col-2 d-flex justify-content-end">
+                <div class="btn-menu-header header-text" id="backButton">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"
+                         fill="currentColor" class="bi bi-arrow-left" viewBox="0 1 20 16">
                         <path fill-rule="evenodd"
-                              d="M1.146 4.854a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 4H12.5A2.5 2.5 0 0 1 15 6.5v8a.5.5 0 0 1-1 0v-8A1.5 1.5 0 0 0 12.5 5H2.707l3.147 3.146a.5.5 0 1 1-.708.708z"/>
+                              d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
                     </svg>
+                    Назад
                 </div>
-                <div class="text-end home-button">
-                    <a href="{% url 'home' %}"
-                       class="link-logo d-flex">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60"
-                             fill="black" class="bi bi-house" viewBox="0 0 16 16">
-                            <path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L2 8.207V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V8.207l.646.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293zM13 7.207V13.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V7.207l5-5z"/>
-                        </svg>
-                    </a>
-                </div>
-
             </div>
         </div>
     </div>
@@ -149,9 +146,12 @@
 
 <div class="floating-container">
     <div class="image-container">
-        <img src="{% static 'img/instagram.svg' %}" class="thumbnail" alt="Instagram" onclick="togglePopup(this)" data-popup-id="popup-1">
-        <img src="{% static 'img/telegram.svg' %}" class="thumbnail" alt="Telegram" onclick="togglePopup(this)" data-popup-id="popup-2">
-        <img src="{% static 'img/youtube.svg' %}" class="thumbnail" alt="YouTube" onclick="togglePopup(this)" data-popup-id="popup-3">
+        <img src="{% static 'img/instagram.svg' %}" class="thumbnail" alt="Instagram"
+             onclick="togglePopup(this)" data-popup-id="popup-1">
+        <img src="{% static 'img/telegram.svg' %}" class="thumbnail" alt="Telegram"
+             onclick="togglePopup(this)" data-popup-id="popup-2">
+        <img src="{% static 'img/youtube.svg' %}" class="thumbnail" alt="YouTube"
+             onclick="togglePopup(this)" data-popup-id="popup-3">
         <!-- Добавьте больше картинок по необходимости -->
     </div>
     <div class="popup-qr" id="popup-1">
@@ -165,43 +165,43 @@
     </div>
 </div>
 
-<script>
-    function togglePopup(thumbnail) {
-        const popupId = thumbnail.getAttribute('data-popup-id');
-        const popup = document.getElementById(popupId);
-        const popupImage = popup.querySelector('img');
-
-        if (popup.style.display === "none") {
-            popup.style.display = "block";
-        } else {
-            popup.style.display = "none";
-        }
-
-        // Если всплывающее окно уже отображается и нажатая картинка та же, что и в окне
-        if (popup.style.display === "block" && popupImage.src === thumbnail.src) {
-            popup.style.display = "none";
-        } else {
-            popupImage.src = thumbnail.src;
-
-            // Позиционирование всплывающего окна
-            const rect = thumbnail.getBoundingClientRect();
-            popup.style.left = `${rect.left}px`;
-            popup.style.top = `${rect.bottom + window.scrollY}px`;
-
-            popup.style.display = "block";
-        }
-    }
-
-    window.onclick = function (event) {
-        const popups = document.querySelectorAll('.popup');
-        popups.forEach(popup => {
-            if (event.target !== popup && !popup.contains(event.target)) {
-                popup.style.display = "none";
-            }
-        });
-    }
-
-</script>
+{#<script>#}
+{#    function togglePopup(thumbnail) {#}
+{#        const popupId = thumbnail.getAttribute('data-popup-id');#}
+{#        const popup = document.getElementById(popupId);#}
+{#        const popupImage = popup.querySelector('img');#}
+{##}
+{#        if (popup.style.display === "none") {#}
+{#            popup.style.display = "block";#}
+{#        } else {#}
+{#            popup.style.display = "none";#}
+{#        }#}
+{##}
+{#        // Если всплывающее окно уже отображается и нажатая картинка та же, что и в окне#}
+{#        if (popup.style.display === "block" && popupImage.src === thumbnail.src) {#}
+{#            popup.style.display = "none";#}
+{#        } else {#}
+{#            popupImage.src = thumbnail.src;#}
+{##}
+{#            // Позиционирование всплывающего окна#}
+{#            const rect = thumbnail.getBoundingClientRect();#}
+{#            popup.style.left = `${rect.left}px`;#}
+{#            popup.style.top = `${rect.bottom + window.scrollY}px`;#}
+{##}
+{#            popup.style.display = "block";#}
+{#        }#}
+{#    }#}
+{##}
+{#    window.onclick = function (event) {#}
+{#        const popups = document.querySelectorAll('.popup');#}
+{#        popups.forEach(popup => {#}
+{#            if (event.target !== popup && !popup.contains(event.target)) {#}
+{#                popup.style.display = "none";#}
+{#            }#}
+{#        });#}
+{#    }#}
+{##}
+{#</script>#}
 <script>
     // Показать кнопку при прокрутке вниз
     window.onscroll = function () {

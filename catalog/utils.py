@@ -19,27 +19,23 @@ def get_objects_from_paginator(request, per_page=1, model_objects_list=None):
         return paginator.page(page_number)
 
 
-def get_validate_list_values(data: list) -> list[int]:
+def get_validate_list_values(data: list) -> list[tuple[int, int]]:
     filtered_data = []
     for el in data:
         if '-' in el:
             first, second = el.split('-')
-            filtered_data.append(int(first))
-            filtered_data.append(int(second))
+            filtered_data.append((int(first), int(second)))
         else:
-            filtered_data.append(int(el))
-
+            filtered_data.append((int(el), int(el)))
     sorted_volumes = sorted(filtered_data)
     if sorted_volumes:
         return sorted_volumes
 
 
-def get_query_for_request_to_db(list_volumes: list[int]):
+def get_query_for_request_to_db(list_volumes: list[tuple[int, int]]):
     query = Q()
-    # Проходим по  парам
-    for start, end in zip(list_volumes[::2], list_volumes[1::2]):
+    for start, end in list_volumes:
         query |= Q(volume__range=(start, end))
-
     return query
 
 

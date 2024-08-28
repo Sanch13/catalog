@@ -95,16 +95,36 @@
                   action="{% url 'catalog:send_data_to_email' %}"
                   method="post">
                 {% csrf_token %}
-                {% for field in form_data_to_email %}
-                    <div class="form-group">
-                        {{ field.label_tag }}
-                        {{ field }}
-                    </div>
-                {% endfor %}
+
+                <div class="my-form-group">
+                    <label>{{ form_data_to_email.name.label }}<span class="text-danger"> *</span></label>
+                    {{ form_data_to_email.name }}
+                </div>
+
+                <div class="my-form-group">
+                    <label>{{ form_data_to_email.company.label_tag }}<span class="text-danger"> *</span></label>
+                    {{ form_data_to_email.company }}
+                </div>
+
+                <div class="my-form-group">
+                    <label>{{ form_data_to_email.phone_number.label_tag }}<span class="text-danger"> *</span></label>
+                    {{ form_data_to_email.phone_number }}
+                </div>
+
+                <div class="my-form-group">
+                    <label>{{ form_data_to_email.email.label_tag }}<span class="text-danger"> *</span></label>
+                    {{ form_data_to_email.email }}
+                </div>
+
+                <div class="my-form-group">
+                    <label>{{ form_data_to_email.comment.label_tag }}<span class="text-danger"> *</span></label>
+                    {{ form_data_to_email.comment }}
+                </div>
+
                 <div class="fileSizeDisplay">
                     <span id="fileSizeDisplay"></span>
                 </div>
-                <button type="submit">Отправить</button>
+                <button type="submit" class="btn-menu-header">Отправить</button>
             </form>
         </div>
     </div>
@@ -119,6 +139,7 @@
 
     <script>
         {# Возвращает список ids #}
+
         function get_ids() {
             const cards = document.querySelectorAll('.card');
             const ids = [];

@@ -83,8 +83,18 @@ class BottlesFilterForm(forms.Form):
 
 
 class SendDataToEmail(forms.Form):
-    name = forms.CharField(max_length=100, label='Ваше ФИО')
-    email = forms.EmailField(label='Ваш Email')
+    name = forms.CharField(max_length=100, label='Ваше ФИО', required=True)
+    company = forms.CharField(max_length=100, label='Компания', required=True)
+    phone_number = forms.CharField(max_length=20, label='Номер телефона', required=True)
+    email = forms.EmailField(label='Ваш Email', required=True)
+    comment = forms.CharField(
+        label='Комментарий',
+        required=False,
+        widget=forms.Textarea(attrs={
+            'rows': 5,  # Указываем количество строк
+            'cols': 40  # Указываем количество столбцов (если это нужно)
+        })
+    )
 
     def __init__(self, *args, **kwargs):
         super(SendDataToEmail, self).__init__(*args, **kwargs)
