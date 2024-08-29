@@ -8,11 +8,13 @@
     <link href="{% static 'css/pagination_styles.css' %}" rel="stylesheet"/>
     <link href="{% static 'css/my_settings_carousel.css' %}" rel="stylesheet"/>
     <link href="{% static 'css/popup_styles.css' %}" rel="stylesheet"/>
+
 {% endblock css %}
 
 
 {% block content %}
 
+    <!-- Секция с кнопками фильтров -->
     <section class="filter__block">
         <div class="filter__buttons">
             <div class="btn-miran-filter" id="All">
@@ -52,6 +54,7 @@
         </div>
     </section>
 
+    <!-- Контейнер с карточками товара -->
     <div class="container">
         <div class="row my-row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4">
             {% for jar in jars %}
@@ -83,17 +86,19 @@
         </div>
     </div>
 
-    <!-- Фиксированная кнопка -->
-    <button class="fixed-button" id="openPopup">Отправить на Email</button>
+    <!-- Фиксированная кнопка send to email-->
+    <button class="fixed-button btn-menu-header" id="openPopup">Отправить на Email</button>
 
     <!-- Попап для отправки выбранных продуктов -->
     <div id="popupForm" class="popup" style="display: none;">
         <div class="popup-content">
             <span id="closePopup">&times;</span>
             <h2>Заполните форму и нажмите отправить</h2>
-            <form class="form-send-data-to-email" id="contactForm"
+            <form class="form-send-data-to-email"
+                  id="contactForm"
                   action="{% url 'catalog:send_data_to_email' %}"
                   method="post">
+
                 {% csrf_token %}
 
                 <div class="my-form-group">
@@ -117,14 +122,21 @@
                 </div>
 
                 <div class="my-form-group">
-                    <label>{{ form_data_to_email.comment.label_tag }}<span class="text-danger"> *</span></label>
+                    <label>{{ form_data_to_email.comment.label_tag }}</label>
                     {{ form_data_to_email.comment }}
+                </div>
+
+                <div class="my-form-group">
+                    <label for="rulesCondition">
+                        <input type="checkbox" id="rulesCondition">
+                        <span class="custom-checkbox"></span> Я согласен на обработку моих персональных данных
+                    </label>
                 </div>
 
                 <div class="fileSizeDisplay">
                     <span id="fileSizeDisplay"></span>
                 </div>
-                <button type="submit" class="btn-menu-header">Отправить</button>
+                <button type="submit" class="btn-submit-form" id="sendForm" disabled>Отправить</button>
             </form>
         </div>
     </div>
@@ -139,7 +151,6 @@
 
     <script>
         {# Возвращает список ids #}
-
         function get_ids() {
             const cards = document.querySelectorAll('.card');
             const ids = [];
@@ -233,6 +244,7 @@
         });
     </script>
 
+    <!-- Секция с кнопками фильтров -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const form = document.getElementById('filter-jars-form');
@@ -315,4 +327,7 @@
             });
         });
     </script>
+
+    <script src="{% static 'js/validate_form.js' %}"></script>
+
 {% endblock %}

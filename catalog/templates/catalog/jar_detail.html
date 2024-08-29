@@ -62,29 +62,13 @@
                                                 <td>Поверхность</td>
                                                 <td>{{ jar.surface }}</td>
                                             </tr>
-                                            <tr>
-                                                <td>Двойная стенка</td>
-                                                <td>{{ jar.double_wall }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Флип-топ баночка</td>
-                                                <td>{{ jar.flip_top }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Экодобавка «кофейная крошка»</td>
-                                                <td>{{ jar.flip_top }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Рефил</td>
-                                                <td>{{ jar.refil }}</td>
-                                            </tr>
                                             </tbody>
                                         </table>
                                     </div>
                                 </div>
                                 <div class="col-md-4 col-12 d-flex flex-column align-items-center justify-content-center">
                                     <div class="w-100 my-2">
-                                        <button id="openPopup">Скачать на свой email</button>
+                                        <button id="openPopup" class="btn-menu-header">Отправить на Email</button>
 
                                         <div id="popupForm" class="popup" style="display: none;">
                                             <div class="popup-content">
@@ -94,17 +78,53 @@
                                                       id="contactForm"
                                                       action="{% url 'catalog:send_data_to_email' %}"
                                                       method="post">
+
                                                     {% csrf_token %}
-                                                    {% for field in form %}
-                                                        <div class="form-group">
-                                                            {{ field.label_tag }}
-                                                            {{ field }}
-                                                        </div>
-                                                    {% endfor %}
+
+                                                    <div class="my-form-group">
+                                                        <label>{{ form_data_to_email.name.label }}
+                                                            <span class="text-danger"> *</span>
+                                                        </label>
+                                                        {{ form_data_to_email.name }}
+                                                    </div>
+
+                                                    <div class="my-form-group">
+                                                        <label>{{ form_data_to_email.company.label_tag }}<span
+                                                                class="text-danger"> *</span></label>
+                                                        {{ form_data_to_email.company }}
+                                                    </div>
+
+                                                    <div class="my-form-group">
+                                                        <label>{{ form_data_to_email.phone_number.label_tag }}<span
+                                                                class="text-danger"> *</span></label>
+                                                        {{ form_data_to_email.phone_number }}
+                                                    </div>
+
+                                                    <div class="my-form-group">
+                                                        <label>{{ form_data_to_email.email.label_tag }}<span
+                                                                class="text-danger"> *</span></label>
+                                                        {{ form_data_to_email.email }}
+                                                    </div>
+
+                                                    <div class="my-form-group">
+                                                        <label>{{ form_data_to_email.comment.label_tag }}</label>
+                                                        {{ form_data_to_email.comment }}
+                                                    </div>
+
+                                                    <div class="my-form-group">
+                                                        <label for="rulesCondition">
+                                                            <input type="checkbox" id="rulesCondition">
+                                                            <span class="custom-checkbox"></span> Я согласен на
+                                                            обработку моих персональных данных
+                                                        </label>
+                                                    </div>
+
                                                     <div class="fileSizeDisplay">
                                                         <span id="fileSizeDisplay"></span>
                                                     </div>
-                                                    <button type="submit">Отправить</button>
+                                                    <button type="submit" class="btn-submit-form" id="sendForm"
+                                                            disabled>Отправить
+                                                    </button>
                                                 </form>
                                             </div>
                                         </div>
@@ -250,4 +270,7 @@
                 });
         });
     </script>
+
+    <script src="{% static 'js/validate_form.js' %}"></script>
+
 {% endblock %}

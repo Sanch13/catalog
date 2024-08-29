@@ -13,67 +13,10 @@
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet"/>
     <link href="{% static 'css/style.css' %}" rel="stylesheet"/>
     <link href="{% static 'css/social_networks.css' %}" rel="stylesheet"/>
-    <style>
-        /* Стили для попапа */
-        #inactivity-popup {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: rgb(248, 244, 244);
-            padding: 40px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-            border-radius: 10px;
-            z-index: 1000;
-            text-align: center;
-            display: none; /* Попап по умолчанию скрыт */
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            width: 600px; /* Увеличиваем ширину */
-            height: 300px; /* Увеличиваем высоту */
-        }
-
-        /* Стили для кнопок */
-        .popup-button {
-            width: 150px;
-            padding: 10px 20px;
-            margin: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 22px;
-        }
-
-        .btn-success {
-            background-color: #28a745;
-            color: white;
-        }
-
-        .btn-danger {
-            background-color: #dc3545;
-            color: white;
-        }
-
-        /* Дополнительные стили */
-        #popup-timer {
-            font-weight: bold;
-            color: #dc3545;
-            font-size: 20px;
-        }
-
-        .buttons-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-top: 20px;
-        }
-    </style>
-
+    <link href="{% static 'css/inactivity_popup.css' %}" rel="stylesheet"/>
 
     {% block css %}
     {% endblock css %}
-
 </head>
 
 <body>
@@ -131,19 +74,22 @@
     {% endblock %}
 </main>
 
+{# BUTTON-ARROW UP #}
 <button id="scrollToTopBtn" class="scroll-to-top">&#8679;</button>
 
+{# INACTIVITY POPUP #}
 <div id="inactivity-popup">
     <div style="font-size: 22px;"><b>Вы хотите остаться на сайте?</b></div>
     <div class="buttons-container">
-        <button class="popup-button btn-success" id="stay-button">ДА</button>
-        <button class="popup-button btn-danger" id="leave-button">НЕТ</button>
+        <button class="popup-button" id="stay-button">ДА</button>
+        <button class="popup-button" id="leave-button">НЕТ</button>
     </div>
     <div class="" style="font-size: 22px;">Перенаправление через <span id="popup-timer"></span>
         секунд
     </div>
 </div>
 
+{# SOCIAL NETWORKS #}
 <div class="floating-container">
     <div class="image-container">
         <img src="{% static 'img/instagram.svg' %}" class="thumbnail" alt="Instagram"
@@ -165,45 +111,8 @@
     </div>
 </div>
 
-{#<script>#}
-{#    function togglePopup(thumbnail) {#}
-{#        const popupId = thumbnail.getAttribute('data-popup-id');#}
-{#        const popup = document.getElementById(popupId);#}
-{#        const popupImage = popup.querySelector('img');#}
-{##}
-{#        if (popup.style.display === "none") {#}
-{#            popup.style.display = "block";#}
-{#        } else {#}
-{#            popup.style.display = "none";#}
-{#        }#}
-{##}
-{#        // Если всплывающее окно уже отображается и нажатая картинка та же, что и в окне#}
-{#        if (popup.style.display === "block" && popupImage.src === thumbnail.src) {#}
-{#            popup.style.display = "none";#}
-{#        } else {#}
-{#            popupImage.src = thumbnail.src;#}
-{##}
-{#            // Позиционирование всплывающего окна#}
-{#            const rect = thumbnail.getBoundingClientRect();#}
-{#            popup.style.left = `${rect.left}px`;#}
-{#            popup.style.top = `${rect.bottom + window.scrollY}px`;#}
-{##}
-{#            popup.style.display = "block";#}
-{#        }#}
-{#    }#}
-{##}
-{#    window.onclick = function (event) {#}
-{#        const popups = document.querySelectorAll('.popup');#}
-{#        popups.forEach(popup => {#}
-{#            if (event.target !== popup && !popup.contains(event.target)) {#}
-{#                popup.style.display = "none";#}
-{#            }#}
-{#        });#}
-{#    }#}
-{##}
-{#</script>#}
+{# DISPLAY/NOT DISPLAY BUTTON ARROW UP #}
 <script>
-    // Показать кнопку при прокрутке вниз
     window.onscroll = function () {
         const scrollBtn = document.getElementById("scrollToTopBtn");
         if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
@@ -218,11 +127,15 @@
         window.scrollTo({top: 0, behavior: 'smooth'});
     };
 </script>
+
+{# BUTTON HISTORY BACK #}
 <script>
     document.getElementById('backButton').addEventListener('click', function () {
         history.back();
     });
 </script>
+
+{# DISPLAY POPUP IN INACTIVITY_TIMEOUT #}
 <script>
     const INACTIVITY_TIMEOUT = 6000000;
     const POPUP_TIMEOUT = 10000;
@@ -295,6 +208,8 @@
         });
     });
 </script>
+
+{# КАСТЫЛЬ ADD CLASS <ACTIVE> FROM URL #}
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const currentUrl = window.location.pathname;

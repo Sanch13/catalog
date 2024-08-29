@@ -108,24 +108,37 @@ def convert_webp_to_jpeg_bytes(file):
 
 def create_pdf_from_data(params):
     image_bytes_list = params["files"]
-    # font_path = str(Path(__file__).resolve().parent) + "/" + "DejaVuSans.ttf"
-    font_path = Path(config_settings.FONT_DIR, "dejavu-sans", "DejaVuSans.ttf")
+    font_path = Path(config_settings.FONT_DIR, "DejaVuSans.ttf")
 
     pdf = FPDF()
     pdf.add_page()
     pdf.add_font('DejaVu', '', str(font_path))
+    pdf.set_font("DejaVu", '', size=24)
+
     page_width = pdf.w  # Ширина страницы (210 мм для A4)
     page_height = pdf.h  # Высота страницы (297 мм для A4)
     margin = 3
+
+    # HEADER
+    header = 40
+
+    # TITLE
+    text_title = pdf.get_string_width(params["name"])
+
+    x_position = (page_width - text_title) / 2  # Смещение для центрирования
+    pdf.set_y(margin + header + margin)
+    pdf.set_x(x_position)
+    pdf.cell(text_title, 10, params["name"], new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+    pdf.ln(margin)
+
+    current_position_y = pdf.get_y()
     images_per_row = 3
-
     available_width = (page_width - 2 * margin) / images_per_row  # 68 mm
-
     image_width = available_width
     image_height = image_width
 
     x_start = margin
-    y_start = margin
+    y_start = pdf.get_y()
     x = x_start
     y = y_start
     current_image_in_row = 0
@@ -152,40 +165,30 @@ def create_pdf_from_data(params):
             current_image_in_row = 0
 
     height_y_photo = image_height if len(image_bytes_list) <= 3 else image_height * 2
+    current_position_y = (current_position_y + height_y_photo)
+    pdf.set_y(current_position_y)
 
-    header_font_size = 24
-    pdf.set_font("DejaVu", '', size=header_font_size)
-
-    text_width = pdf.get_string_width(params["name"])
-    x_position = (page_width - text_width) / 2  # Смещение для центрирования
-
-    # Вставка текста по центру строки
-    pdf.set_y(height_y_photo + 6)  # Установка вертикальной позиции после изображений
-    pdf.set_x(x_position)          # Установка горизонтальной позиции для центрирования
-    pdf.cell(text_width, 10, params["name"], new_x=XPos.LMARGIN, new_y=YPos.NEXT)
-    pdf.set_y(height_y_photo + 20)
     pdf.set_font("DejaVu", size=14)
-
     table_width = page_width - 2 * margin   # Ширина таблицы с учетом отступов
-    col1_width = table_width * 0.3          # 30% ширины страницы для первой колонки
-    col2_width = table_width * 0.7          # 70% ширины страницы для второй колонки
+    col1_width = table_width * 0.4          # 30% ширины страницы для первой колонки
+    col2_width = table_width * 0.6          # 70% ширины страницы для второй колонки
 
     text_items = [
         ("Объем мл.", params['volume']),
         ("Поверхность", params['surface']),
         ("Декорирование", params['status_decoration']),
     ]
-
     row_height = 10  # Настройка высоты строки таблицы
-
-    # Создание строк таблицы
+    border_color = (127, 154, 20)
+    # TABLE
     for label, value in text_items:
-        pdf.set_x(margin)  # Начало строки таблицы по оси X
-        pdf.cell(col1_width, row_height, label, border=1, align='L')  # Первая колонка
-        pdf.cell(col2_width, row_height, str(value), border=1, align='L')  # Вторая колонка
+        pdf.set_draw_color(*border_color)
+        pdf.set_x(margin)       # Начало строки таблицы по оси X
+        pdf.cell(col1_width, row_height, label, border='B', align='L')  # Первая колонка
+        pdf.cell(col2_width, row_height, str(value), border='B', align='L')  # Вторая колонка
         pdf.ln(row_height)  # Переход на следующую строку
 
-    pdf.ln(5)  # Добавляем небольшой отступ перед описанием
+    pdf.ln(margin)
     available_width_description = page_width - margin * 2
     description = params['description']
     pdf.set_x(margin)

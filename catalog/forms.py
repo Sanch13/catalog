@@ -87,6 +87,7 @@ class SendDataToEmail(forms.Form):
     company = forms.CharField(max_length=100, label='Компания', required=True)
     phone_number = forms.CharField(max_length=20, label='Номер телефона', required=True)
     email = forms.EmailField(label='Ваш Email', required=True)
+
     comment = forms.CharField(
         label='Комментарий',
         required=False,

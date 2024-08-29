@@ -50,8 +50,7 @@ def get_category(request, category_slug):
 
             if volumes:
                 query = Q()
-
-                for start, end in zip(volumes[::2], volumes[1::2]):
+                for start, end in volumes:
                     query |= Q(bottle__volume__range=(start, end))
 
                 series = series.filter(query).distinct()
@@ -100,12 +99,12 @@ def get_category(request, category_slug):
     elif category.name == 'Колпачки':
         form = CapFilterForm(request.GET or None)
         caps = Cap.objects.filter(category=category)
+        form_data_to_email = SendDataToEmail()
 
         if form.is_valid():
             throat_standard = form.cleaned_data.get('throat_standard')
             type_of_closure = form.cleaned_data.get('type_of_closure')
             surface = form.cleaned_data.get('surface')
-            # print(throat_standard, type_of_closure, surface)
             if throat_standard:
                 caps = caps.filter(throat_standard__in=throat_standard)
             if type_of_closure:
@@ -116,6 +115,7 @@ def get_category(request, category_slug):
         context = {
             'caps': caps,
             'form': form,
+            'form_data_to_email': form_data_to_email,
         }
         return render(request=request,
                       template_name='catalog/caps.html',
@@ -178,12 +178,12 @@ def get_product_detail(request, category_slug, series_slug=None, product_slug=No
 
 def product_detail_no_series(request, category_slug, product_slug):
     if category_slug == "jars":
-        form = SendDataToEmail()
+        form_data_to_email = SendDataToEmail()
         jar = get_object_or_404(Jar,
                                 category__slug=category_slug,
                                 slug=product_slug)
         context = {
-            "form": form,
+            "form_data_to_email": form_data_to_email,
             "jar": jar
         }
         return render(request=request,

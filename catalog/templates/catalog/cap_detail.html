@@ -9,12 +9,13 @@
     <link href="{% static 'css/fancybox.css' %}" rel="stylesheet"/>
     <link href="{% static 'css/panzoom.css' %}" rel="stylesheet"/>
     <link href="{% static 'css/my_settings_carousel.css' %}" rel="stylesheet"/>
+    <link href="{% static 'css/popup_styles.css' %}" rel="stylesheet"/>
 
 {% endblock css %}
 
 {% block content %}
     <div class="container-xxl">
-        <div class="product-card">
+        <div class="product-card" id="{{ cap.id }}">
             <div class="row my-5">
                 <div class="col-lg-6 rounded-4 my-2 py-2">
                     <div class="carousel-container ">
@@ -73,28 +74,74 @@
                                 </div>
                                 <div class="col-md-4 col-12 d-flex flex-column align-items-center justify-content-center">
                                     <div class="w-100 my-2">
-                                        <button type="button" class="btn btn-miran w-100"
-                                                onclick="window.print()">
-                                            <svg xmlns="http://www.w3.org/2000/svg"
-                                                 width="30"
-                                                 height="30" fill="currentColor"
-                                                 style="margin-right: 10px"
-                                                 viewBox="0 0 16 16">
-                                                <path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z"></path>
-                                                <path d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v1a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-1h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2H5zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4V3zm1 5a2 2 0 0 0-2 2v1H2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v-1a2 2 0 0 0-2-2H5zm7 2v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1z"></path>
-                                            </svg>
-                                            Распечатать
-                                        </button>
-                                    </div>
-                                    <div class="w-100 my-2">
-                                        <button type="submit" class="btn btn-miran w-100">Получить
-                                            образцы
-                                        </button>
-                                    </div>
-                                    <div class="w-100 my-2">
-                                        <button type="submit" class="btn btn-miran w-100">Узнать
-                                            цену
-                                        </button>
+                                        <button id="openPopup" class="btn-menu-header">Отправить на Email</button>
+
+                                        <div id="popupForm" class="popup" style="display: none;">
+                                            <div class="popup-content">
+                                                <span id="closePopup">&times;</span>
+                                                <h2>Заполните форму и нажмите отправить</h2>
+                                                <form class="form-send-data-to-email"
+                                                      id="contactForm"
+                                                      action="{% url 'catalog:send_data_to_email' %}"
+                                                      method="post">
+
+                                                    {% csrf_token %}
+
+                                                    <div class="my-form-group">
+                                                        <label>{{ form_data_to_email.name.label }}
+                                                            <span class="text-danger"> *</span>
+                                                        </label>
+                                                        {{ form_data_to_email.name }}
+                                                    </div>
+
+                                                    <div class="my-form-group">
+                                                        <label>{{ form_data_to_email.company.label_tag }}<span
+                                                                class="text-danger"> *</span></label>
+                                                        {{ form_data_to_email.company }}
+                                                    </div>
+
+                                                    <div class="my-form-group">
+                                                        <label>{{ form_data_to_email.phone_number.label_tag }}<span
+                                                                class="text-danger"> *</span></label>
+                                                        {{ form_data_to_email.phone_number }}
+                                                    </div>
+
+                                                    <div class="my-form-group">
+                                                        <label>{{ form_data_to_email.email.label_tag }}<span
+                                                                class="text-danger"> *</span></label>
+                                                        {{ form_data_to_email.email }}
+                                                    </div>
+
+                                                    <div class="my-form-group">
+                                                        <label>{{ form_data_to_email.comment.label_tag }}</label>
+                                                        {{ form_data_to_email.comment }}
+                                                    </div>
+
+                                                    <div class="my-form-group">
+                                                        <label for="rulesCondition">
+                                                            <input type="checkbox" id="rulesCondition">
+                                                            <span class="custom-checkbox"></span> Я согласен на
+                                                            обработку моих персональных данных
+                                                        </label>
+                                                    </div>
+
+                                                    <div class="fileSizeDisplay">
+                                                        <span id="fileSizeDisplay"></span>
+                                                    </div>
+                                                    <button type="submit" class="btn-submit-form" id="sendForm"
+                                                            disabled>Отправить
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+
+                                        <div id="successPopup" class="popup" style="display: none;">
+                                            <div class="success-popup-content d-flex justify-content-center align-items-center">
+                                                <div id="successMessage">
+                                                    Спасибо!<br>Ваше сообщение отправлено.
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -132,4 +179,103 @@
             });
         });
     </script>
+    <script>
+        {# Возвращает список ids #}
+
+        function get_ids() {
+            const cards = document.querySelectorAll('.product-card');
+            const ids = [];
+
+            cards.forEach(function (card) {
+                ids.push(card.id);
+            });
+            return ids
+        }
+
+        {# Запрос на размер отправляемого файла #}
+        document.getElementById('openPopup').addEventListener('click', function () {
+            document.getElementById('popupForm').style.display = 'flex';
+
+            const data = new FormData();
+            data.append("ids", JSON.stringify(get_ids()));
+
+            fetch("{% url 'catalog:get_size_pdf_file' %}", {
+                method: 'POST',
+                body: data,
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Если ответ успешный, вставляем размер файла в блок div
+                        document.getElementById('fileSizeDisplay').innerText = `Размер файла: ${data.file_size} `;
+                    } else {
+                        // Если возникла ошибка, отображаем сообщение об ошибке
+                        document.getElementById('fileSizeDisplay').innerText = "Ошибка при получении размера файла.";
+                    }
+                })
+                .catch(error => {
+                    console.error('Ошибка:', error);
+                    document.getElementById('fileSizeDisplay').innerText = "Произошла ошибка при выполнении запроса.";
+                });
+        });
+
+        {# Закрытие попапа по кнопке Х #}
+        document.getElementById('closePopup').addEventListener('click', function () {
+            document.getElementById('popupForm').style.display = 'none';
+        });
+
+        {# Закрытие попапа по клику вне окна #}
+        document.addEventListener('click', function (event) {
+            let popup = document.querySelector('.popup-content');
+            let formPopup = document.getElementById('popupForm');
+            if (formPopup.style.display === 'flex' && !popup.contains(event.target) && event.target.id !== 'openPopup') {
+                formPopup.style.display = 'none';
+            }
+        });
+
+        {# Закрытие успешного попапа по клику вне окна #}
+        document.addEventListener('click', function (event) {
+            let popup = document.querySelector('.success-popup-content');
+            let formPopup = document.getElementById('successPopup');
+            if (formPopup.style.display === 'flex' && !popup.contains(event.target) && event.target.id !== 'openPopup') {
+                formPopup.style.display = 'none';
+                console.log("CLose")
+            }
+        });
+
+        {# Отправка форма по нажатию на кнопку Отправить #}
+        document.getElementById('contactForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            let data = new FormData(this);
+            data.append("ids", JSON.stringify(get_ids()));
+
+            fetch("{% url 'catalog:send_data_to_email' %}", {
+                method: 'POST',
+                body: data,
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('popupForm').style.display = 'none';
+                        document.getElementById('successPopup').style.display = 'flex';
+
+                        document.getElementById('contactForm').reset();
+
+                        setTimeout(function () {
+                            document.getElementById('successPopup').style.display = 'none';
+                        }, 3000); // Закрытие через 3 секунды
+                    } else {
+                        alert('Ошибка: ' + JSON.stringify(data.errors));
+                    }
+                });
+        });
+    </script>
+
+    <script src="{% static 'js/validate_form.js' %}"></script>
 {% endblock %}
