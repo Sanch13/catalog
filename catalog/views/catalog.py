@@ -9,15 +9,14 @@ from django.conf import settings as config_settings
 
 from catalog.forms import CapFilterForm, JarFilterForm, BottlesFilterForm, SendDataToEmail
 from catalog.models import Jar, Series, Cap, Category, Bottle, CapFile, JarFile, BottleFile
-from catalog.tasks import send_email, send_email_list_products
+from catalog.tasks import send_email_list_products
 from catalog.utils import (
-    get_jar_data_from_db,
     create_pdf_from_data,
     file_exists_in_directory,
     get_formatted_file_size,
     convert_to_numbers,
     get_list_params_jars_from_db,
-    get_query_for_request_to_db
+    get_query_for_request_to_db, get_list_params_caps_from_db, get_list_params_bottles_from_db
 )
 
 
@@ -40,6 +39,7 @@ def get_category(request, category_slug):
     category = get_object_or_404(Category, slug=category_slug)
     if category.name == 'Флаконы':
         form = BottlesFilterForm(request.GET or None)
+        form_data_to_email = SendDataToEmail()
         series = Series.objects.filter(category=category)
 
         if form.is_valid():
@@ -63,7 +63,8 @@ def get_category(request, category_slug):
 
         context = {
             'series': series,
-            'form': form
+            'form': form,
+            'form_data_to_email': form_data_to_email,
         }
         return render(request=request,
                       template_name='catalog/series.html',
@@ -152,7 +153,9 @@ def get_category(request, category_slug):
 
 
 def get_product_detail(request, category_slug, series_slug=None, product_slug=None):
+    """For bottles"""
     volume = request.GET.get('volume')
+    form_data_to_email = SendDataToEmail()
 
     if volume:
         bottle = get_object_or_404(Bottle,
@@ -167,9 +170,12 @@ def get_product_detail(request, category_slug, series_slug=None, product_slug=No
                                    slug=product_slug)
 
     bottles = Bottle.objects.filter(series__slug=series_slug)
+
     context = {
         "bottle": bottle,
         "bottles": bottles,
+        "form_data_to_email": form_data_to_email,
+
     }
     return render(request=request,
                   template_name="catalog/bottle_detail.html",
@@ -177,6 +183,7 @@ def get_product_detail(request, category_slug, series_slug=None, product_slug=No
 
 
 def product_detail_no_series(request, category_slug, product_slug):
+    """For jars and caps"""
     if category_slug == "jars":
         form_data_to_email = SendDataToEmail()
         jar = get_object_or_404(Jar,
@@ -184,29 +191,35 @@ def product_detail_no_series(request, category_slug, product_slug):
                                 slug=product_slug)
         context = {
             "form_data_to_email": form_data_to_email,
-            "jar": jar
+            "jar": jar,
+
         }
         return render(request=request,
                       template_name="catalog/jar_detail.html",
                       context=context)
 
     elif category_slug == 'caps':
+        form_data_to_email = SendDataToEmail()
+
         cap = get_object_or_404(Cap,
                                 category__slug=category_slug,
                                 slug=product_slug)
         context = {
-            "cap": cap
+            "cap": cap,
+            "form_data_to_email": form_data_to_email,
         }
         return render(request=request,
                       template_name='catalog/cap_detail.html',
                       context=context)
 
     elif category_slug == 'bottles':
+        form_data_to_email = SendDataToEmail()
         bottle = get_object_or_404(Bottle,
                                    category__slug=category_slug,
                                    slug=product_slug)
         context = {
-            "bottle": bottle
+            "bottle": bottle,
+            "form_data_to_email": form_data_to_email,
         }
         return render(request=request,
                       template_name='catalog/bottle_detail.html',
@@ -214,60 +227,57 @@ def product_detail_no_series(request, category_slug, product_slug):
 
 
 def send_data_to_email(request):
+    print('send_data_to_email', request.POST)
     if request.method == 'POST':
         form = SendDataToEmail(request.POST)
         if form.is_valid():
             cd = form.cleaned_data
-            name = cd["name"]
-            email = cd["email"]
-
+            category = request.POST.get("category", [])
+            place = request.POST.get('place', [])
+            user_data = {
+                'name': cd["name"],
+                'company': cd["company"],
+                'phone_number': cd["phone_number"],
+                'email': cd["email"],
+                'comment': cd["comment"],
+                'category': category,
+                'place': place,
+            }
             ids = convert_to_numbers(json.loads(request.POST.get('ids', [])))
-            if len(ids) == 1:
-                params = get_jar_data_from_db(id_item=ids[0])
-                filename = f"{params['name']}.pdf"
-                pdf_file_path = str(Path(config_settings.PDF_DIR) / filename)
-                send_email.delay(params, pdf_file_path, filename, email, text_body=name)
-            else:
+            list_params = []
+            if category == 'jar':
                 list_params = get_list_params_jars_from_db(ids)
-                list_of_path_pdf = [params['path_to_pdf'] for params in list_params]
-                send_email_list_products.delay(list_of_path_pdf,
-                                               email,
-                                               text_body=name)
+            if category == 'cap':
+                list_params = get_list_params_caps_from_db(ids)
+            if category in ('bottle', 'series'):
+                list_params = get_list_params_bottles_from_db(ids, category)
 
+            send_email_list_products.delay(list_params=list_params, data=user_data)
             return JsonResponse({'success': True})
         else:
             return JsonResponse({'success': False, 'errors': form.errors})
 
 
-def get_size_pdf_file(request):
-    if request.method == 'POST':
-        ids = convert_to_numbers(json.loads(request.POST.get('ids', [])))
-        params = get_jar_data_from_db(id_item=ids[0])
-        filename = f"{params['name']}.pdf"
-        pdf_file_path = Path(config_settings.PDF_DIR) / filename
-        if not file_exists_in_directory(pdf_file_path):
-            create_pdf_from_data(params=params)
-
-        size_bytes = pdf_file_path.stat().st_size
-        file_size = get_formatted_file_size(size_bytes)
-
-        return JsonResponse({'success': True, 'file_size': file_size})
-
-
 def get_size_list_pdf_files(request):
     if request.method == 'POST':
         ids = convert_to_numbers(json.loads(request.POST.get('ids', [])))
-        list_params = get_list_params_jars_from_db(ids)
+        category = request.POST.get("category")
+        print(category)
+        list_params = []
+        if category == 'jar':
+            list_params = get_list_params_jars_from_db(ids)
+        if category == 'cap':
+            list_params = get_list_params_caps_from_db(ids)
+        if category in ('bottle', 'series'):
+            list_params = get_list_params_bottles_from_db(ids, category)
 
         all_size = 0
         for params in list_params:
-            filename = f"{params['name']}.pdf"
-            pdf_file_path = Path(config_settings.PDF_DIR) / filename
-
+            pdf_file_path = params['path_to_pdf']
             if not file_exists_in_directory(pdf_file_path):
-                pdf_file_path = create_pdf_from_data(params=params)
+                pdf_file_path = create_pdf_from_data(params=params, category=category)
 
-            size = pdf_file_path.stat().st_size
+            size = Path(pdf_file_path).stat().st_size
             all_size += size
 
         file_size = get_formatted_file_size(size_bytes=all_size)

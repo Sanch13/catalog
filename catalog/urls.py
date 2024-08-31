@@ -17,7 +17,6 @@ urlpatterns = [
     path('new/<slug:product_slug>/', catalog.product_detail_no_series,
          name="new_products"),
     path('send_data_to_email', catalog.send_data_to_email, name="send_data_to_email"),
-    path('get_size_pdf_file', catalog.get_size_pdf_file, name="get_size_pdf_file"),
     path('get_size_list_files', catalog.get_size_list_pdf_files, name="get_size_list_files"),
 
 ]

@@ -1,15 +1,21 @@
 from io import BytesIO
 from pathlib import Path
+from email.message import EmailMessage
+import smtplib
+import ssl
 
 from PIL import Image
 from bs4 import BeautifulSoup
-from django.db.models import Q
 from fpdf import FPDF, XPos, YPos
 
 from django.core.paginator import Paginator
 from django.core.files.base import ContentFile
 from django.conf import settings as config_settings
+from django.db.models import Q
+from django.template.loader import get_template, render_to_string
+
 from pypdf import PdfWriter, PdfReader
+from settings import settings
 
 
 def get_objects_from_paginator(request, per_page=1, model_objects_list=None):
@@ -52,26 +58,6 @@ def convert_img_to_webp(image):
     return image_content
 
 
-def get_jar_data_from_db(id_item: int) -> dict:
-    from catalog.models import Jar
-
-    jar = Jar.objects.prefetch_related('jar_files').filter(id=id_item).first()
-
-    if jar:
-        params = {
-            'name': jar.name,
-            'volume': jar.volume,
-            'surface': jar.surface,
-            'status_decoration': jar.status_decoration,
-            'description': BeautifulSoup(jar.description, "html.parser").get_text(),
-            'files': [open(file, 'rb').read() for file in
-                      [file.file.path for file in jar.jar_files.all()]]
-
-        }
-
-        return params
-
-
 def get_list_params_jars_from_db(ids: list[int]) -> list:
     from catalog.models import Jar
 
@@ -89,6 +75,62 @@ def get_list_params_jars_from_db(ids: list[int]) -> list:
             'description': BeautifulSoup(jar.description, "html.parser").get_text(),
             'files': [open(file, 'rb').read() for file in
                       [file.file.path for file in jar.jar_files.all()]],
+            'filename': filename,
+            'path_to_pdf': str(pdf_dir / filename)
+        }
+        params.append(item)
+
+    return params
+
+
+def get_list_params_caps_from_db(ids: list[int]) -> list:
+    from catalog.models import Cap
+
+    pdf_dir = config_settings.PDF_DIR
+    params = []
+    caps = Cap.objects.prefetch_related('cap_files').filter(id__in=ids)
+
+    for cap in caps:
+        filename = f"{cap.name}.pdf"
+        item = {
+            'name': cap.name,
+            'throat_standard': cap.throat_standard,
+            'type_of_closure': cap.type_of_closure,
+            'surface': cap.surface,
+            'description': BeautifulSoup(cap.description, "html.parser").get_text(),
+            'files': [open(file, 'rb').read() for file in
+                      [file.file.path for file in cap.cap_files.all()]],
+            'filename': filename,
+            'path_to_pdf': str(pdf_dir / filename)
+        }
+        params.append(item)
+
+    return params
+
+
+def get_list_params_bottles_from_db(ids: list[int], category) -> list:
+    from catalog.models import Bottle
+
+    pdf_dir = config_settings.PDF_DIR
+    params = []
+    if category == 'bottle':
+        bottles = Bottle.objects.prefetch_related('bottle_files').filter(id__in=ids)
+    else:
+        bottles = Bottle.objects.filter(series_id__in=ids).select_related('series').prefetch_related('bottle_files')
+
+    for bottle in bottles:
+        filename = f"{bottle.name}.pdf"
+        item = {
+            'name': bottle.name,
+            'volume': bottle.volume,
+            'throat_standard': bottle.throat_standard,
+            'shape': bottle.shape,
+            'surface': bottle.surface,
+            'status_decoration': bottle.status_decoration,
+            'description': BeautifulSoup(bottle.description, "html.parser").get_text(),
+            'files': [open(file, 'rb').read() for file in
+                      [file.file.path for file in bottle.bottle_files.all()]],
+            'filename': filename,
             'path_to_pdf': str(pdf_dir / filename)
         }
         params.append(item)
@@ -106,7 +148,34 @@ def convert_webp_to_jpeg_bytes(file):
         return jpeg_io
 
 
-def create_pdf_from_data(params):
+def get_params_category_for_table(params, category):
+    if category == 'jar':
+        items = [
+            ("Объем мл.", params['volume']),
+            ("Поверхность", params['surface']),
+            ("Декорирование", params['status_decoration']),
+        ]
+        return items
+    if category == 'cap':
+        items = [
+            ("Стандарт горла", params['throat_standard']),
+            ("Тип колпачка", params['type_of_closure']),
+            ("Поверхность", params['surface']),
+        ]
+        return items
+    if category in ('bottle', 'series'):
+        items = [
+            ("Объем мл.", params['volume']),
+            ("Стандарт горла", params['throat_standard']),
+            ("Форма", params['shape']),
+            ("Поверхность", params['surface']),
+            ("Декорирование", params['status_decoration']),
+        ]
+        return items
+
+
+def create_pdf_from_data(params, category):
+    print("category ", category)
     image_bytes_list = params["files"]
     font_path = Path(config_settings.FONT_DIR, "DejaVuSans.ttf")
 
@@ -169,21 +238,17 @@ def create_pdf_from_data(params):
     pdf.set_y(current_position_y)
 
     pdf.set_font("DejaVu", size=14)
-    table_width = page_width - 2 * margin   # Ширина таблицы с учетом отступов
-    col1_width = table_width * 0.4          # 30% ширины страницы для первой колонки
-    col2_width = table_width * 0.6          # 70% ширины страницы для второй колонки
+    table_width = page_width - 2 * margin  # Ширина таблицы с учетом отступов
+    col1_width = table_width * 0.4  # 30% ширины страницы для первой колонки
+    col2_width = table_width * 0.6  # 70% ширины страницы для второй колонки
 
-    text_items = [
-        ("Объем мл.", params['volume']),
-        ("Поверхность", params['surface']),
-        ("Декорирование", params['status_decoration']),
-    ]
+    # TABLE
     row_height = 10  # Настройка высоты строки таблицы
     border_color = (127, 154, 20)
-    # TABLE
+    text_items = get_params_category_for_table(params, category)
     for label, value in text_items:
         pdf.set_draw_color(*border_color)
-        pdf.set_x(margin)       # Начало строки таблицы по оси X
+        pdf.set_x(margin)  # Начало строки таблицы по оси X
         pdf.cell(col1_width, row_height, label, border='B', align='L')  # Первая колонка
         pdf.cell(col2_width, row_height, str(value), border='B', align='L')  # Вторая колонка
         pdf.ln(row_height)  # Переход на следующую строку
@@ -192,7 +257,8 @@ def create_pdf_from_data(params):
     available_width_description = page_width - margin * 2
     description = params['description']
     pdf.set_x(margin)
-    pdf.multi_cell(w=available_width_description, h=10, max_line_height=8, text=description)  # Добавление описания
+    pdf.multi_cell(w=available_width_description, h=10, max_line_height=8,
+                   text=description)  # Добавление описания
 
     filename = f"{params['name']}.pdf"
     path_pdf_file = Path(config_settings.PDF_DIR, filename)
@@ -207,14 +273,14 @@ def file_exists_in_directory(file_path):
 def get_formatted_file_size(size_bytes: int) -> str:
     if size_bytes < 1024:
         return f"{size_bytes} байт"
-    elif size_bytes < 1024**2:  # Менее 1 МБ
+    elif size_bytes < 1024 ** 2:  # Менее 1 МБ
         size_kb = size_bytes / 1024
         return f"{size_kb:.2f} КБайт"
-    elif size_bytes < 1024**3:  # Менее 1 ГБ
-        size_mb = size_bytes / (1024**2)
+    elif size_bytes < 1024 ** 3:  # Менее 1 ГБ
+        size_mb = size_bytes / (1024 ** 2)
         return f"{size_mb:.2f} МБайт"
     else:
-        size_gb = size_bytes / (1024**3)
+        size_gb = size_bytes / (1024 ** 3)
         return f"{size_gb:.2f} ГБайт"
 
 
@@ -241,3 +307,71 @@ def merge_pdfs_to_stream(pdf_paths: list[str]):
     writer.write(output_stream)
     output_stream.seek(0)
     return output_stream
+
+
+def send_data_to_client(list_params, data, file_stream):
+    message = EmailMessage()
+    message['Subject'] = settings.SUBJECT
+    message['From'] = settings.FROM
+    message['To'] = data["email"]
+
+    # Поле Cc используется для отправки копии письма другим получателям,
+    # и они будут видны всем, кто получил письмо.
+    # message['Cc'] = ''
+    # Поле Bcc используется для скрытой копии, и адреса в этом поле не видны остальным получателям.
+    # message['Bcc'] = ''
+
+    # для обычного текста
+    text_body = settings.BODY
+    message.set_content(text_body)
+
+    # Добавление HTML части
+    html = render_to_string('template_for_emails/sign.html')
+    message.add_alternative(html, subtype='html')
+
+    filename = list_params[0]["filename"] if len(list_params) == 1 else f"список продуктов.pdf"
+    message.add_attachment(file_stream.read(),
+                           maintype='application',
+                           subtype="octet-stream",
+                           filename=("utf-8", "", f"{filename}"))
+
+    context = ssl.create_default_context()
+    with smtplib.SMTP(settings.SMTP_SERVER, settings.PORT_TLS) as server:
+        server.starttls(context=context)
+        server.login(settings.FROM, settings.PASSWORD_EMAIL)
+        server.send_message(message)
+    print("sent email to client")
+
+
+def send_data_to_marketing(data, status, products):
+    message = EmailMessage()
+    message['Subject'] = "Информация о Лидах"
+    message['From'] = settings.FROM_  # send from ??
+    message['To'] = ['a.zubchyk@miran-bel.com']  # sent email to marketing
+
+    text_body = "Информация о потенциальном покупателе"
+    message.set_content(text_body)
+
+    html = render_email_template(data, status, products)
+    message.add_alternative(html, subtype='html')
+    context = ssl.create_default_context()
+    with smtplib.SMTP(settings.SMTP_SERVER, settings.PORT_TLS) as server:
+        server.starttls(context=context)
+        server.login(settings.FROM_, settings.PASSWORD_)
+        server.send_message(message)
+    print("sent email to marketing")
+
+
+def render_email_template(data, status, products):
+    context = {
+        'name': data["name"],
+        'company': data["company"],
+        'email': data["email"],
+        'phone_number': data["phone_number"],
+        'category': data["category"],
+        'products': products,
+        'comment': data["comment"],
+        'place': data["place"],
+        'status': status,
+    }
+    return render_to_string(template_name="template_for_emails/template_email.html", context=context)

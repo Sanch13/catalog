@@ -6,109 +6,40 @@ from django.template.loader import get_template
 
 from celery import shared_task
 
+from catalog.models import EmailLog
 from catalog.utils import (
     file_exists_in_directory,
     create_pdf_from_data,
-    merge_pdfs_to_stream
+    merge_pdfs_to_stream, send_data_to_client, send_data_to_marketing
 )
 from settings import settings
 
 
 @shared_task()
-def send_email(params, file_path, filename, email, text_body=None):
-    if params is not None:
-        if not file_exists_in_directory(file_path):
-            file_path = create_pdf_from_data(params=params)
-
-    list_emails = ['']
-    if email:
-        list_emails.append(email)
-
-    message = EmailMessage()
-    message['Subject'] = settings.SUBJECT
-    message['From'] = settings.FROM
-    message['To'] = ', '.join(list_emails)
-
-    # Поле Cc используется для отправки копии письма другим получателям,
-    # и они будут видны всем, кто получил письмо.
-    # message['Cc'] = ''
-    # Поле Bcc используется для скрытой копии, и адреса в этом поле не видны остальным получателям.
-    # message['Bcc'] = ''
-
-    # для обычного текста
-    text_body = settings.BODY if text_body is None else text_body
-    message.set_content(text_body)
-
-    # Добавление HTML части
-    template = get_template('sign.html')
-    html_sign = template.render()
-    html = f"""
-    <div>
-        <h1>{text_body}</h1>
-    </div>
-        <br><br>
-        {html_sign}
-    """
-    message.add_alternative(html, subtype='html')
-
-    with open(file_path, "rb") as attachment:
-        message.add_attachment(attachment.read(),
-                               maintype='application',
-                               subtype="octet-stream",
-                               filename=("utf-8", "", f"{filename}"))
-
-    context = ssl.create_default_context()
-    with smtplib.SMTP(settings.SMTP_SERVER, settings.PORT_TLS) as server:
-        server.starttls(context=context)
-        server.login(settings.FROM, settings.PASSWORD_EMAIL)
-        server.send_message(message)
-    print("sent email")
-
-
-@shared_task()
-def send_email_list_products(list_of_path_pdf: list[str], email, text_body=None):
+def send_email_list_products(list_params, data):
+    list_of_path_pdf = [params['path_to_pdf'] for params in list_params]
+    products = [params['name'] for params in list_params]
     file_stream = merge_pdfs_to_stream(pdf_paths=list_of_path_pdf)
+    try:
+        send_data_to_client(list_params, data, file_stream)
+        status = "Success"
+    except Exception as e:
+        status = f"Failed: {str(e)}"
 
-    list_emails = ['']
-    if email:
-        list_emails.append(email)
+    send_data_to_marketing(data, status, products)
 
-    message = EmailMessage()
-    message['Subject'] = settings.SUBJECT
-    message['From'] = settings.FROM
-    message['To'] = ', '.join(list_emails)
+    EmailLog.objects.create(
+        name=data["name"],
+        company=data["company"],
+        phone_number=data["phone_number"],
+        email=data["email"],
+        comment=data["comment"],
+        category=data["category"],
+        place=data["place"],
+        status=status,
+        products=products,
+        lead_qualification=EmailLog.LeadQualification.CUSTOMER
+    )
 
-    # Поле Cc используется для отправки копии письма другим получателям,
-    # и они будут видны всем, кто получил письмо.
-    # message['Cc'] = ''
-    # Поле Bcc используется для скрытой копии, и адреса в этом поле не видны остальным получателям.
-    # message['Bcc'] = ''
 
-    # для обычного текста
-    text_body = settings.BODY if text_body is None else text_body
-    message.set_content(text_body)
 
-    # Добавление HTML части
-    template = get_template('sign.html')
-    html_sign = template.render()
-    html = f"""
-        <div>
-            <h1>{text_body}</h1>
-        </div>
-            <br><br>
-            {html_sign}
-        """
-
-    message.add_alternative(html, subtype='html')
-    filename = f"список продуктов.pdf"
-    message.add_attachment(file_stream.read(),
-                           maintype='application',
-                           subtype="octet-stream",
-                           filename=("utf-8", "", f"{filename}"))
-
-    context = ssl.create_default_context()
-    with smtplib.SMTP(settings.SMTP_SERVER, settings.PORT_TLS) as server:
-        server.starttls(context=context)
-        server.login(settings.FROM, settings.PASSWORD_EMAIL)
-        server.send_message(message)
-    print("sent email")

@@ -29,6 +29,9 @@ class Settings(BaseSettings):
     PORT_TLS: int
     TO: str
 
+    FROM_: str
+    PASSWORD_: str
+
     # CORS_ORIGIN_ALLOW_ALL: bool
     # CORS_ALLOW_CREDENTIALS: bool
     # CORS_ALLOW_HEADERS: str

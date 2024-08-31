@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 10px;
+            padding: 10px;
+        }
+
+        .header {
+            font-size: 24px;
+            font-weight: bold;
+            margin-left: 20px;
+            margin-top: 20px;
+        }
+
+        .info-block {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+            border-bottom: 1px solid black;
+        }
+
+        .info-block .key {
+            font-weight: bold;
+            width: 20%;
+        }
+
+        .info-block .value {
+            flex-grow: 1;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 10px;
+            }
+
+            .info-block {
+                flex-direction: column;
+                margin-bottom: 8px;
+            }
+
+            .info-block .key,
+            .info-block .value {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        Информация о потенциальном покупателе
+    </div>
+    <div class="container">
+        <div class="info-block">
+            <div class="key">Имя:</div>
+            <div class="value">{{ name }}</div>
+        </div>
+        <div class="info-block">
+            <div class="key">Компания:</div>
+            <div class="value">{{ company }}</div>
+        </div>
+        <div class="info-block">
+            <div class="key">Email:</div>
+            <div class="value">{{ email }}</div>
+        </div>
+        <div class="info-block">
+            <div class="key">Телефон:</div>
+            <div class="value">{{ phone_number }}</div>
+        </div>
+        <div class="info-block">
+            <div class="key">Категория :</div>
+            <div class="value">{{ category }}</div>
+        </div>
+        <div class="info-block">
+            <div class="key">Список продуктов:</div>
+            <div class="value">
+                {% for product in products %}
+                    {{ product }}<br>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="info-block">
+            <div class="key">Комментарий:</div>
+            <div class="value">{{ comment }}</div>
+        </div>
+        <div class="info-block">
+            <div class="key">От куда пользователь:</div>
+            <div class="value">{{ place }}</div>
+        </div>
+        <div class="info-block">
+            <div class="key">Статус отправки сообщения пользователю:</div>
+            <div class="value">{{ status }}</div>
+        </div>
+    </div>
+</body>
+</html>

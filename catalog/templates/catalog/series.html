@@ -6,10 +6,13 @@
 
 {% block css %}
     <link href="{% static 'css/pagination_styles.css' %}" rel="stylesheet"/>
+    <link href="{% static 'css/popup_styles.css' %}" rel="stylesheet"/>
+
 {% endblock css %}
 
 {% block content %}
 
+    <!-- Секция с кнопками фильтров -->
     <section class="filter__block">
         <div class="filter__buttons">
             <div class="btn-miran-filter" id="All">
@@ -26,7 +29,7 @@
                            name="all"
                            value="all"
                            id="all">
-                    Все
+                    Сбросить
                 </label>
             </div>
             <form method="get" id="filter-bottles-form">
@@ -49,11 +52,12 @@
         </div>
     </section>
 
+    <!-- Контейнер с карточками товара -->
     <div class="container">
         <div class="row my-row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4">
             {% for ser in series %}
                 <div class="col">
-                    <div class="card">
+                    <div class="card" id="{{ ser.id }}">
                         <a href="{{ ser.get_absolute_url }}">
                             <img src="{{ ser.series_image.url }}" class="card-img-top"
                                  alt="...">
@@ -87,7 +91,96 @@
         </div>
     </div>
 
+    <!-- Фиксированная кнопка send to email-->
+    <button class="fixed-button btn-menu-header" id="openPopup">Отправить на Email</button>
 
+    <!-- Попап для отправки выбранных продуктов -->
+    <div id="popupForm" class="popup" style="display: none;">
+        <div class="popup-content">
+            <span id="closePopup">&times;</span>
+            <h2>Заполните форму и нажмите отправить</h2>
+            <form class="form-send-data-to-email"
+                  id="contactForm"
+                  action="{% url 'catalog:send_data_to_email' %}"
+                  method="post"
+                  novalidate>
+
+                {% csrf_token %}
+
+                {# NAME #}
+                <div class="my-form-group">
+                    <label>{{ form_data_to_email.name.label }}
+                        <span class="text-danger"> *</span>
+                    </label>
+                    {{ form_data_to_email.name }}
+                    <div id="id_name-error" class="error-message"></div>
+                </div>
+
+                {# COMPANY #}
+                <div class="my-form-group">
+                    <label>{{ form_data_to_email.company.label_tag }}<span
+                            class="text-danger"> *</span>
+                    </label>
+                    {{ form_data_to_email.company }}
+                    <div id="id_company-error" class="error-message"></div>
+                </div>
+
+                {# PHONE #}
+                <div class="my-form-group">
+                    <label>{{ form_data_to_email.phone_number.label_tag }}
+                        <span class="text-danger"> *</span>
+                    </label>
+                    {{ form_data_to_email.phone_number }}
+                    <div id="id_phone_number-error" class="error-message"></div>
+                </div>
+
+                {# EMAIL #}
+                <div class="my-form-group">
+                    <label>{{ form_data_to_email.email.label_tag }}
+                        <span class="text-danger"> *</span>
+                    </label>
+                    {{ form_data_to_email.email }}
+                    <div id="id_email-error" class="error-message"></div>
+                </div>
+
+                {# COMMENT #}
+                <div class="my-form-group">
+                    <label>{{ form_data_to_email.comment.label_tag }}</label>
+                    {{ form_data_to_email.comment }}
+                </div>
+
+                {# CHECKBOX RULES #}
+                <div class="my-form-group">
+                    <label for="rulesCondition">
+                        <input type="checkbox" id="rulesCondition">
+                        <span class="custom-checkbox"></span> Я согласен на обработку моих
+                        персональных данных
+                    </label>
+                </div>
+
+                <div class="fileSizeDisplay">
+                    <span id="fileSizeDisplay"></span>
+                </div>
+
+                <button type="submit"
+                        class="btn-submit-form"
+                        id="sendForm"
+                        disabled>Отправить
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Попап о успешной отправке -->
+    <div id="successPopup" class="popup" style="display: none;">
+        <div class="success-popup-content d-flex justify-content-center align-items-center">
+            <div id="successMessage">
+                Спасибо!<br>Ваше сообщение отправлено.
+            </div>
+        </div>
+    </div>
+
+    <!-- Секция с кнопками фильтров -->
     <script>
     document.addEventListener('DOMContentLoaded', function () {
         const form = document.getElementById('filter-bottles-form');
@@ -170,4 +263,223 @@
         });
     });
     </script>
+
+    {#  GET FILESIZE  #}
+    <script>
+        {# Возвращает список ids #}
+        function get_ids() {
+            const cards = document.querySelectorAll('.card');
+            const ids = [];
+
+            cards.forEach(function (card) {
+                ids.push(card.id);
+            });
+            return ids
+        }
+
+        {# Запрос на размер отправляемого файла #}
+        document.getElementById('openPopup').addEventListener('click', function () {
+            document.getElementById('popupForm').style.display = 'flex';
+            const data = new FormData();
+            data.append('ids', JSON.stringify(get_ids()));
+            data.append("category", 'series');
+
+            fetch("{% url 'catalog:get_size_list_files' %}", {
+                method: 'POST',
+                body: data,
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Если ответ успешный, вставляем размер файла в блок div
+                        document.getElementById('fileSizeDisplay').innerText = `Размер файла: ${data.file_size} `;
+                    } else {
+                        // Если возникла ошибка, отображаем сообщение об ошибке
+                        document.getElementById('fileSizeDisplay').innerText = "Ошибка при получении размера файла.";
+                    }
+                })
+                .catch(error => {
+                    console.error('Ошибка:', error);
+                    document.getElementById('fileSizeDisplay').innerText = "Произошла ошибка при выполнении запроса.";
+                });
+        });
+    </script>
+
+    {#  POPUP  #}
+    <script>
+        {# Закрытие попапа по кнопке Х #}
+        document.getElementById('closePopup').addEventListener('click', function () {
+            document.getElementById('popupForm').style.display = 'none';
+        });
+
+        {# Закрытие попапа по клику вне окна #}
+        document.addEventListener('click', function (event) {
+            let popup = document.querySelector('.popup-content');
+            let formPopup = document.getElementById('popupForm');
+            if (formPopup.style.display === 'flex' && !popup.contains(event.target) && event.target.id !== 'openPopup') {
+                formPopup.style.display = 'none';
+            }
+        });
+
+        {# Закрытие успешного попапа по клику вне окна #}
+        document.addEventListener('click', function (event) {
+            let popup = document.querySelector('.success-popup-content');
+            let formPopup = document.getElementById('successPopup');
+            if (formPopup.style.display === 'flex' && !popup.contains(event.target) && event.target.id !== 'openPopup') {
+                formPopup.style.display = 'none';
+            }
+        });
+    </script>
+
+    {#  VALIDATION FIELDS AND SEND FORM TO SERVER #}
+    <script>
+        function isEmptyField(valueField) {
+            return valueField.trim() === "";
+        }
+
+        function isValidEmail(value) {
+            return /\S+@\S+\.\S+/.test(value);
+        }
+
+        function showEmptyFieldError(nameInput, errorElement) {
+            nameInput.classList.add('is-invalid');
+            errorElement.textContent = "Поле не может быть пустым.";
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const nameInput = document.getElementById('id_name');
+            const companyInput = document.getElementById('id_company');
+            const phoneNumberInput = document.getElementById('id_phone_number');
+            const emailInput = document.getElementById('id_email');
+
+            nameInput.addEventListener('blur', handleNameBlur);
+            companyInput.addEventListener('blur', handleCompanyBlur);
+            phoneNumberInput.addEventListener('blur', handlePhoneNumberBlur);
+            emailInput.addEventListener('blur', handleEmailBlur);
+
+            function handleNameBlur() {
+                const valueField = document.getElementById('id_name').value;
+                const errorElement = document.getElementById('id_name' + '-error');
+                let flag = false
+
+                if (isEmptyField(valueField)) {
+                    showEmptyFieldError(nameInput, errorElement);
+                } else {
+                    nameInput.classList.remove('is-invalid');
+                    errorElement.textContent = '';
+                    flag = true
+                }
+                return flag
+            }
+
+            function handleCompanyBlur() {
+                const valueField = document.getElementById('id_company').value;
+                const errorElement = document.getElementById('id_company' + '-error');
+                let flag = false
+
+                if (isEmptyField(valueField)) {
+                    showEmptyFieldError(companyInput, errorElement);
+                } else {
+                    companyInput.classList.remove('is-invalid');
+                    errorElement.textContent = '';
+                    flag = true
+                }
+                return flag
+            }
+
+            function handlePhoneNumberBlur() {
+                const valueField = document.getElementById('id_phone_number').value;
+                const errorElement = document.getElementById('id_phone_number' + '-error');
+                let flag = false
+
+                if (isEmptyField(valueField)) {
+                    showEmptyFieldError(phoneNumberInput, errorElement);
+                } else {
+                    phoneNumberInput.classList.remove('is-invalid');
+                    errorElement.textContent = '';
+                    flag = true
+
+                }
+                return flag
+            }
+
+            function handleEmailBlur() {
+                const valueField = document.getElementById('id_email').value;
+                const errorElement = document.getElementById('id_email' + '-error');
+                let flag = false
+
+                if (isEmptyField(valueField)) {
+                    showEmptyFieldError(emailInput, errorElement);
+                } else if (!isValidEmail(valueField)) {
+                    errorElement.textContent = 'Введите корректный email';
+                } else {
+                    emailInput.classList.remove('is-invalid');
+                    errorElement.textContent = '';
+                    flag = true
+                }
+                return flag
+            }
+
+            function checkFields() {
+                const flag1 = handleNameBlur()
+                const flag2 = handleCompanyBlur()
+                const flag3 = handlePhoneNumberBlur()
+                const flag4 = handleEmailBlur()
+                return flag1 && flag2 && flag3 && flag4;
+            }
+
+            document.getElementById('contactForm').addEventListener('submit', function (event) {
+                event.preventDefault();
+
+                if (checkFields()) {
+                    let data = new FormData(this);
+                    data.append("ids", JSON.stringify(get_ids()));
+                    data.append("category", 'series');
+                    data.append("place", 'catalog');
+
+                    fetch("{% url 'catalog:send_data_to_email' %}", {
+                        method: 'POST',
+                        body: data,
+                        headers: {
+                            'X-CSRFToken': '{{ csrf_token }}'
+                        }
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                document.getElementById('popupForm').style.display = 'none';
+                                document.getElementById('successPopup').style.display = 'flex';
+
+                                document.getElementById('contactForm').reset();
+
+                                setTimeout(function () {
+                                    document.getElementById('successPopup').style.display = 'none';
+                                }, 3000); // Закрытие через 3 секунды
+                            } else {
+                                alert('Ошибка: ' + JSON.stringify(data.errors));
+                            }
+                        });
+                }
+            });
+
+            document.getElementById('id_phone_number').addEventListener('input', function (e) {
+                if (isNaN(e.target.value)) {
+                    e.target.value = e.target.value.replace(/\D/g, '');
+                }
+            });
+
+            const checkbox = document.getElementById('rulesCondition');
+            const submitButton = document.getElementById('sendForm');
+
+            checkbox.addEventListener('change', function () {
+                submitButton.disabled = !checkbox.checked;
+            });
+
+        });
+    </script>
+
+
 {% endblock %}

@@ -23,6 +23,7 @@ INSTALLED_APPS = [
 INSTALLED_APPS += [
     'imagekit',
     'tinymce',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
@@ -40,7 +41,7 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [Path(BASE_DIR, 'catalog/templates/catalog')],
+        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
