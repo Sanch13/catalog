@@ -10,28 +10,29 @@
 {% endblock css %}
 
 {% block content %}
+
     <!-- Секция с кнопками фильтров -->
     <section class="filter__block">
         <div class="filter__buttons">
-            <div class="btn-miran-filter" id="All">
-                <div class="check">
-                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg"
-                         viewBox="0 0 26 26"
-                         xmlns:xlink="http://www.w3.org/1999/xlink"
-                         enable-background="new 0 0 26 26">
-                        <path d="m.3,14c-0.2-0.2-0.3-0.5-0.3-0.7s0.1-0.5 0.3-0.7l1.4-1.4c0.4-0.4 1-0.4 1.4,0l.1,.1 5.5,5.9c0.2,0.2 0.5,0.2 0.7,0l13.4-13.9h0.1v-8.88178e-16c0.4-0.4 1-0.4 1.4,0l1.4,1.4c0.4,0.4 0.4,1 0,1.4l0,0-16,16.6c-0.2,0.2-0.4,0.3-0.7,0.3-0.3,0-0.5-0.1-0.7-0.3l-7.8-8.4-.2-.3z"></path>
-                    </svg>
-                </div>
-                <label for="all">
-                    <input type="checkbox"
-                           name="all"
-                           value="all"
-                           id="all">
-                    Сбросить
-                </label>
-            </div>
             <form method="get" id="filter-caps-form">
-                {% for field in form %}
+                <div class="btn-miran-filter" id="All">
+                    <div class="check">
+                        <svg version="1.1" xmlns="http://www.w3.org/2000/svg"
+                             viewBox="0 0 26 26"
+                             xmlns:xlink="http://www.w3.org/1999/xlink"
+                             enable-background="new 0 0 26 26">
+                            <path d="m.3,14c-0.2-0.2-0.3-0.5-0.3-0.7s0.1-0.5 0.3-0.7l1.4-1.4c0.4-0.4 1-0.4 1.4,0l.1,.1 5.5,5.9c0.2,0.2 0.5,0.2 0.7,0l13.4-13.9h0.1v-8.88178e-16c0.4-0.4 1-0.4 1.4,0l1.4,1.4c0.4,0.4 0.4,1 0,1.4l0,0-16,16.6c-0.2,0.2-0.4,0.3-0.7,0.3-0.3,0-0.5-0.1-0.7-0.3l-7.8-8.4-.2-.3z"></path>
+                        </svg>
+                    </div>
+                    <label for="all">
+                        <input type="checkbox"
+                               name="all"
+                               value="all"
+                               id="all">
+                        Сбросить
+                    </label>
+                </div>
+                {% for field in form_filter %}
                     {% for item in field %}
                         <div class="btn-miran-filter">
                             <div class="check">
@@ -83,93 +84,9 @@
     </div>
 
     <!-- Фиксированная кнопка send to email-->
-    <button class="fixed-button btn-menu-header" id="openPopup">Отправить на Email</button>
+    <button class="fixed-button btn-menu-header" id="openPopup">Скачать на свой email</button>
 
-    <!-- Попап для отправки выбранных продуктов -->
-    <div id="popupForm" class="popup" style="display: none;">
-        <div class="popup-content">
-            <span id="closePopup">&times;</span>
-            <h2>Заполните форму и нажмите отправить</h2>
-            <form class="form-send-data-to-email"
-                  id="contactForm"
-                  action="{% url 'catalog:send_data_to_email' %}"
-                  method="post"
-                  novalidate>
-
-                {% csrf_token %}
-
-                {# NAME #}
-                <div class="my-form-group">
-                    <label>{{ form_data_to_email.name.label }}
-                        <span class="text-danger"> *</span>
-                    </label>
-                    {{ form_data_to_email.name }}
-                    <div id="id_name-error" class="error-message"></div>
-                </div>
-
-                {# COMPANY #}
-                <div class="my-form-group">
-                    <label>{{ form_data_to_email.company.label_tag }}<span
-                            class="text-danger"> *</span>
-                    </label>
-                    {{ form_data_to_email.company }}
-                    <div id="id_company-error" class="error-message"></div>
-                </div>
-
-                {# PHONE #}
-                <div class="my-form-group">
-                    <label>{{ form_data_to_email.phone_number.label_tag }}
-                        <span class="text-danger"> *</span>
-                    </label>
-                    {{ form_data_to_email.phone_number }}
-                    <div id="id_phone_number-error" class="error-message"></div>
-                </div>
-
-                {# EMAIL #}
-                <div class="my-form-group">
-                    <label>{{ form_data_to_email.email.label_tag }}
-                        <span class="text-danger"> *</span>
-                    </label>
-                    {{ form_data_to_email.email }}
-                    <div id="id_email-error" class="error-message"></div>
-                </div>
-
-                {# COMMENT #}
-                <div class="my-form-group">
-                    <label>{{ form_data_to_email.comment.label_tag }}</label>
-                    {{ form_data_to_email.comment }}
-                </div>
-
-                {# CHECKBOX RULES #}
-                <div class="my-form-group">
-                    <label for="rulesCondition">
-                        <input type="checkbox" id="rulesCondition">
-                        <span class="custom-checkbox"></span> Я согласен на обработку моих
-                        персональных данных
-                    </label>
-                </div>
-
-                <div class="fileSizeDisplay">
-                    <span id="fileSizeDisplay"></span>
-                </div>
-
-                <button type="submit"
-                        class="btn-submit-form"
-                        id="sendForm"
-                        disabled>Отправить
-                </button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Попап о успешной отправке -->
-    <div id="successPopup" class="popup" style="display: none;">
-        <div class="success-popup-content d-flex justify-content-center align-items-center">
-            <div id="successMessage">
-                Спасибо!<br>Ваше сообщение отправлено.
-            </div>
-        </div>
-    </div>
+    {% include 'popup/popup.html' %}
 
     <!-- Секция с кнопками фильтров -->
     <script>
@@ -297,32 +214,6 @@
                     console.error('Ошибка:', error);
                     document.getElementById('fileSizeDisplay').innerText = "Произошла ошибка при выполнении запроса.";
                 });
-        });
-    </script>
-
-    {#  POPUP  #}
-    <script>
-        {# Закрытие попапа по кнопке Х #}
-        document.getElementById('closePopup').addEventListener('click', function () {
-            document.getElementById('popupForm').style.display = 'none';
-        });
-
-        {# Закрытие попапа по клику вне окна #}
-        document.addEventListener('click', function (event) {
-            let popup = document.querySelector('.popup-content');
-            let formPopup = document.getElementById('popupForm');
-            if (formPopup.style.display === 'flex' && !popup.contains(event.target) && event.target.id !== 'openPopup') {
-                formPopup.style.display = 'none';
-            }
-        });
-
-        {# Закрытие успешного попапа по клику вне окна #}
-        document.addEventListener('click', function (event) {
-            let popup = document.querySelector('.success-popup-content');
-            let formPopup = document.getElementById('successPopup');
-            if (formPopup.style.display === 'flex' && !popup.contains(event.target) && event.target.id !== 'openPopup') {
-                formPopup.style.display = 'none';
-            }
         });
     </script>
 
@@ -472,6 +363,5 @@
 
         });
     </script>
-
 
 {% endblock %}

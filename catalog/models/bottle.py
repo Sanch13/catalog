@@ -16,7 +16,7 @@ class Bottle(models.Model):
     class VolumeFilterBottle(models.TextChoices):
         THIRTY_TWO_HUNDRED = '30-200', '30-200 мл'
         SEVENTY_FIVE_ONE_HUNDRED_FIFTY = '250-400', '250-400 мл'
-        FIVE_HUNDRED_ONE_THOUSAND = '500-1000', '500 - 1000 мл'
+        FIVE_HUNDRED_ONE_THOUSAND = '500-1000', '500-1000 мл'
 
     class VolumeBottle(models.IntegerChoices):
         THIRTY = 30, '30'
@@ -41,9 +41,9 @@ class Bottle(models.Model):
         ONE_THOUSAND = 1000, '1000'
 
     class ShapeBottle(models.TextChoices):
-        CYLINDER = 'цилиндричекая', 'цилиндричекая'
-        SQUARE = 'квадратная', 'квадратная'
-        CIRCLE = 'круглая', 'круглая'
+        CYLINDER = 'цилиндрическая', 'цилиндрическая'
+        OVAL = 'овальная', 'овальная'
+        RECTANGULAR = 'прямоугольная', 'прямоугольная'
 
     class ThroatStandard(models.TextChoices):
         TWENTY_FOUR = '24/410', '24/410'

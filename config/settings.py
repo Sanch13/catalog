@@ -23,7 +23,6 @@ INSTALLED_APPS = [
 INSTALLED_APPS += [
     'imagekit',
     'tinymce',
-    'django_extensions',
 ]
 
 MIDDLEWARE = [

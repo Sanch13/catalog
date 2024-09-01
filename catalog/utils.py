@@ -12,7 +12,7 @@ from django.core.paginator import Paginator
 from django.core.files.base import ContentFile
 from django.conf import settings as config_settings
 from django.db.models import Q
-from django.template.loader import get_template, render_to_string
+from django.template.loader import render_to_string
 
 from pypdf import PdfWriter, PdfReader
 from settings import settings
@@ -72,6 +72,7 @@ def get_list_params_jars_from_db(ids: list[int]) -> list:
             'volume': jar.volume,
             'surface': jar.surface,
             'status_decoration': jar.status_decoration,
+            'feature': jar.feature,
             'description': BeautifulSoup(jar.description, "html.parser").get_text(),
             'files': [open(file, 'rb').read() for file in
                       [file.file.path for file in jar.jar_files.all()]],
@@ -116,7 +117,13 @@ def get_list_params_bottles_from_db(ids: list[int], category) -> list:
     if category == 'bottle':
         bottles = Bottle.objects.prefetch_related('bottle_files').filter(id__in=ids)
     else:
-        bottles = Bottle.objects.filter(series_id__in=ids).select_related('series').prefetch_related('bottle_files')
+        bottles = Bottle.objects.filter(
+            series_id__in=ids
+        ).select_related(
+            'series'
+        ).prefetch_related(
+            'bottle_files'
+        )
 
     for bottle in bottles:
         filename = f"{bottle.name}.pdf"
@@ -154,6 +161,7 @@ def get_params_category_for_table(params, category):
             ("Объем мл.", params['volume']),
             ("Поверхность", params['surface']),
             ("Декорирование", params['status_decoration']),
+            ("Доп. характеристики", params['feature']),
         ]
         return items
     if category == 'cap':
@@ -260,7 +268,7 @@ def create_pdf_from_data(params, category):
     pdf.multi_cell(w=available_width_description, h=10, max_line_height=8,
                    text=description)  # Добавление описания
 
-    filename = f"{params['name']}.pdf"
+    filename = params["filename"]
     path_pdf_file = Path(config_settings.PDF_DIR, filename)
     pdf.output(str(path_pdf_file))
     return path_pdf_file
@@ -273,10 +281,10 @@ def file_exists_in_directory(file_path):
 def get_formatted_file_size(size_bytes: int) -> str:
     if size_bytes < 1024:
         return f"{size_bytes} байт"
-    elif size_bytes < 1024 ** 2:  # Менее 1 МБ
+    elif size_bytes < 1024 ** 2:
         size_kb = size_bytes / 1024
         return f"{size_kb:.2f} КБайт"
-    elif size_bytes < 1024 ** 3:  # Менее 1 ГБ
+    elif size_bytes < 1024 ** 3:
         size_mb = size_bytes / (1024 ** 2)
         return f"{size_mb:.2f} МБайт"
     else:
@@ -307,6 +315,20 @@ def merge_pdfs_to_stream(pdf_paths: list[str]):
     writer.write(output_stream)
     output_stream.seek(0)
     return output_stream
+
+
+def send_admin_email(text_body):
+    message = EmailMessage()
+    message['Subject'] = 'Error'
+    message['From'] = settings.FROM_
+    message['To'] = ['a.zubchyk@miran-bel.com']
+    message.set_content(text_body)
+    context = ssl.create_default_context()
+    with smtplib.SMTP(settings.SMTP_SERVER, settings.PORT_TLS) as server:
+        server.starttls(context=context)
+        server.login(settings.FROM_, settings.PASSWORD_)
+        server.send_message(message)
+    print("sent email to admin")
 
 
 def send_data_to_client(list_params, data, file_stream):
@@ -362,16 +384,17 @@ def send_data_to_marketing(data, status, products):
     print("sent email to marketing")
 
 
-def render_email_template(data, status, products):
+def render_email_template(data, status=None, products=None):
     context = {
         'name': data["name"],
         'company': data["company"],
         'email': data["email"],
         'phone_number': data["phone_number"],
         'category': data["category"],
-        'products': products,
+        'products': products if products else '',
         'comment': data["comment"],
         'place': data["place"],
-        'status': status,
+        'status': status if status else '',
     }
-    return render_to_string(template_name="template_for_emails/template_email.html", context=context)
+    return render_to_string(template_name="template_for_emails/template_email.html",
+                            context=context)

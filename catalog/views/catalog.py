@@ -5,18 +5,20 @@ from django.db.models import OuterRef, Subquery, Value, Q
 from django.db.models.functions import Coalesce
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
-from django.conf import settings as config_settings
 
-from catalog.forms import CapFilterForm, JarFilterForm, BottlesFilterForm, SendDataToEmail
+from catalog.forms import CapFilterForm, JarFilterForm, BottlesFilterForm, SendDataToEmail, \
+    SendDataFromSupplierToEmail
 from catalog.models import Jar, Series, Cap, Category, Bottle, CapFile, JarFile, BottleFile
-from catalog.tasks import send_email_list_products
+from catalog.tasks import send_email_list_products, send_email_from_contact_customer
 from catalog.utils import (
     create_pdf_from_data,
     file_exists_in_directory,
     get_formatted_file_size,
     convert_to_numbers,
     get_list_params_jars_from_db,
-    get_query_for_request_to_db, get_list_params_caps_from_db, get_list_params_bottles_from_db
+    get_query_for_request_to_db,
+    get_list_params_caps_from_db,
+    get_list_params_bottles_from_db
 )
 
 
@@ -38,15 +40,17 @@ def get_catalog(request):
 def get_category(request, category_slug):
     category = get_object_or_404(Category, slug=category_slug)
     if category.name == 'Флаконы':
-        form = BottlesFilterForm(request.GET or None)
+        form_filter = BottlesFilterForm(request.GET or None)
         form_data_to_email = SendDataToEmail()
         series = Series.objects.filter(category=category)
 
-        if form.is_valid():
-            throat_standard = form.cleaned_data.get('throat_standard')
-            volumes = form.cleaned_data.get("volume")
-            status_decoration = form.cleaned_data.get("status_decoration")
-            surface = form.cleaned_data.get("surface")
+        if form_filter.is_valid():
+            cd = form_filter.cleaned_data
+            throat_standard = cd.get('throat_standard')
+            volumes = cd.get("volume")
+            status_decoration = cd.get("status_decoration")
+            surface = cd.get("surface")
+            shape = cd.get("shape")
 
             if volumes:
                 query = Q()
@@ -60,10 +64,12 @@ def get_category(request, category_slug):
                 series = series.filter(bottle__status_decoration=status_decoration).distinct()
             if surface:
                 series = series.filter(bottle__surface__in=surface).distinct()
+            if shape:
+                series = series.filter(bottle__shape__in=shape).distinct()
 
         context = {
             'series': series,
-            'form': form,
+            'form_filter': form_filter,
             'form_data_to_email': form_data_to_email,
         }
         return render(request=request,
@@ -76,9 +82,10 @@ def get_category(request, category_slug):
         jars = Jar.objects.filter(category=category)
 
         if form_filter.is_valid():
-            volumes = form_filter.cleaned_data.get('volume')
-            surface = form_filter.cleaned_data.get('surface')
-            status_decoration = form_filter.cleaned_data.get('status_decoration')
+            cd = form_filter.cleaned_data
+            volumes = cd.get('volume')
+            surface = cd.get('surface')
+            status_decoration = cd.get('status_decoration')
 
             if volumes:
                 query = get_query_for_request_to_db(list_volumes=volumes)
@@ -98,14 +105,15 @@ def get_category(request, category_slug):
                       context=context)
 
     elif category.name == 'Колпачки':
-        form = CapFilterForm(request.GET or None)
+        form_filter = CapFilterForm(request.GET or None)
         caps = Cap.objects.filter(category=category)
         form_data_to_email = SendDataToEmail()
 
-        if form.is_valid():
-            throat_standard = form.cleaned_data.get('throat_standard')
-            type_of_closure = form.cleaned_data.get('type_of_closure')
-            surface = form.cleaned_data.get('surface')
+        if form_filter.is_valid():
+            cd = form_filter.cleaned_data
+            throat_standard = cd.get('throat_standard')
+            type_of_closure = cd.get('type_of_closure')
+            surface = cd.get('surface')
             if throat_standard:
                 caps = caps.filter(throat_standard__in=throat_standard)
             if type_of_closure:
@@ -115,7 +123,7 @@ def get_category(request, category_slug):
 
         context = {
             'caps': caps,
-            'form': form,
+            'form_filter': form_filter,
             'form_data_to_email': form_data_to_email,
         }
         return render(request=request,
@@ -154,21 +162,11 @@ def get_category(request, category_slug):
 
 def get_product_detail(request, category_slug, series_slug=None, product_slug=None):
     """For bottles"""
-    volume = request.GET.get('volume')
     form_data_to_email = SendDataToEmail()
-
-    if volume:
-        bottle = get_object_or_404(Bottle,
-                                   category__slug=category_slug,
-                                   series__slug=series_slug,
-                                   volume=volume,
-                                   slug=product_slug)
-    else:
-        bottle = get_object_or_404(Bottle,
-                                   category__slug=category_slug,
-                                   series__slug=series_slug,
-                                   slug=product_slug)
-
+    bottle = get_object_or_404(Bottle,
+                               category__slug=category_slug,
+                               series__slug=series_slug,
+                               slug=product_slug)
     bottles = Bottle.objects.filter(series__slug=series_slug)
 
     context = {
@@ -200,7 +198,6 @@ def product_detail_no_series(request, category_slug, product_slug):
 
     elif category_slug == 'caps':
         form_data_to_email = SendDataToEmail()
-
         cap = get_object_or_404(Cap,
                                 category__slug=category_slug,
                                 slug=product_slug)
@@ -212,19 +209,6 @@ def product_detail_no_series(request, category_slug, product_slug):
                       template_name='catalog/cap_detail.html',
                       context=context)
 
-    elif category_slug == 'bottles':
-        form_data_to_email = SendDataToEmail()
-        bottle = get_object_or_404(Bottle,
-                                   category__slug=category_slug,
-                                   slug=product_slug)
-        context = {
-            "bottle": bottle,
-            "form_data_to_email": form_data_to_email,
-        }
-        return render(request=request,
-                      template_name='catalog/bottle_detail.html',
-                      context=context)
-
 
 def send_data_to_email(request):
     print('send_data_to_email', request.POST)
@@ -232,28 +216,34 @@ def send_data_to_email(request):
         form = SendDataToEmail(request.POST)
         if form.is_valid():
             cd = form.cleaned_data
-            category = request.POST.get("category", [])
+            category = request.POST.get('category', [])
             place = request.POST.get('place', [])
             user_data = {
-                'name': cd["name"],
-                'company': cd["company"],
-                'phone_number': cd["phone_number"],
-                'email': cd["email"],
-                'comment': cd["comment"],
+                'name': cd['name'],
+                'company': cd['company'],
+                'phone_number': cd['phone_number'],
+                'email': cd['email'],
+                'comment': cd['comment'],
                 'category': category,
                 'place': place,
             }
-            ids = convert_to_numbers(json.loads(request.POST.get('ids', [])))
-            list_params = []
-            if category == 'jar':
-                list_params = get_list_params_jars_from_db(ids)
-            if category == 'cap':
-                list_params = get_list_params_caps_from_db(ids)
-            if category in ('bottle', 'series'):
-                list_params = get_list_params_bottles_from_db(ids, category)
+            print("work")
+            if place != 'contact':
+                ids = convert_to_numbers(json.loads(request.POST.get('ids', [])))
+                list_params = []
+                if category == 'jar':
+                    list_params = get_list_params_jars_from_db(ids)
+                if category == 'cap':
+                    list_params = get_list_params_caps_from_db(ids)
+                if category in ('bottle', 'series'):
+                    list_params = get_list_params_bottles_from_db(ids, category)
 
-            send_email_list_products.delay(list_params=list_params, data=user_data)
-            return JsonResponse({'success': True})
+                send_email_list_products.delay(list_params=list_params, data=user_data)
+                return JsonResponse({'success': True})
+            else:
+                send_email_from_contact_customer.delay(data=user_data)
+                print("send email")
+                return JsonResponse({'success': True})
         else:
             return JsonResponse({'success': False, 'errors': form.errors})
 
@@ -290,5 +280,12 @@ def about_miran(request):
 
 
 def contact_me(request):
+    form_data_to_email = SendDataToEmail()
+    form_data_to_email_supplier = SendDataFromSupplierToEmail()
+    context = {
+        'form_data_to_email': form_data_to_email,
+        'form_data_to_email_supplier': form_data_to_email_supplier,
+    }
     return render(request=request,
-                  template_name="catalog/contact_me.html")
+                  template_name="catalog/contact_me.html",
+                  context=context)

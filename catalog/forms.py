@@ -51,6 +51,12 @@ class JarFilterForm(forms.Form):
         return Jar.YesNoStatusJar.YES if 'декорирование' in data else None
 
 
+filtered_choices = [
+    (Bottle.ShapeBottle.CYLINDER, Bottle.ShapeBottle.CYLINDER.label),
+    (Bottle.ShapeBottle.RECTANGULAR, Bottle.ShapeBottle.RECTANGULAR.label),
+]
+
+
 class BottlesFilterForm(forms.Form):
     volume = forms.MultipleChoiceField(
         choices=Bottle.VolumeFilterBottle.choices,
@@ -69,6 +75,11 @@ class BottlesFilterForm(forms.Form):
     )
     surface = forms.MultipleChoiceField(
         choices=Bottle.SurfaceBottle.choices,
+        required=False,
+        widget=forms.CheckboxSelectMultiple
+    )
+    shape = forms.MultipleChoiceField(
+        choices=filtered_choices,
         required=False,
         widget=forms.CheckboxSelectMultiple
     )
@@ -101,5 +112,40 @@ class SendDataToEmail(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super(SendDataToEmail, self).__init__(*args, **kwargs)
+        for field_name, filed in self.fields.items():
+            filed.widget.attrs['class'] = 'my-form-control'
+
+
+department_choices = [
+    ('-------', '-------'),
+    ('email1', 'Отдел 1'),
+    ('email2', 'Отдел 2'),
+    ('email3', 'Отдел 3'),
+]
+
+
+class SendDataFromSupplierToEmail(forms.Form):
+    name = forms.CharField(max_length=100, label='Ваше ФИО', required=True)
+    company = forms.CharField(max_length=100, label='Компания', required=True)
+    # phone_number = forms.CharField(max_length=20,
+    #                                label='Номер телефона',
+    #                                required=True)
+    email = forms.EmailField(label='Ваш Email', required=True)
+    department = forms.ChoiceField(choices=department_choices,
+                                   label='Отдел',
+                                   required=True,
+                                   initial=department_choices[0][0])
+
+    comment = forms.CharField(
+        label='Комментарий',
+        required=False,
+        widget=forms.Textarea(attrs={
+            'rows': 5,  # Указываем количество строк
+            'cols': 40  # Указываем количество столбцов (если это нужно)
+        })
+    )
+
+    def __init__(self, *args, **kwargs):
+        super(SendDataFromSupplierToEmail, self).__init__(*args, **kwargs)
         for field_name, filed in self.fields.items():
             filed.widget.attrs['class'] = 'my-form-control'

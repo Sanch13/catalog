@@ -1,0 +1,112 @@
+<!-- Попап для отправки выбранных продуктов -->
+<div id="popupForm" class="popup" style="display: none;">
+    <div class="popup-content">
+        <span id="closePopup">&times;</span>
+        <h2>Заполните форму и нажмите отправить</h2>
+        <form class="form-send-data-to-email"
+              id="contactForm"
+              action="{% url 'catalog:send_data_to_email' %}"
+              method="post"
+              novalidate>
+
+            {% csrf_token %}
+
+            {# NAME #}
+            <div class="my-form-group">
+                <label>{{ form_data_to_email.name.label }}
+                    <span class="text-danger"> *</span>
+                </label>
+                {{ form_data_to_email.name }}
+                <div id="id_name-error" class="error-message"></div>
+            </div>
+
+            {# COMPANY #}
+            <div class="my-form-group">
+                <label>{{ form_data_to_email.company.label_tag }}<span
+                        class="text-danger"> *</span>
+                </label>
+                {{ form_data_to_email.company }}
+                <div id="id_company-error" class="error-message"></div>
+            </div>
+
+            {# PHONE #}
+            <div class="my-form-group">
+                <label>{{ form_data_to_email.phone_number.label_tag }}
+                    <span class="text-danger"> *</span>
+                </label>
+                {{ form_data_to_email.phone_number }}
+                <div id="id_phone_number-error" class="error-message"></div>
+            </div>
+
+            {# EMAIL #}
+            <div class="my-form-group">
+                <label>{{ form_data_to_email.email.label_tag }}
+                    <span class="text-danger"> *</span>
+                </label>
+                {{ form_data_to_email.email }}
+                <div id="id_email-error" class="error-message"></div>
+            </div>
+
+            {# COMMENT #}
+            <div class="my-form-group">
+                <label>{{ form_data_to_email.comment.label_tag }}</label>
+                {{ form_data_to_email.comment }}
+            </div>
+
+            {# CHECKBOX RULES #}
+            <div class="my-form-group">
+                <label for="rulesCondition">
+                    <input type="checkbox" id="rulesCondition">
+                    <span class="custom-checkbox"></span> Я согласен на обработку моих
+                    персональных данных
+                </label>
+            </div>
+
+            <div class="fileSizeDisplay">
+                <span id="fileSizeDisplay"></span>
+            </div>
+
+            <button type="submit"
+                    class="btn-submit-form"
+                    id="sendForm"
+                    disabled>Отправить
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- Попап о успешной отправке -->
+<div id="successPopup" class="popup" style="display: none;">
+    <div class="success-popup-content d-flex justify-content-center align-items-center">
+        <div id="successMessage">
+            Спасибо!<br>Ваша заявка принята!
+{#            <br>После выставки представитель компании свяжется с Вами#}
+        </div>
+    </div>
+</div>
+
+{#  POPUP  #}
+<script>
+    {# Закрытие попапа по кнопке Х #}
+    document.getElementById('closePopup').addEventListener('click', function () {
+        document.getElementById('popupForm').style.display = 'none';
+    });
+
+    {# Закрытие попапа по клику вне окна #}
+    document.addEventListener('click', function (event) {
+        let popup = document.querySelector('.popup-content');
+        let formPopup = document.getElementById('popupForm');
+        if (formPopup.style.display === 'flex' && !popup.contains(event.target) && event.target.id !== 'openPopup') {
+            formPopup.style.display = 'none';
+        }
+    });
+
+    {# Закрытие успешного попапа по клику вне окна #}
+    document.addEventListener('click', function (event) {
+        let popup = document.querySelector('.success-popup-content');
+        let formPopup = document.getElementById('successPopup');
+        if (formPopup.style.display === 'flex' && !popup.contains(event.target) && event.target.id !== 'openPopup') {
+            formPopup.style.display = 'none';
+        }
+    });
+</script>

@@ -62,106 +62,23 @@
                                                 <td>Поверхность</td>
                                                 <td>{{ jar.surface }}</td>
                                             </tr>
+                                            <tr>
+                                                <td>Декорирование</td>
+                                                <td>{{ jar.status_decoration }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Дополнительные характеристики</td>
+                                                <td>{{ jar.feature }}</td>
+                                            </tr>
                                             </tbody>
                                         </table>
                                     </div>
                                 </div>
                                 <div class="col-md-4 col-12 d-flex flex-column align-items-center justify-content-center">
                                     <div class="w-100 my-2">
-                                        <button id="openPopup" class="btn-menu-header">Отправить на
-                                            Email
+                                        <button id="openPopup" class="btn-menu-header">
+                                            Скачать на свой email
                                         </button>
-
-                                        <div id="popupForm" class="popup" style="display: none;">
-                                            <div class="popup-content">
-                                                <span id="closePopup">&times;</span>
-                                                <h2>Заполните форму и нажмите отправить</h2>
-                                                <form class="form-send-data-to-email"
-                                                      id="contactForm"
-                                                      action="{% url 'catalog:send_data_to_email' %}"
-                                                      method="post"
-                                                      novalidate>
-
-                                                    {% csrf_token %}
-
-                                                    {# NAME #}
-                                                    <div class="my-form-group">
-                                                        <label>{{ form_data_to_email.name.label }}
-                                                            <span class="text-danger"> *</span>
-                                                        </label>
-                                                        {{ form_data_to_email.name }}
-                                                        <div id="id_name-error"
-                                                             class="error-message"></div>
-                                                    </div>
-
-                                                    {# COMPANY #}
-                                                    <div class="my-form-group">
-                                                        <label>{{ form_data_to_email.company.label_tag }}<span
-                                                                class="text-danger"> *</span>
-                                                        </label>
-                                                        {{ form_data_to_email.company }}
-                                                        <div id="id_company-error"
-                                                             class="error-message"></div>
-                                                    </div>
-
-                                                    {# PHONE #}
-                                                    <div class="my-form-group">
-                                                        <label>{{ form_data_to_email.phone_number.label_tag }}
-                                                            <span class="text-danger"> *</span>
-                                                        </label>
-                                                        {{ form_data_to_email.phone_number }}
-                                                        <div id="id_phone_number-error"
-                                                             class="error-message"></div>
-                                                    </div>
-
-                                                    {# EMAIL #}
-                                                    <div class="my-form-group">
-                                                        <label>{{ form_data_to_email.email.label_tag }}
-                                                            <span class="text-danger"> *</span>
-                                                        </label>
-                                                        {{ form_data_to_email.email }}
-                                                        <div id="id_email-error"
-                                                             class="error-message"></div>
-                                                    </div>
-
-                                                    {# COMMENT #}
-                                                    <div class="my-form-group">
-                                                        <label>{{ form_data_to_email.comment.label_tag }}</label>
-                                                        {{ form_data_to_email.comment }}
-                                                    </div>
-
-                                                    {# CHECKBOX RULES #}
-                                                    <div class="my-form-group">
-                                                        <label for="rulesCondition">
-                                                            <input type="checkbox"
-                                                                   id="rulesCondition">
-                                                            <span class="custom-checkbox"></span> Я
-                                                            согласен на обработку моих
-                                                            персональных данных
-                                                        </label>
-                                                    </div>
-
-                                                    <div class="fileSizeDisplay">
-                                                        <span id="fileSizeDisplay"></span>
-                                                    </div>
-
-                                                    <button type="submit"
-                                                            class="btn-submit-form"
-                                                            id="sendForm"
-                                                            disabled>Отправить
-                                                    </button>
-                                                </form>
-                                            </div>
-                                        </div>
-
-                                        <div id="successPopup" class="popup" style="display: none;">
-                                            <div class="success-popup-content d-flex justify-content-center align-items-center">
-                                                <div id="successMessage">
-                                                    Спасибо!<br>Ваше сообщение отправлено.
-                                                </div>
-                                            </div>
-                                        </div>
-
                                     </div>
                                 </div>
                             </div>
@@ -174,6 +91,8 @@
             </div>
         </div>
     </div>
+
+    {% include 'popup/popup.html' %}
 
     <script src="{% static 'js/carousel.umd.js' %}"></script>
     <script src="{% static 'js/carousel.thumbs.umd.js' %}"></script>
@@ -244,32 +163,6 @@
                     console.error('Ошибка:', error);
                     document.getElementById('fileSizeDisplay').innerText = "Произошла ошибка при выполнении запроса.";
                 });
-        });
-    </script>
-
-    {#  POPUP  #}
-    <script>
-        {# Закрытие попапа по кнопке Х #}
-        document.getElementById('closePopup').addEventListener('click', function () {
-            document.getElementById('popupForm').style.display = 'none';
-        });
-
-        {# Закрытие попапа по клику вне окна #}
-        document.addEventListener('click', function (event) {
-            let popup = document.querySelector('.popup-content');
-            let formPopup = document.getElementById('popupForm');
-            if (formPopup.style.display === 'flex' && !popup.contains(event.target) && event.target.id !== 'openPopup') {
-                formPopup.style.display = 'none';
-            }
-        });
-
-        {# Закрытие успешного попапа по клику вне окна #}
-        document.addEventListener('click', function (event) {
-            let popup = document.querySelector('.success-popup-content');
-            let formPopup = document.getElementById('successPopup');
-            if (formPopup.style.display === 'flex' && !popup.contains(event.target) && event.target.id !== 'openPopup') {
-                formPopup.style.display = 'none';
-            }
         });
     </script>
 
@@ -419,4 +312,5 @@
 
         });
     </script>
+
 {% endblock %}

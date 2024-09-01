@@ -55,6 +55,13 @@ class Jar(models.Model):
         YES = 'да', 'да'
         NO = 'нет', 'нет'
 
+    class FeatureJar(models.TextChoices):
+        LIGHT_WEIGHT = "облегченный вес", "облегченный вес"
+        FLIP_OP = "флип-топ", "флип-топ"
+        REFIL = "рефил", "рефил"
+        DOUBLE_WALL = "двойная стенка", "двойная стенка"
+        STANDARD_CAPACITY = "стандартная емкость", "стандартная емкость"
+
     category = models.ForeignKey(Category,
                                  on_delete=models.CASCADE,
                                  related_name="jar_category",
@@ -78,22 +85,6 @@ class Jar(models.Model):
                                choices=SurfaceJar.choices,
                                default=SurfaceJar.GLOSSY,
                                verbose_name="Поверхность")
-    double_wall = models.CharField(max_length=3,
-                                   choices=YesNoStatusJar.choices,
-                                   default=YesNoStatusJar.NO,
-                                   verbose_name="Двойная стенка")
-    flip_top = models.CharField(max_length=3,
-                                choices=YesNoStatusJar.choices,
-                                default=YesNoStatusJar.NO,
-                                verbose_name="Флип-топ баночка")
-    coffe_crumbs = models.CharField(max_length=3,
-                                    choices=YesNoStatusJar.choices,
-                                    default=YesNoStatusJar.NO,
-                                    verbose_name="Экодобавка «кофейная крошка»")
-    refil = models.CharField(max_length=3,
-                             choices=YesNoStatusJar.choices,
-                             default=YesNoStatusJar.NO,
-                             verbose_name="Рефил")
     description = HTMLField(blank=True,
                             null=True,
                             verbose_name='Описание')
@@ -104,6 +95,9 @@ class Jar(models.Model):
     decoration = HTMLField(blank=True,
                            null=True,
                            verbose_name="Декорирование")
+    feature = models.CharField(max_length=30,
+                               choices=FeatureJar.choices,
+                               default=FeatureJar.STANDARD_CAPACITY)
 
     uploaded_at = models.DateTimeField(auto_now_add=True,
                                        verbose_name='Дата загрузки')
