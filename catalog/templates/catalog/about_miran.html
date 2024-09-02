@@ -6,8 +6,13 @@
 
 
 {% block content %}
-    <div >
-        <h1>About Miran</h1>
-        <h2>Video</h2>
+    <div class="container-fluid mt-2" >
+        <h1 class="text-center">Video About Miran</h1>
+        <div class="text-center">
+            <video autoplay muted playsinline>
+                <source src="{% static 'video/about_miran.mp4' %}" type="video/mp4">
+            </video>
+        </div>
+
     </div>
 {% endblock %}

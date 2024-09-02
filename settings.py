@@ -22,15 +22,15 @@ class Settings(BaseSettings):
     CELERY_RESULT_BACKEND: str
 
     SMTP_SERVER: str
-    FROM: str
-    PASSWORD_EMAIL: str
+    SALE_EMAIL: str
+    SALE_PASSWORD_EMAIL: str
     SUBJECT: str
     BODY: str
     PORT_TLS: int
     TO: str
 
-    FROM_: str
-    PASSWORD_: str
+    FROM_APP: str
+    PASSWORD_APP: str
 
     # CORS_ORIGIN_ALLOW_ALL: bool
     # CORS_ALLOW_CREDENTIALS: bool

@@ -1,0 +1,623 @@
+/*@font-face {*/
+/*    font-family: 'DejaVuSans';*/
+/*    src: url('/static/fonts/dejavu-sans/DejaVuSans.ttf') format('truetype');*/
+/*    font-weight: normal;*/
+/*    font-style: normal;*/
+/*}*/
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+
+}
+
+/**************************
+BODY
+**************************/
+html, body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+
+    font-family: Roboto, Verdana, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+
+    /*overflow-x: hidden;*/
+    /*overflow: hidden;  !* Скрыть вертикальную и горизонтальную полосу прокрутки *! */
+}
+
+/**************************
+HEADER
+**************************/
+.header {
+    height: 200px;
+    width: 100%;
+
+    background-color: #f8f8f8fd;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    position: fixed;
+    left: 0;
+    top: 0;
+
+    z-index: 11;
+
+    box-shadow: 0 0 18px rgba(0, 0, 0, .14);
+}
+
+.rad-50 {
+    border-radius: 50px;
+}
+
+.main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+
+    margin-top: 200px;
+    padding: 0;
+
+    /*background-color: rgba(250, 250, 250, 0.99);*/
+}
+
+.container-contact {
+    padding: 40px 100px;
+}
+
+.question-lid {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: bold;
+    padding: 10px;
+}
+
+.block-buttons {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.gap-btn {
+    margin: 50px;
+}
+
+.catalog__page {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.header .row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-text {
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.main-menu {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+/* Основные стили для кнопок в меню */
+.btn-menu-header {
+    display: block;
+    padding: 13px 34px;
+    border: 2px solid #7F9A14;
+    border-radius: 50px;
+    background-color: white;
+    color: black;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.main-menu li {
+    margin: 5px 30px;
+}
+
+.btn-menu-header a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.btn-menu-header:hover {
+    background-color: #7F9A14;
+    color: white;
+}
+
+/* Стили для активного элемента меню */
+.btn-menu-header.active {
+    background-color: #7F9A14;
+    color: white;
+}
+
+.btn-menu-header.active a {
+    color: white;
+}
+
+.header .link-logo svg {
+    text-decoration: none;
+    max-height: 100px;
+}
+
+.col {
+    flex: 1 0 100%;
+    max-width: 100%;
+    margin-bottom: 15px;
+}
+
+.col-auto {
+    flex: 0 0 auto;
+    width: auto;
+    max-width: 100%;
+}
+
+.col-auto a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.col-8 {
+    display: flex;
+    justify-content: center;
+}
+
+.row.align-items-center {
+    align-items: center;
+}
+
+/**************************
+products_list
+**************************/
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0;
+    padding: 0 12px;
+    width: 100%;
+}
+
+.my-row {
+    padding: 0 44px;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    border: 0;
+    position: relative;
+}
+
+.card-img-top {
+    object-fit: cover; /* */
+    width: 100%;
+    height: auto;
+    border-radius: 25px;
+}
+
+.card-body {
+    flex: 1;
+    padding: 2px 7px 2px 7px;
+}
+
+.card-title {
+    color: #202020;
+    font-size: 30px;
+    text-transform: uppercase;
+    line-height: 1.2;
+    font-weight: 700;
+    padding: 3px;
+    margin-bottom: 3px;
+    /*border-bottom: 1px solid transparent; !* Добавляем прозрачную границу *!*/
+    /*transition: border-bottom 0.3s ease; !* Добавляем плавный переход *!*/
+    position: relative;
+    display: inline-block; /* Важно для правильного позиционирования псевдоэлемента */
+}
+
+.card-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: transparent;
+    transition: background 0.3s ease;
+}
+
+.card-title:hover::after {
+    background: black;
+}
+
+.card-title:hover {
+    border-bottom: none;
+}
+
+.mtop-5 {
+    margin-top: 5px;
+}
+
+.card-footer {
+    margin: 0;
+    background: white;
+    padding: 5px;
+    border: 0;
+}
+
+.capacity {
+    font-size: 20px;
+    text-align: center;
+    color: black;
+}
+
+.value-item a {
+    color: #494646;
+    font-size: 22px;
+    font-weight: 700;
+    text-align: center;
+    justify-content: center;
+    padding: 2px 4px;
+    margin-top: 5px;
+    /*border: 1px solid white;*/
+}
+
+.value-item a:hover {
+    text-decoration: none;
+    color: black;
+    /*border: 1px solid #202020;*/
+    /*border-radius: 10px;*/
+}
+
+/**************************
+Filter_block
+**************************/
+.filter__block {
+    width: 100%;
+    /*height: 200px;*/
+    height: auto;
+    min-height: 200px;
+
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap; /* Добавляем возможность переноса строк */
+
+    background-color: rgba(127, 154, 20, 0.09);
+    padding: 40px 56px;
+}
+
+.filter__buttons {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    /*gap: 10px;*/
+    width: 100%; /* Задаем ширину в 100% */
+}
+
+.btn-miran-filter input[type="checkbox"] {
+    display: none;
+    cursor: pointer;
+}
+
+.btn-miran-filter {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    line-height: 30px;
+    padding: 13px 34px;
+    color: #202020;
+    border: 2px solid #7F9A14;
+    border-radius: 30px;
+    white-space: nowrap;
+    transition: background-color 0.3s, color 0.3s;
+    position: relative;
+    margin: 10px 5px;
+    user-select: none;
+    cursor: pointer;
+}
+
+.btn-miran-filter label {
+    cursor: pointer;
+    font-size: 1.5rem;
+}
+
+.btn-miran-filter:hover,
+.btn-miran-filter:active {
+    background-color: #7F9A14;
+    color: white;
+}
+
+.btn-miran-filter.active {
+    background-color: #7F9A14;
+    color: white;
+}
+
+.btn-miran-filter.active .check {
+    /* расположение строчной галочки */
+    display: inline-block; /* Элемент ведет себя как строчный */
+}
+
+.btn-miran-filter .check {
+    /* расположение галочки внутри кнопки */
+    display: none;
+    position: absolute;
+    left: 10px;
+    top: 11px;
+    width: 20px;
+    height: 20px;
+}
+
+.btn-miran-filter .check svg {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
+}
+
+@media (hover: none) {
+    .btn-miran-filter:hover {
+        background-color: initial;
+        color: initial;
+    }
+}
+
+/**************************
+product_detail
+**************************/
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+.carousel-container {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.f-carousel {
+    --f-carousel-spacing: 0px;
+}
+
+.f-carousel__slide {
+    flex: 0 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.f-carousel__thumbs {
+    --f-thumb-width: 100px;
+    --f-thumb-height: 100px;
+}
+
+.f-carousel__track {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.carousel-container {
+    padding-top: 10px;
+}
+
+.product-info {
+    padding: 20px;
+}
+
+.container-xxl {
+    max-width: 1800px;
+}
+
+.container {
+    margin: 24px 0;
+    padding: 0;
+    max-width: max-content;
+}
+
+.shadow-description {
+    box-shadow: 0 5px 10px 2px rgba(34, 60, 80, 0.2);
+}
+
+.badge-new, .badge-best {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #de1a32;
+    color: white;
+    padding: 10px 20px;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 25px;
+    z-index: 10;
+}
+
+.badge-best {
+    background-color: #E0F043;
+    color: #202020;
+}
+
+.table-responsive {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.table-product-detail {
+    border-collapse: separate;
+    border-spacing: 0;
+    width: 100%;
+    table-layout: fixed;
+}
+
+.table-product-detail td {
+    text-align: left;
+    padding: 4px;
+    border: 0;
+    border-bottom: 1px solid #7F9A14;
+    overflow: hidden; /* Скрыть содержимое, выходящее за пределы ячейки */
+    text-overflow: ellipsis; /* Добавить троеточие для длинного текста */
+}
+
+.table-product-detail td:first-child {
+    width: 275px;
+    white-space: nowrap;
+}
+
+#fileSizeDisplay {
+    min-width: 250px;
+    padding: 10px 10px;
+    box-sizing: border-box;
+}
+
+.fileSizeDisplay {
+    margin: 10px auto;
+}
+
+.my-form-control {
+    border: #7F9A14 1px solid;
+    border-radius: 5px;
+    width: 100%; /* Увеличение ширины поля на 100% контейнера */
+    padding: 5px 5px; /* Внутренние отступы */
+    margin-bottom: 10px; /* Отступы снизу для разделения полей */
+    box-sizing: border-box; /* Включает padding в ширину элемента */
+    display: flex; /* Flex-контейнер */
+    flex-grow: 1; /* Позволяет элементу расти внутри flex-контейнера */
+}
+
+
+.my-form-control:focus {
+    outline: none;
+    border: 1px solid #7F9A14;
+    /*box-shadow: 0 0 12px rgba(196, 209, 38, 0.8);*/
+}
+
+.my-form-control.active {
+    border-color: #7F9A14;
+    /*box-shadow: 0 0 12px rgba(196, 209, 38, 0.8);*/
+}
+
+.my-form-group {
+    display: flex;
+    font-size: 1.2rem;
+    flex-direction: column; /* Чтобы элементы располагались один под другим */
+    width: 60%; /* Убедитесь, что родительский блок занимает всю ширину */
+    position: relative;
+    margin-bottom: 5px;
+}
+
+.form-label {
+    display: flex;          /* Используем flex для метки и звездочки */
+    align-items: center;   /* Вертикальное выравнивание по центру */
+}
+/**************************
+Фиксированная кнопка отправки письма
+**************************/
+.fixed-button {
+    position: fixed;
+    font-size: 1.6rem;
+
+    /* середина по X низ*/
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 30px;
+
+    /* середина по Y низ*/
+    /*right: 20px; !* Отступ справа *!*/
+    /*top: 50%; !* Центрирование по вертикали *!*/
+    /*transform: translateY(-50%); !* Центрирование относительно самой кнопки *!*/
+
+    border: 2px solid #7F9A14;
+    padding: 10px 20px;
+    background-color: white;
+    color: black;
+    border-radius: 50px;
+    cursor: pointer;
+    z-index: 1000; /* Убедитесь, что кнопка находится выше других элементов */
+}
+
+.fixed-button:hover {
+    background-color: #7F9A14;
+    color: white;
+}
+
+/**************************
+Кнопка для скрола вверх
+**************************/
+.scroll-to-top {
+    position: fixed;
+    bottom: 30px;
+    left: 30px;
+    display: none;
+    width: 70px;
+    height: 70px;
+    background-color: #7F9A14;
+    /*color: black;*/
+    border: 2px solid #7F9A14;
+    border-radius: 50%;
+    /*font-size: 44px;*/
+    cursor: pointer;
+    z-index: 1000;
+    transition: opacity 0.3s;
+}
+
+.white-icon {
+    color: white; /* Меняет цвет иконки на белый */
+}
+
+/*.scroll-to-top:hover {*/
+/*    background-color: #7F9A14;*/
+/*    color: white;*/
+/*}*/
+
+@media (min-width: 1200px) {
+    .col {
+        flex: 1 0 25%; /* Для четырехколоночной разметки на очень больших экранах */
+        max-width: 25%;
+    }
+
+    .btn-miran-filter {
+        font-size: 24px; /* Уменьшаем размер шрифта */
+        padding: 13px 34px; /* Уменьшаем отступы */
+    }
+}
+
+/*@media (min-width: 768px) {*/
+/*    .col {*/
+/*        flex: 1 0 50%; !* Для двухколоночной разметки на средних экранах *!*/
+/*        max-width: 50%;*/
+/*    }*/
+
+/*    .btn-miran-filter {*/
+/*        font-size: 12px; !* Уменьшаем размер шрифта *!*/
+/*        padding: 4px 10px; !* Уменьшаем отступы *!*/
+/*    }*/
+/*}*/
+
+/*@media (min-width: 992px) {*/
+/*    .col {*/
+/*        flex: 1 0 33.33%; !* Для трехколоночной разметки на больших экранах *!*/
+/*        max-width: 33.33%;*/
+/*    }*/
+
+/*    .btn-miran-filter {*/
+/*        font-size: 14px; !* Уменьшаем размер шрифта *!*/
+/*        padding: 6px 12px; !* Уменьшаем отступы *!*/
+/*    }*/
+/*}*/

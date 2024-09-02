@@ -1,0 +1,10 @@
+    .pagination {
+        --bs-pagination-active-bg: #c4d200;
+        --bs-pagination-hover-color: #c4d200;
+        --bs-pagination-color: #000000;
+        --bs-pagination-active-border-color: #c4d200;
+    }
+    .pagination-sm {
+        --bs-pagination-padding-x: 0.8rem;
+        --bs-pagination-padding-y: 0.5rem;
+    }

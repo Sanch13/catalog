@@ -99,7 +99,7 @@ class SendDataToEmail(forms.Form):
     phone_number = forms.CharField(max_length=20,
                                    label='Номер телефона',
                                    required=True)
-    email = forms.EmailField(label='Ваш Email', required=True)
+    email = forms.EmailField(label='Ваш e-mail', required=True)
 
     comment = forms.CharField(
         label='Комментарий',

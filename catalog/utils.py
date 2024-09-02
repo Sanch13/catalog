@@ -320,13 +320,13 @@ def merge_pdfs_to_stream(pdf_paths: list[str]):
 def send_admin_email(text_body):
     message = EmailMessage()
     message['Subject'] = 'Error'
-    message['From'] = settings.FROM_
+    message['From'] = settings.FROM_APP
     message['To'] = ['a.zubchyk@miran-bel.com']
     message.set_content(text_body)
     context = ssl.create_default_context()
     with smtplib.SMTP(settings.SMTP_SERVER, settings.PORT_TLS) as server:
         server.starttls(context=context)
-        server.login(settings.FROM_, settings.PASSWORD_)
+        server.login(settings.FROM_APP, settings.PASSWORD_APP)
         server.send_message(message)
     print("sent email to admin")
 
@@ -334,7 +334,7 @@ def send_admin_email(text_body):
 def send_data_to_client(list_params, data, file_stream):
     message = EmailMessage()
     message['Subject'] = settings.SUBJECT
-    message['From'] = settings.FROM
+    message['From'] = settings.SALE_EMAIL
     message['To'] = data["email"]
 
     # Поле Cc используется для отправки копии письма другим получателям,
@@ -360,7 +360,7 @@ def send_data_to_client(list_params, data, file_stream):
     context = ssl.create_default_context()
     with smtplib.SMTP(settings.SMTP_SERVER, settings.PORT_TLS) as server:
         server.starttls(context=context)
-        server.login(settings.FROM, settings.PASSWORD_EMAIL)
+        server.login(settings.SALE_EMAIL, settings.SALE_PASSWORD_EMAIL)
         server.send_message(message)
     print("sent email to client")
 
@@ -368,8 +368,8 @@ def send_data_to_client(list_params, data, file_stream):
 def send_data_to_marketing(data, status, products):
     message = EmailMessage()
     message['Subject'] = "Информация о Лидах"
-    message['From'] = settings.FROM_  # send from ??
-    message['To'] = ['a.zubchyk@miran-bel.com']  # sent email to marketing
+    message['From'] = settings.FROM_APP  # send app
+    message['To'] = ['a.zubchyk@miran-bel.com']  # sent email [SALE_EMAIL] to sale@miran-bel.com
 
     text_body = "Информация о потенциальном покупателе"
     message.set_content(text_body)
@@ -379,7 +379,7 @@ def send_data_to_marketing(data, status, products):
     context = ssl.create_default_context()
     with smtplib.SMTP(settings.SMTP_SERVER, settings.PORT_TLS) as server:
         server.starttls(context=context)
-        server.login(settings.FROM_, settings.PASSWORD_)
+        server.login(settings.FROM_APP, settings.PASSWORD_APP)
         server.send_message(message)
     print("sent email to marketing")
 
