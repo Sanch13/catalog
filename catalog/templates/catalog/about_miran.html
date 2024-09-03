@@ -4,15 +4,29 @@
 {% block title %}
 {% endblock title %}
 
+{% block css %}
+    <style>
+        .video-wrapper {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center; /* Центрирование видео по горизонтали */
+            align-items: center; /* Центрирование видео по вертикали */
+        }
+
+        video {
+            max-width: 100%; /* Видео не будет шире контейнера */
+            max-height: 100%; /* Видео не будет выше контейнера */
+            object-fit: contain; /* Видео сохраняет пропорции и масштабируется по высоте */
+        }
+    </style>
+{% endblock css %}
+
 
 {% block content %}
-    <div class="container-fluid mt-2" >
-        <h1 class="text-center">Video About Miran</h1>
-        <div class="text-center">
-            <video autoplay muted playsinline>
-                <source src="{% static 'video/about_miran.mp4' %}" type="video/mp4">
-            </video>
-        </div>
-
+    <div class="video-wrapper">
+        <video src="{% static 'video/about_miran.mp4' %}" controls autoplay muted playsinline
+               type="video/mp4">
+        </video>
     </div>
 {% endblock %}

@@ -13,10 +13,10 @@
 {% endblock css %}
 
 {% block content %}
-    <div class="container-xxl">
+    <div class="my-container">
         <div class="product-card" id="{{ cap.id }}">
-            <div class="row my-5">
-                <div class="col-lg-6 rounded-4 my-2 py-2">
+            <div class="row mb-5">
+                <div class="col-lg-6">
                     <div class="carousel-container ">
                         <div class="f-carousel " id="myCarousel">
                             <div class="f-carousel__viewport">
@@ -44,43 +44,40 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-6 my-2 py-2">
+                <div class="col-lg-6">
                     <div class="container">
                         <div>
-                            <h1 class="text-center my-2">{{ cap.name }}</h1>
+                            <h1 class="text-center my-2"
+                                style="border-bottom: 1px solid #7F9A14;">{{ cap.name }}</h1>
                         </div>
-                        <div class="p-3 my-3 ">
+                        <div class="my-3 ">
                             <div class="row">
                                 <div class="col-md-8 col-12">
-                                    <div class="table-responsive ">
-                                        <table class="table-product-detail">
-                                            <tbody>
-                                            <tr>
-                                                <td>Стандарт горла</td>
-                                                <td>{{ cap.throat_standard }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Тип колпачка</td>
-                                                <td>{{ cap.type_of_closure }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Поверхность</td>
-                                                <td>{{ cap.surface }}</td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
+                                    <div class="product-details">
+                                        <div class="detail-item">
+                                            <div class="detail-label">Стандарт горла</div>
+                                            <div class="detail-value">{{ cap.throat_standard }}</div>
+                                        </div>
+                                        <div class="detail-item">
+                                            <div class="detail-label">Тип колпачка</div>
+                                            <div class="detail-value">{{ cap.type_of_closure }}</div>
+                                        </div>
+                                        <div class="detail-item">
+                                            <div class="detail-label">Поверхность</div>
+                                            <div class="detail-value">{{ cap.surface }}</div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-md-4 col-12 d-flex flex-column align-items-center justify-content-center">
-                                    <div class="w-100 my-2">
-                                        <button id="openPopup" class="btn-menu-header">
+                                    <div class="w-100">
+                                        <button id="openPopup" class="btn-menu-header-send">
                                             Скачать на свой e-mail
                                         </button>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="p-3 my-3 ">
+                        <div class="py-2 product-description">
                             {{ cap.description|safe }}
                         </div>
                     </div>

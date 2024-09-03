@@ -15,17 +15,27 @@
 /**************************
 BODY
 **************************/
-html, body {
+html,
+body {
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
+    min-height: 100vh; /* height: 100%; */
 
     font-family: Roboto, Verdana, sans-serif;
     font-size: 16px;
     line-height: 1.6;
 
-    /*overflow-x: hidden;*/
+    overflow-x: hidden;
     /*overflow: hidden;  !* Скрыть вертикальную и горизонтальную полосу прокрутки *! */
+}
+
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Растягивает контейнер на всю высоту экрана */
+    padding-top: 200px; /* Оставляет место для фиксированного хедера */
+    padding-bottom: 70px; /* Оставляет место для фиксированного футера */
+
 }
 
 /**************************
@@ -37,31 +47,42 @@ HEADER
 
     background-color: #f8f8f8fd;
 
-    display: inline-flex;
+    display: flex;
     align-items: center;
     justify-content: center;
+    text-align: center;
 
     position: fixed;
     left: 0;
     top: 0;
 
-    z-index: 11;
+    z-index: 1000;
 
     box-shadow: 0 0 18px rgba(0, 0, 0, .14);
 }
 
-.rad-50 {
-    border-radius: 50px;
+.footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 70px;
+    background-color: white;
+    /* Цвет фона для наглядности */
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    box-shadow: 0 0 18px rgba(0, 0, 0, .14);
 }
 
 .main {
     flex: 1;
     display: flex;
     flex-direction: column;
-
-    margin-top: 200px;
     padding: 0;
-
+    /*overflow: hidden; !* Убирает вертикальные полосы прокрутки *!*/
     /*background-color: rgba(250, 250, 250, 0.99);*/
 }
 
@@ -115,7 +136,7 @@ HEADER
 }
 
 /* Основные стили для кнопок в меню */
-.btn-menu-header {
+.btn-menu-header, .btn-menu-header-send {
     display: block;
     padding: 13px 34px;
     border: 2px solid #7F9A14;
@@ -127,6 +148,12 @@ HEADER
     cursor: pointer;
 }
 
+.btn-menu-header-send {
+    background-color: #7F9A14;
+    color: white;
+    font-size: 1.4rem;
+    padding: 13px 10px;
+}
 .main-menu li {
     margin: 5px 30px;
 }
@@ -157,9 +184,8 @@ HEADER
 }
 
 .col {
-    flex: 1 0 100%;
-    max-width: 100%;
-    margin-bottom: 15px;
+    padding: 0 15px 10px 15px;
+
 }
 
 .col-auto {
@@ -189,12 +215,8 @@ products_list
     display: flex;
     flex-wrap: wrap;
     margin: 0;
-    padding: 0 12px;
+    padding: 0 25px;
     width: 100%;
-}
-
-.my-row {
-    padding: 0 44px;
 }
 
 .card {
@@ -426,8 +448,18 @@ img {
     max-width: 1800px;
 }
 
+.my-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin: 20px auto;
+    padding-top: 20px;
+}
+
 .container {
-    margin: 24px 0;
+    margin: 0 0;
     padding: 0;
     max-width: max-content;
 }
@@ -472,12 +504,11 @@ img {
     border: 0;
     border-bottom: 1px solid #7F9A14;
     overflow: hidden; /* Скрыть содержимое, выходящее за пределы ячейки */
-    text-overflow: ellipsis; /* Добавить троеточие для длинного текста */
 }
 
 .table-product-detail td:first-child {
     width: 275px;
-    white-space: nowrap;
+    white-space: wrap;
 }
 
 #fileSizeDisplay {
@@ -523,9 +554,10 @@ img {
 }
 
 .form-label {
-    display: flex;          /* Используем flex для метки и звездочки */
-    align-items: center;   /* Вертикальное выравнивание по центру */
+    display: flex; /* Используем flex для метки и звездочки */
+    align-items: center; /* Вертикальное выравнивание по центру */
 }
+
 /**************************
 Фиксированная кнопка отправки письма
 **************************/
@@ -536,7 +568,7 @@ img {
     /* середина по X низ*/
     left: 50%;
     transform: translateX(-50%);
-    bottom: 30px;
+    bottom: 2px;
 
     /* середина по Y низ*/
     /*right: 20px; !* Отступ справа *!*/
@@ -545,11 +577,11 @@ img {
 
     border: 2px solid #7F9A14;
     padding: 10px 20px;
-    background-color: white;
-    color: black;
+    background-color: #7F9A14;
+    color: white;
     border-radius: 50px;
     cursor: pointer;
-    z-index: 1000; /* Убедитесь, что кнопка находится выше других элементов */
+    z-index: 1001; /* Убедитесь, что кнопка находится выше других элементов */
 }
 
 .fixed-button:hover {
@@ -562,7 +594,7 @@ img {
 **************************/
 .scroll-to-top {
     position: fixed;
-    bottom: 30px;
+    bottom: 0;
     left: 30px;
     display: none;
     width: 70px;
@@ -586,27 +618,17 @@ img {
 /*    color: white;*/
 /*}*/
 
-@media (min-width: 1200px) {
-    .col {
-        flex: 1 0 25%; /* Для четырехколоночной разметки на очень больших экранах */
-        max-width: 25%;
-    }
-
-    .btn-miran-filter {
-        font-size: 24px; /* Уменьшаем размер шрифта */
-        padding: 13px 34px; /* Уменьшаем отступы */
-    }
-}
+/*@media (min-width: 1200px) {*/
+/*    .col {*/
+/*        flex: 1 0 25%; !* Для четырехколоночной разметки на очень больших экранах *!*/
+/*        max-width: 25%;*/
+/*    }*/
+/*}*/
 
 /*@media (min-width: 768px) {*/
 /*    .col {*/
 /*        flex: 1 0 50%; !* Для двухколоночной разметки на средних экранах *!*/
 /*        max-width: 50%;*/
-/*    }*/
-
-/*    .btn-miran-filter {*/
-/*        font-size: 12px; !* Уменьшаем размер шрифта *!*/
-/*        padding: 4px 10px; !* Уменьшаем отступы *!*/
 /*    }*/
 /*}*/
 
@@ -615,9 +637,37 @@ img {
 /*        flex: 1 0 33.33%; !* Для трехколоночной разметки на больших экранах *!*/
 /*        max-width: 33.33%;*/
 /*    }*/
-
-/*    .btn-miran-filter {*/
-/*        font-size: 14px; !* Уменьшаем размер шрифта *!*/
-/*        padding: 6px 12px; !* Уменьшаем отступы *!*/
-/*    }*/
 /*}*/
+.product-details {
+    display: flex;
+    flex-direction: column; /* Располагает блоки по вертикали */
+    max-width: 100%;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.detail-item {
+    display: flex;
+    justify-content: flex-start; /* Распределяет пространство между меткой и значением */
+    padding-top: 3px;
+    border-bottom: 1px solid #7F9A14; /* Разделительная линия между элементами */
+}
+
+.detail-label, .detail-value  {
+    text-align: left;
+    font-size: 1.2rem;
+    /*font-weight: bold;*/
+    /*color: #333; !* Цвет текста метки *!*/
+}
+
+.detail-label {
+    flex: 0 0 65%;
+}
+
+.detail-value {
+    flex: 0 0 35%;
+}
+
+.product-description {
+    font-size: 1.1rem;
+}

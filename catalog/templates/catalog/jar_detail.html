@@ -13,10 +13,10 @@
 {% endblock css %}
 
 {% block content %}
-    <div class="container-xxl">
+    <div class="my-container">
         <div class="product-card" id="{{ jar.id }}">
-            <div class="row my-5">
-                <div class="col-lg-6 my-2 px-2">
+            <div class="row mb-5">
+                <div class="col-lg-6">
                     <div class="carousel-container ">
                         <div class="f-carousel " id="myCarousel">
                             <div class="f-carousel__viewport">
@@ -43,47 +43,46 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-6 my-2 px-2">
-                    <div class="container px-2">
+                <div class="col-lg-6">
+                    <div class="container">
                         <div>
-                            <h1 class="text-center my-2">{{ jar.name }}</h1>
+                            <h1 class="text-center my-2"
+                                style="border-bottom: 1px solid #7F9A14;">{{ jar.name }}</h1>
                         </div>
-                        <div class="p-3 my-3 ">
+                        <div class="my-3 ">
                             <div class="row">
-                                <div class="col-md-8 col-12">
-                                    <div class="table-responsive ">
-                                        <table class="table-product-detail">
-                                            <tbody>
-                                            <tr>
-                                                <td>Объем мл.</td>
-                                                <td>{{ jar.volume }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Поверхность</td>
-                                                <td>{{ jar.surface }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Декорирование</td>
-                                                <td>{{ jar.status_decoration }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Дополнительные характеристики</td>
-                                                <td>{{ jar.feature }}</td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
+                                <div class="col-md-8 col-12 px-0">
+                                    <div class="product-details">
+                                        <div class="detail-item">
+                                            <div class="detail-label">Объем мл.</div>
+                                            <div class="detail-value">{{ jar.volume }}</div>
+                                        </div>
+                                        <div class="detail-item">
+                                            <div class="detail-label">Поверхность</div>
+                                            <div class="detail-value">{{ jar.surface }}</div>
+                                        </div>
+                                        <div class="detail-item">
+                                            <div class="detail-label">Декорирование</div>
+                                            <div class="detail-value">{{ jar.status_decoration }}</div>
+                                        </div>
+                                        <div class="detail-item">
+                                            <div class="detail-label">Дополнительные
+                                                характеристики
+                                            </div>
+                                            <div class="detail-value">{{ jar.feature }}</div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-md-4 col-12 d-flex flex-column align-items-center justify-content-center">
-                                    <div class="w-100 my-2">
-                                        <button id="openPopup" class="btn-menu-header">
+                                    <div class="w-100">
+                                        <button id="openPopup" class="btn-menu-header-send">
                                             Скачать на свой e-mail
                                         </button>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="p-3 my-3">
+                        <div class="py-2 product-description">
                             {{ jar.description|safe }}
                         </div>
                     </div>

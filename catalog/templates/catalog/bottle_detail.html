@@ -31,10 +31,10 @@
         </div>
     </section>
 
-    <div class="container-xxl">
+    <div class="my-container">
         <div class="product-card" id="{{ bottle.id }}">
             <div class="row mb-5">
-                <div class="col-lg-6 my-2 py-2">
+                <div class="col-lg-6">
                     <div class="carousel-container">
                         <div class="f-carousel " id="myCarousel">
                             <div class="f-carousel__viewport">
@@ -62,44 +62,40 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-6 my-2 py-2">
+                <div class="col-lg-6">
                     <div class="container">
                         <div>
-                            <h1 class="text-center my-2">{{ bottle.name }}</h1>
+                            <h1 class="text-center my-2" style="border-bottom: 1px solid #7F9A14;">{{ bottle.name }}</h1>
                         </div>
-                        <div class="p-3 my-3 ">
+                        <div class="my-3">
                             <div class="row">
                                 <div class="col-md-8 col-12">
-                                    <div class="table-responsive ">
-                                        <table class="table-product-detail">
-                                            <tbody>
-                                            <tr>
-                                                <td>Объем мл.</td>
-                                                <td>{{ bottle.volume }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Стандарт горла</td>
-                                                <td>{{ bottle.throat_standard }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Форма</td>
-                                                <td>{{ bottle.shape }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Поверхность</td>
-                                                <td>{{ bottle.surface }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Декорирование</td>
-                                                <td>{{ bottle.status_decoration }}</td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
+                                    <div class="product-details">
+                                        <div class="detail-item">
+                                            <div class="detail-label">Объем мл.</div>
+                                            <div class="detail-value">{{ bottle.volume }}</div>
+                                        </div>
+                                        <div class="detail-item">
+                                            <div class="detail-label">Стандарт горла</div>
+                                            <div class="detail-value">{{ bottle.throat_standard }}</div>
+                                        </div>
+                                        <div class="detail-item">
+                                            <div class="detail-label">Форма</div>
+                                            <div class="detail-value">{{ bottle.shape }}</div>
+                                        </div>
+                                        <div class="detail-item">
+                                            <div class="detail-label">Поверхность</div>
+                                            <div class="detail-value">{{ bottle.surface }}</div>
+                                        </div>
+                                        <div class="detail-item">
+                                            <div class="detail-label">Декорирование</div>
+                                            <div class="detail-value">{{ bottle.status_decoration }}</div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-md-4 col-12 d-flex flex-column align-items-center justify-content-center">
-                                    <div class="w-100 my-2">
-                                        <button id="openPopup" class="btn-menu-header">
+                                    <div class="w-100">
+                                        <button id="openPopup" class="btn-menu-header-send">
                                             Скачать на свой e-mail
                                         </button>
                                     </div>
@@ -107,7 +103,7 @@
                             </div>
                         </div>
 
-                        <div class="p-3 my-3">
+                        <div class="py-2 product-description">
                             {{ bottle.description|safe }}
                         </div>
                     </div>

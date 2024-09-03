@@ -52,12 +52,12 @@
     </section>
 
     <!-- Контейнер с карточками товара -->
-    <div class="container">
-        <div class="row my-row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4">
+    <div class="my-container">
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4">
             {% for jar in jars %}
                 <div class="col">
-                    <a href="{{ jar.get_absolute_url }}">
-                        <div class="card" id="{{ jar.id }}">
+                    <div class="card" id="{{ jar.id }}">
+                        <a href="{{ jar.get_absolute_url }}">
                             {% if jar.jar_files.all %}
                                 {% for file in jar.jar_files.all %}
                                     {% if forloop.first %}
@@ -76,8 +76,8 @@
                             {% elif jar.status == 'Бестселлер' %}
                                 <span class="badge-best">БЕСТСЕЛЛЕР</span>
                             {% endif %}
-                        </div>
-                    </a>
+                        </a>
+                    </div>
                 </div>
             {% endfor %}
         </div>
