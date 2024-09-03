@@ -194,25 +194,30 @@ def create_pdf_from_data(params, category):
 
     page_width = pdf.w  # Ширина страницы (210 мм для A4)
     page_height = pdf.h  # Высота страницы (297 мм для A4)
-    margin = 3
+    margin = 10
+    padding_bottom = 5
 
     # HEADER
-    header = 40
+    header = 33
+    pdf.set_y(0)
+    pdf.set_x(0)
+    pdf.image(name=Path(config_settings.BASE_DIR, 'static', 'img', 'header.jpg'),
+              w=200,
+              h=40)
 
     # TITLE
     text_title = pdf.get_string_width(params["name"])
-
     x_position = (page_width - text_title) / 2  # Смещение для центрирования
-    pdf.set_y(margin + header + margin)
+    pdf.set_y(header + margin)
     pdf.set_x(x_position)
     pdf.cell(text_title, 10, params["name"], new_x=XPos.LMARGIN, new_y=YPos.NEXT)
-    pdf.ln(margin)
+    pdf.ln(padding_bottom)
 
+    # IMAGES
     current_position_y = pdf.get_y()
     images_per_row = 3
     available_width = (page_width - 2 * margin) / images_per_row  # 68 mm
-    image_width = available_width
-    image_height = image_width
+    image_height = image_width = available_width
 
     x_start = margin
     y_start = pdf.get_y()
@@ -243,14 +248,13 @@ def create_pdf_from_data(params, category):
 
     height_y_photo = image_height if len(image_bytes_list) <= 3 else image_height * 2
     current_position_y = (current_position_y + height_y_photo)
-    pdf.set_y(current_position_y)
 
+    # TABLE
+    pdf.set_y(current_position_y + padding_bottom)
     pdf.set_font("DejaVu", size=14)
     table_width = page_width - 2 * margin  # Ширина таблицы с учетом отступов
     col1_width = table_width * 0.4  # 30% ширины страницы для первой колонки
     col2_width = table_width * 0.6  # 70% ширины страницы для второй колонки
-
-    # TABLE
     row_height = 10  # Настройка высоты строки таблицы
     border_color = (127, 154, 20)
     text_items = get_params_category_for_table(params, category)
@@ -261,7 +265,8 @@ def create_pdf_from_data(params, category):
         pdf.cell(col2_width, row_height, str(value), border='B', align='L')  # Вторая колонка
         pdf.ln(row_height)  # Переход на следующую строку
 
-    pdf.ln(margin)
+    # DESCRIPTION
+    pdf.ln(padding_bottom)
     available_width_description = page_width - margin * 2
     description = params['description']
     pdf.set_x(margin)
@@ -351,7 +356,7 @@ def send_data_to_client(list_params, data, file_stream):
     html = render_to_string('template_for_emails/sign.html')
     message.add_alternative(html, subtype='html')
 
-    filename = list_params[0]["filename"] if len(list_params) == 1 else f"список продуктов.pdf"
+    filename = list_params[0]["filename"] if len(list_params) == 1 else f"Список продукции ЗАО «МИРАН».pdf"
     message.add_attachment(file_stream.read(),
                            maintype='application',
                            subtype="octet-stream",

@@ -1,3 +1,5 @@
+{% load static %}
+
 <!-- Попап для отправки выбранных продуктов -->
 <div id="popupForm" class="popup" style="display: none;">
     <div class="popup-content">
@@ -79,10 +81,22 @@
     <div class="success-popup-content d-flex justify-content-center align-items-center">
         <div id="successMessage">
             Спасибо!<br>Ваша заявка принята!
-{#            <br>После выставки представитель компании свяжется с Вами#}
+            {#            <br>После выставки представитель компании свяжется с Вами#}
         </div>
     </div>
 </div>
+
+{# PHONE_MASK #}
+<script src="{% static 'js/jquery.inputmask.js' %}"></script>
+<script>
+    $(document).ready(function () {
+        $('#id_phone_number').inputmask({
+            mask: '+9999999999999',  // позволяет ввод от 1 до 13 символов после +
+            placeholder: '',
+            clearMaskOnLostFocus: false,
+        });
+    });
+</script>
 
 {#  POPUP  #}
 <script>
@@ -107,5 +121,116 @@
         if (formPopup.style.display === 'flex' && !popup.contains(event.target) && event.target.id !== 'openPopup') {
             formPopup.style.display = 'none';
         }
+    });
+</script>
+
+<script>
+    const nameInput = document.getElementById('id_name');
+    const companyInput = document.getElementById('id_company');
+    const phoneNumberInput = document.getElementById('id_phone_number');
+    const emailInput = document.getElementById('id_email');
+
+    function isEmptyField(valueField) {
+        return valueField.trim() === "";
+    }
+
+    function isValidEmail(value) {
+        return /\S+@\S+\.\S+/.test(value);
+    }
+
+    function showEmptyFieldError(nameInput, errorElement) {
+        nameInput.classList.add('is-invalid');
+        errorElement.textContent = "Поле не может быть пустым.";
+    }
+
+    function showLengthPhoneNumber(nameInput, errorElement) {
+        nameInput.classList.add('is-invalid');
+        errorElement.textContent = "Номер телефона должен содержать не менее 8 цифр.";
+    }
+
+    function handleNameBlur() {
+        const valueField = document.getElementById('id_name').value;
+        const errorElement = document.getElementById('id_name' + '-error');
+        let flag = false
+
+        if (isEmptyField(valueField)) {
+            showEmptyFieldError(nameInput, errorElement);
+        } else {
+            nameInput.classList.remove('is-invalid');
+            errorElement.textContent = '';
+            flag = true
+        }
+        return flag
+    }
+
+    function handleCompanyBlur() {
+        const valueField = document.getElementById('id_company').value;
+        const errorElement = document.getElementById('id_company' + '-error');
+        let flag = false
+
+        if (isEmptyField(valueField)) {
+            showEmptyFieldError(companyInput, errorElement);
+        } else {
+            companyInput.classList.remove('is-invalid');
+            errorElement.textContent = '';
+            flag = true
+        }
+        return flag
+    }
+
+    function handlePhoneNumberBlur() {
+        const valueField = document.getElementById('id_phone_number').value;
+        const errorElement = document.getElementById('id_phone_number' + '-error');
+        let flag = false
+
+        if (isEmptyField(valueField)) {
+            showEmptyFieldError(phoneNumberInput, errorElement);
+        } else if (valueField.length < 9) {
+            showLengthPhoneNumber(phoneNumberInput, errorElement)
+        } else {
+            phoneNumberInput.classList.remove('is-invalid');
+            errorElement.textContent = '';
+            flag = true
+        }
+        return flag
+    }
+
+    function handleEmailBlur() {
+        const valueField = document.getElementById('id_email').value;
+        const errorElement = document.getElementById('id_email' + '-error');
+        let flag = false
+
+        if (isEmptyField(valueField)) {
+            showEmptyFieldError(emailInput, errorElement);
+        } else if (!isValidEmail(valueField)) {
+            errorElement.textContent = 'Введите корректный email';
+        } else {
+            emailInput.classList.remove('is-invalid');
+            errorElement.textContent = '';
+            flag = true
+        }
+        return flag
+    }
+
+    function checkFields() {
+        const flag1 = handleNameBlur()
+        const flag2 = handleCompanyBlur()
+        const flag3 = handlePhoneNumberBlur()
+        const flag4 = handleEmailBlur()
+        return flag1 && flag2 && flag3 && flag4;
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        nameInput.addEventListener('blur', handleNameBlur);
+        companyInput.addEventListener('blur', handleCompanyBlur);
+        phoneNumberInput.addEventListener('blur', handlePhoneNumberBlur);
+        emailInput.addEventListener('blur', handleEmailBlur);
+
+        const checkbox = document.getElementById('rulesCondition');
+        const submitButton = document.getElementById('sendForm');
+
+        checkbox.addEventListener('change', function () {
+            submitButton.disabled = !checkbox.checked;
+        });
     });
 </script>
