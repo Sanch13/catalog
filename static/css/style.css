@@ -362,7 +362,7 @@ Filter_block
     font-size: 1.5rem;
 }
 
-.btn-miran-filter:hover,
+/*.btn-miran-filter:hover,*/
 .btn-miran-filter:active {
     background-color: #7F9A14;
     color: white;
