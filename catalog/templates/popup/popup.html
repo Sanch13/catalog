@@ -1,5 +1,9 @@
 {% load static %}
 
+{% block css %}
+    <script src="{% static 'js/russian.js' %}"></script>
+{% endblock css %}
+
 <!-- Попап для отправки выбранных продуктов -->
 <div id="popupForm" class="popup" style="display: none;">
     <div class="popup-content">
@@ -232,5 +236,31 @@
         checkbox.addEventListener('change', function () {
             submitButton.disabled = !checkbox.checked;
         });
+    });
+</script>
+
+
+<script>
+    $(document).ready(function () {
+
+        $('#id_name').keyboard({
+            layout: 'russian-qwerty',
+            usePreview: 'false',
+            autoAccept: true,
+            position: {
+                my: 'center top',
+                at: 'center bottom'
+            },
+        });
+
+        $('#id_name').on('input', function () {
+            let value = $(this).val();
+            if (value.trim().length > 0) {
+                console.log('Поле заполнено');
+            } else {
+                console.log('Поле пустое');
+            }
+        });
+
     });
 </script>

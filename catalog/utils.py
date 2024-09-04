@@ -194,21 +194,21 @@ def create_pdf_from_data(params, category):
 
     page_width = pdf.w  # Ширина страницы (210 мм для A4)
     page_height = pdf.h  # Высота страницы (297 мм для A4)
-    margin = 10
+    margin = 15
     padding_bottom = 5
 
     # HEADER
     header = 33
     pdf.set_y(0)
-    pdf.set_x(0)
+    pdf.set_x(5)
     pdf.image(name=Path(config_settings.BASE_DIR, 'static', 'img', 'header.jpg'),
-              w=200,
+              w=190,  # w=200
               h=40)
 
     # TITLE
     text_title = pdf.get_string_width(params["name"])
     x_position = (page_width - text_title) / 2  # Смещение для центрирования
-    pdf.set_y(header + margin)
+    pdf.set_y(header + padding_bottom * 2)
     pdf.set_x(x_position)
     pdf.cell(text_title, 10, params["name"], new_x=XPos.LMARGIN, new_y=YPos.NEXT)
     pdf.ln(padding_bottom)

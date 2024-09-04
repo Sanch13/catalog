@@ -11,9 +11,19 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet"/>
+
+    <!-- Подключаем стили jQuery UI -->
+    <link href="{% static 'css/jquery-ui.min.css' %}" rel="stylesheet"/>
+
+    <!-- Подключаем стили jQuery UI Keyboard -->
+    <link href="{% static 'css/keyboard.css' %}" rel="stylesheet"/>
+
     <link href="{% static 'css/style.css' %}" rel="stylesheet"/>
     <link href="{% static 'css/social_networks.css' %}" rel="stylesheet"/>
     <link href="{% static 'css/inactivity_popup.css' %}" rel="stylesheet"/>
+
+
+
 
     {% block css %}
     {% endblock css %}
@@ -65,7 +75,16 @@
     </div>
 </header>
 
+<!-- Подключаем jQuery -->
 <script src="{% static 'js/jquery-3.7.1.min.js' %}"></script>
+
+<!-- Подключаем jQuery UI -->
+<script src="{% static 'js/jquery-ui.min.js' %}"></script>
+
+<!-- Подключаем jQuery UI Keyboard -->
+<script src="{% static 'js/jquery.keyboard.min.js' %}"></script>
+<script src="{% static 'js/jquery.keyboard.extension-all.min.js' %}"></script>
+
 <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
 
 
