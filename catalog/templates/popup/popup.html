@@ -138,9 +138,9 @@
         return valueField.trim() === "";
     }
 
-    function isValidEmail(value) {
-        return /\S+@\S+\.\S+/.test(value);
-    }
+    {#function isValidEmail(value) {#}
+    {#    return /\S+@\S+\.\S+/.test(value);#}
+    {#}#}
 
     function showEmptyFieldError(nameInput, errorElement) {
         nameInput.classList.add('is-invalid');
@@ -242,25 +242,26 @@
 
 <script>
     $(document).ready(function () {
+        // Функция для инициализации клавиатуры для определенного элемента
+        function initializeKeyboard(selector) {
+            $(selector).keyboard({
+                layout: 'russian-qwerty',
+                usePreview: false,
+                autoAccept: true,
+                position: {
+                    my: 'center top',
+                    at: 'center bottom'
+                },
+            });
+        }
 
-        $('#id_name').keyboard({
-            layout: 'russian-qwerty',
-            usePreview: 'false',
-            autoAccept: true,
-            position: {
-                my: 'center top',
-                at: 'center bottom'
-            },
-        });
+        // Инициализация клавиатуры для нужных полей ввода
+        initializeKeyboard('#id_name');
+        initializeKeyboard('#id_company');
+        initializeKeyboard('#id_phone_number');
+        initializeKeyboard('#id_email');
+        initializeKeyboard('#id_comment');
 
-        $('#id_name').on('input', function () {
-            let value = $(this).val();
-            if (value.trim().length > 0) {
-                console.log('Поле заполнено');
-            } else {
-                console.log('Поле пустое');
-            }
-        });
 
     });
 </script>
