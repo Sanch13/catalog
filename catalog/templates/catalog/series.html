@@ -92,7 +92,8 @@
     </div>
 
     <!-- Фиксированная кнопка send to email-->
-    <button class="fixed-button btn-menu-header" id="openPopup">Скачать на свой e-mail</button>
+    <button class="fixed-button btn-menu-header" id="openPopup">Отправить на свой e-mail</button>
+    <button class="fixed-button2 btn-menu-header" id="openPopupPrice">Запросить прайс</button>
 
     {% include 'popup/popup.html' %}
 
@@ -222,6 +223,19 @@
                     console.error('Ошибка:', error);
                     document.getElementById('fileSizeDisplay').innerText = "Произошла ошибка при выполнении запроса.";
                 });
+        });
+
+        document.getElementById('openPopupPrice').addEventListener('click', function () {
+            console.log("yyyesss")
+            const popupForm = document.getElementById('popupForm');
+            if (popupForm) {
+                console.log("PopupForm found");
+                popupForm.style.display = 'flex'; // Меняем стиль на flex
+                console.log("PopupForm display set to flex");
+            } else {
+                console.log("PopupForm not found");
+            }
+
         });
     </script>
 

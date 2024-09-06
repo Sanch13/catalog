@@ -138,9 +138,9 @@
         return valueField.trim() === "";
     }
 
-    {#function isValidEmail(value) {#}
-    {#    return /\S+@\S+\.\S+/.test(value);#}
-    {#}#}
+    function isValidEmail(value) {
+        return /\S+@\S+\.\S+/.test(value);
+    }
 
     function showEmptyFieldError(nameInput, errorElement) {
         nameInput.classList.add('is-invalid');
@@ -239,7 +239,7 @@
     });
 </script>
 
-
+{#  VIRTUAL KEYBOARD  #}
 <script>
     $(document).ready(function () {
         // Функция для инициализации клавиатуры для определенного элемента
@@ -261,7 +261,5 @@
         initializeKeyboard('#id_phone_number');
         initializeKeyboard('#id_email');
         initializeKeyboard('#id_comment');
-
-
     });
 </script>

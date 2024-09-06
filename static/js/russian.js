@@ -60,7 +60,7 @@ language.russian = {
 		'enter'  : 'Ввод:Enter',
 		'lock'   : '\u21ea Lock:Caps Lock', // caps lock
 		's'      : '\u21e7:Shift',        // thick hollow up arrow
-		'shift'  : 'Shift:Shift',
+		'shift'  : '\u2B06:Shift',
 		'shift1'  : 'QQQ:Shift',
 		'sign'   : '\u00b1:Change Sign',  // +/- sign for num pad
 		'space'  : '&nbsp;:Space',

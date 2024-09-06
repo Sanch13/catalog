@@ -10,96 +10,94 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Подключаем Bootstrap -->
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet"/>
 
     <!-- Подключаем стили jQuery UI -->
     <link href="{% static 'css/jquery-ui.min.css' %}" rel="stylesheet"/>
-
     <!-- Подключаем стили jQuery UI Keyboard -->
     <link href="{% static 'css/keyboard.css' %}" rel="stylesheet"/>
 
+    <!-- Подключаем собственные стили  -->
     <link href="{% static 'css/style.css' %}" rel="stylesheet"/>
     <link href="{% static 'css/social_networks.css' %}" rel="stylesheet"/>
     <link href="{% static 'css/inactivity_popup.css' %}" rel="stylesheet"/>
 
-
-
+    <!-- Подключаем jQuery -->
+    <script src="{% static 'js/jquery-3.7.1.min.js' %}"></script>
+    <!-- Подключаем jQuery UI -->
+    <script src="{% static 'js/jquery-ui.min.js' %}"></script>
+    <!-- Подключаем jQuery UI Keyboard -->
+    <script src="{% static 'js/jquery.keyboard.js' %}"></script>
+    <!-- Подключаем Bootstrap -->
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
 
     {% block css %}
     {% endblock css %}
+
 </head>
 
 <body>
 <div class="wrapper">
-<header class="header">
-    <div class="container-fluid px-5">
-        <div class="row align-items-center justify-content-between">
-            <div class="col-2 d-flex">
-                <a href="{% url 'home' %}" class="link-logo">
-                    <img src="{% static 'img/logo.svg' %}" alt="logo">
-                </a>
-            </div>
-            <div class="col-8 d-flex justify-content-center">
-                <ul class="main-menu d-flex justify-content-center">
-                    <li class="col-auto">
-                        <a href="{% url 'catalog:catalog' %}" class="btn-menu-header"
-                           id="menu-catalog">
-                            <div class="header-text">Подбор упаковки</div>
-                        </a>
-                    </li>
-                    <li class="col-auto">
-                        <a href="{% url 'catalog:about_miran' %}" class="btn-menu-header"
-                           id="menu-about">
-                            <div class="header-text">О Миран</div>
-                        </a>
-                    </li>
-                    <li class="col-auto">
-                        <a href="{% url 'catalog:contact_me' %}" class="btn-menu-header"
-                           id="menu-contact">
-                            <div class="header-text">Свяжитесь со мной</div>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-            <div class="col-2 d-flex justify-content-end">
-                <div class="btn-menu-header header-text" id="backButton">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"
-                         fill="currentColor" class="bi bi-arrow-left" viewBox="0 1 20 16">
-                        <path fill-rule="evenodd"
-                              d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
-                    </svg>
-                    Назад
+    <header class="header">
+        <div class="container-fluid px-5">
+            <div class="row align-items-center justify-content-between">
+                <div class="col-2 d-flex">
+                    <a href="{% url 'home' %}" class="link-logo">
+                        <img src="{% static 'img/logo.svg' %}" alt="logo">
+                    </a>
+                </div>
+                <div class="col-8 d-flex justify-content-center">
+                    <ul class="main-menu d-flex justify-content-center">
+                        <li class="col-auto">
+                            <a href="{% url 'catalog:catalog' %}" class="btn-menu-header"
+                               id="menu-catalog">
+                                <div class="header-text">Подбор упаковки</div>
+                            </a>
+                        </li>
+                        <li class="col-auto">
+                            <a href="{% url 'catalog:about_miran' %}" class="btn-menu-header"
+                               id="menu-about">
+                                <div class="header-text">О Миран</div>
+                            </a>
+                        </li>
+                        <li class="col-auto">
+                            <a href="{% url 'catalog:contact_me' %}" class="btn-menu-header"
+                               id="menu-contact">
+                                <div class="header-text">Свяжитесь со мной</div>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-2 d-flex justify-content-end">
+                    <div class="btn-menu-header header-text" id="backButton">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"
+                             fill="currentColor" class="bi bi-arrow-left" viewBox="0 1 20 16">
+                            <path fill-rule="evenodd"
+                                  d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
+                        </svg>
+                        Назад
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</header>
+    </header>
 
-<!-- Подключаем jQuery -->
-<script src="{% static 'js/jquery-3.7.1.min.js' %}"></script>
+    <main class="main">
+        {% block content %}
+        {% endblock %}
+    </main>
 
-<!-- Подключаем jQuery UI -->
-<script src="{% static 'js/jquery-ui.min.js' %}"></script>
-
-<!-- Подключаем jQuery UI Keyboard -->
-<script src="{% static 'js/jquery.keyboard.min.js' %}"></script>
-<script src="{% static 'js/jquery.keyboard.extension-all.min.js' %}"></script>
-
-<script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
-
-
-<main class="main">
-    {% block content %}
-    {% endblock %}
-</main>
-
-<footer class="footer"></footer>
+    <footer class="footer"></footer>
 
 </div>
 {# BUTTON-ARROW UP #}
 <button id="scrollToTopBtn" class="scroll-to-top">
-    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-arrow-up white-icon" viewBox="0 0 16 16">
-    <path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5"/>
+    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-arrow-up white-icon"
+         viewBox="0 0 16 16">
+        <path fill-rule="evenodd"
+              d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5"/>
     </svg>
 </button>
 
@@ -127,15 +125,41 @@
         <!-- Добавьте больше картинок по необходимости -->
     </div>
     <div class="popup-qr" id="popup-1">
+        <span class="close" onclick="closePopup('popup-1')">&times;</span>
         <img src="{% static 'img/instagram.svg' %}" alt="Popup Image" id="popupImage-1">
     </div>
     <div class="popup-qr" id="popup-2">
+        <span class="close" onclick="closePopup('popup-2')">&times;</span>
         <img src="{% static 'img/telegram.svg' %}" alt="Popup Image" id="popupImage-2">
     </div>
     <div class="popup-qr" id="popup-3">
+        <span class="close" onclick="closePopup('popup-3')">&times;</span>
         <img src="{% static 'img/youtube.svg' %}" alt="Popup Image" id="popupImage-3">
     </div>
 </div>
+
+<script>
+    function togglePopup(element) {
+        const popupId = element.getAttribute('data-popup-id');
+        const popupQr = document.getElementById(popupId);
+        popupQr.style.display = 'block'; // Показываем попап
+    }
+
+    function closePopup(popupId) {
+        const popupQr = document.getElementById(popupId);
+        popupQr.style.display = 'none'; // Скрываем попап
+    }
+
+    // Закрытие попапа при клике вне его области
+    window.onclick = function (event) {
+        const popups = document.getElementsByClassName('popup-qr');
+        for (let i = 0; i < popups.length; i++) {
+            if (event.target === popups[i]) {
+                popups[i].style.display = 'none';
+            }
+        }
+    }
+</script>
 
 {# DISPLAY/NOT DISPLAY BUTTON ARROW UP #}
 <script>
