@@ -1,3 +1,5 @@
+from typing import List, Dict
+
 from pydantic import SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -31,6 +33,7 @@ class Settings(BaseSettings):
 
     FROM_APP: str
     PASSWORD_APP: str
+    DEPARTMENT: Dict[str, List[str]]
 
     # CORS_ORIGIN_ALLOW_ALL: bool
     # CORS_ALLOW_CREDENTIALS: bool

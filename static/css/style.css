@@ -524,6 +524,7 @@ img {
 
 .my-form-control {
     border: #7F9A14 1px solid;
+    /*height: 50px;*/
     border-radius: 5px;
     width: 100%; /* Увеличение ширины поля на 100% контейнера */
     padding: 5px 5px; /* Внутренние отступы */
@@ -533,6 +534,9 @@ img {
     flex-grow: 1; /* Позволяет элементу расти внутри flex-контейнера */
 }
 
+.my-form-select {
+    height: 43px;
+}
 
 .my-form-control:focus {
     outline: none;

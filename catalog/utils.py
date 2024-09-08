@@ -183,7 +183,7 @@ def get_params_category_for_table(params, category):
 
 
 def create_pdf_from_data(params, category):
-    print("category ", category)
+    print("Create PDF file from category ", category)
     image_bytes_list = params["files"]
     font_path = Path(config_settings.FONT_DIR, "DejaVuSans.ttf")
 
@@ -336,6 +336,27 @@ def send_admin_email(text_body):
     print("sent email to admin")
 
 
+def send_email_to_department(data):
+    message = EmailMessage()
+    message['Subject'] = 'Supplier'
+    message['From'] = settings.FROM_APP
+    message['To'] = settings.DEPARTMENT[data['department']]
+    text_body = f"""
+    Поставщик: {data["name"]}
+    Компания: {data["company"]}
+    Почта: {data["email"]}
+    Комментарий: {data["comment"]}
+    {data.keys()}
+    """
+    message.set_content(text_body)
+    context = ssl.create_default_context()
+    with smtplib.SMTP(settings.SMTP_SERVER, settings.PORT_TLS) as server:
+        server.starttls(context=context)
+        server.login(settings.FROM_APP, settings.PASSWORD_APP)
+        server.send_message(message)
+    print("sent email to DEPARTMENT")
+
+
 def send_data_to_client(list_params, data, file_stream):
     message = EmailMessage()
     message['Subject'] = settings.SUBJECT
@@ -403,3 +424,15 @@ def render_email_template(data, status=None, products=None):
     }
     return render_to_string(template_name="template_for_emails/template_email.html",
                             context=context)
+
+
+def get_size_category(list_params, category):
+    all_size = 0
+    for params in list_params:
+        pdf_file_path = params['path_to_pdf']
+        if not file_exists_in_directory(pdf_file_path):
+            pdf_file_path = create_pdf_from_data(params=params, category=category)
+
+        size = Path(pdf_file_path).stat().st_size
+        all_size += size
+    return all_size

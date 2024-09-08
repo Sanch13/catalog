@@ -17,6 +17,10 @@ urlpatterns = [
     path('new/<slug:product_slug>/', catalog.product_detail_no_series,
          name="new_products"),
     path('send_data_to_email', catalog.send_data_to_email, name="send_data_to_email"),
+    path('send_data_to_email_from_supplier',
+         catalog.send_data_to_email_from_supplier,
+         name="send_data_to_email_from_supplier"),
     path('get_size_list_files', catalog.get_size_list_pdf_files, name="get_size_list_files"),
+    path('get_size_new_products', catalog.get_size_new_products, name="get_size_new_products"),
 
 ]

@@ -13,7 +13,6 @@
 
     <!-- Подключаем Bootstrap -->
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet"/>
-
     <!-- Подключаем стили jQuery UI -->
     <link href="{% static 'css/jquery-ui.min.css' %}" rel="stylesheet"/>
     <!-- Подключаем стили jQuery UI Keyboard -->
@@ -96,8 +95,7 @@
 <button id="scrollToTopBtn" class="scroll-to-top">
     <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-arrow-up white-icon"
          viewBox="0 0 16 16">
-        <path fill-rule="evenodd"
-              d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5"/>
+        <path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5"></path>
     </svg>
 </button>
 
@@ -117,29 +115,29 @@
 <div class="floating-container">
     <div class="image-container">
         <img src="{% static 'img/instagram.svg' %}" class="thumbnail" alt="Instagram"
-             onclick="togglePopup(this)" data-popup-id="popup-1">
+             onclick="showSocialQrPopup(this)" data-popup-id="popup-1">
         <img src="{% static 'img/telegram.svg' %}" class="thumbnail" alt="Telegram"
-             onclick="togglePopup(this)" data-popup-id="popup-2">
+             onclick="showSocialQrPopup(this)" data-popup-id="popup-2">
         <img src="{% static 'img/youtube.svg' %}" class="thumbnail" alt="YouTube"
-             onclick="togglePopup(this)" data-popup-id="popup-3">
-        <!-- Добавьте больше картинок по необходимости -->
+             onclick="showSocialQrPopup(this)" data-popup-id="popup-3">
     </div>
     <div class="popup-qr" id="popup-1">
         <span class="close" onclick="closePopup('popup-1')">&times;</span>
-        <img src="{% static 'img/instagram.svg' %}" alt="Popup Image" id="popupImage-1">
+        <img src="{% static 'img/instagram.png' %}" alt="Popup Image" id="popupImage-1">
     </div>
     <div class="popup-qr" id="popup-2">
         <span class="close" onclick="closePopup('popup-2')">&times;</span>
-        <img src="{% static 'img/telegram.svg' %}" alt="Popup Image" id="popupImage-2">
+        <img src="{% static 'img/telegram.png' %}" alt="Popup Image" id="popupImage-2">
     </div>
     <div class="popup-qr" id="popup-3">
         <span class="close" onclick="closePopup('popup-3')">&times;</span>
-        <img src="{% static 'img/youtube.svg' %}" alt="Popup Image" id="popupImage-3">
+        <img src="{% static 'img/youtube.png' %}" alt="Popup Image" id="popupImage-3">
     </div>
 </div>
 
+{# SOCIAL POPUP #}
 <script>
-    function togglePopup(element) {
+    function showSocialQrPopup(element) {
         const popupId = element.getAttribute('data-popup-id');
         const popupQr = document.getElementById(popupId);
         popupQr.style.display = 'block'; // Показываем попап
@@ -148,16 +146,6 @@
     function closePopup(popupId) {
         const popupQr = document.getElementById(popupId);
         popupQr.style.display = 'none'; // Скрываем попап
-    }
-
-    // Закрытие попапа при клике вне его области
-    window.onclick = function (event) {
-        const popups = document.getElementsByClassName('popup-qr');
-        for (let i = 0; i < popups.length; i++) {
-            if (event.target === popups[i]) {
-                popups[i].style.display = 'none';
-            }
-        }
     }
 </script>
 

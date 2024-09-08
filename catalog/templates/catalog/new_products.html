@@ -1,11 +1,10 @@
 {% extends 'catalog/base.html' %}
 {% load static %}
 
-{% block title %}
-{% endblock title %}
+{% block title %}<title>Новые продукты</title>{% endblock title %}
 
 {% block css %}
-    <link href="{% static 'css/pagination_styles.css' %}" rel="stylesheet"/>
+    <link href="{% static 'css/popup_styles.css' %}" rel="stylesheet"/>
 {% endblock css %}
 
 
@@ -14,7 +13,8 @@
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4">
             {% for product in new_products %}
                 <div class="col">
-                    <a href="{% if product.category__slug == 'bottles' %}{% url 'catalog:product_detail' product.category__slug product.series_slug product.slug %}{% else %}{% url 'catalog:product_detail_no_series' product.category__slug product.slug %}{% endif %}" style="text-decoration:none;">
+                    <a href="{% if product.category__slug == 'bottles' %}{% url 'catalog:product_detail' product.category__slug product.series_slug product.slug %}{% else %}{% url 'catalog:product_detail_no_series' product.category__slug product.slug %}{% endif %}"
+                       style="text-decoration:none;">
                         <div class="card">
                             {% if product.image %}
                                 <img src="/media/{{ product.image }}" class="card-img-top"
@@ -37,4 +37,92 @@
         </div>
     </div>
 
+    <!-- Фиксированная кнопка send to email -->
+    <button class="fixed-button btn-menu-header" id="openPopup">Отправить на свой e-mail</button>
+    <!-- Фиксированная кнопка Запросить прайс -->
+    <button class="fixed-button2 btn-menu-header" id="openPopupPrice">Запросить прайс</button>
+
+    <!-- Функции для валидации полей формы -->
+    <script src="{% static 'js/functions_for_validate_form.js' %}"></script>
+    {% include 'popup/popup.html' %}
+
+    {#  GET FILESIZE  #}
+    <script>
+        new_products_ids = {{ new_products_ids|safe }}
+        const newProductsIds = {
+            bottles: new_products_ids.bottles || [],
+            jars: new_products_ids.jars || [],
+            caps: new_products_ids.caps || []
+        };
+
+        {# Запрос на размер отправляемого файла #}
+        document.getElementById('openPopup').addEventListener('click', function () {
+            document.getElementById('popupForm').style.display = 'flex';
+            const data = new FormData();
+            data.append("category", 'new_products');
+            data.append('new_products', JSON.stringify(newProductsIds));
+            data.append("place", 'new_products');
+
+
+            fetch("{% url 'catalog:get_size_new_products' %}", {
+                method: 'POST',
+                body: data,
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Если ответ успешный, вставляем размер файла в блок div
+                        document.getElementById('fileSizeDisplay').innerText = `Размер файла: ${data.file_size} `;
+                    } else {
+                        // Если возникла ошибка, отображаем сообщение об ошибке
+                        document.getElementById('fileSizeDisplay').innerText = "Ошибка при получении размера файла.";
+                    }
+                })
+                .catch(error => {
+                    console.error('Ошибка:', error);
+                    document.getElementById('fileSizeDisplay').innerText = "Произошла ошибка при выполнении запроса.";
+                });
+        });
+
+    </script>
+
+    {#  VALIDATION FIELDS AND SEND FORM TO SERVER #}
+    <script>
+        document.getElementById('contactForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            if (checkFields()) {
+                let data = new FormData(this);
+                data.append("category", 'new_products');
+                data.append('new_products', JSON.stringify(newProductsIds));
+                data.append("place", 'new_products');
+
+                fetch("{% url 'catalog:send_data_to_email' %}", {
+                    method: 'POST',
+                    body: data,
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    }
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            document.getElementById('popupForm').style.display = 'none';
+                            document.getElementById('successPopup').style.display = 'flex';
+
+                            document.getElementById('contactForm').reset();
+
+                            setTimeout(function () {
+                                document.getElementById('successPopup').style.display = 'none';
+                            }, 3000); // Закрытие через 3 секунды
+                        } else {
+                            alert('Ошибка: ' + JSON.stringify(data.errors));
+                        }
+                    });
+            }
+        });
+    </script>
 {% endblock %}

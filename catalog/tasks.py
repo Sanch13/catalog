@@ -1,11 +1,11 @@
 from celery import shared_task
-
 from catalog.models import EmailLog
 from catalog.utils import (
     merge_pdfs_to_stream,
     send_data_to_client,
     send_data_to_marketing,
-    send_admin_email
+    send_admin_email,
+    send_email_to_department
 )
 
 
@@ -54,7 +54,7 @@ def send_email_list_products(list_params, data):
 
 @shared_task()
 def send_email_from_contact_customer(data):
-    status = "Didn't send the e-mail"
+    status = "Покупатель из <Свяжитесь со  мной> "
     try:
         EmailLog.objects.create(
             name=data["name"],
@@ -66,8 +66,32 @@ def send_email_from_contact_customer(data):
             place=data["place"],
             status=status,
             products=[],
-            lead_qualification=EmailLog.LeadQualification.CUSTOMER
+            lead_qualification=EmailLog.LeadQualification.CUSTOMER,
         )
         send_data_to_marketing(data, status=status, products=None)
+    except Exception as e:
+        send_admin_email(text_body=f"An unexpected error occurred: {e}")
+
+
+@shared_task()
+def send_department_email(data):
+    try:
+        send_email_to_department(data=data)
+        try:
+            EmailLog.objects.create(
+                name=data["name"],
+                company=data["company"],
+                phone_number='',
+                email=data["email"],
+                comment=data["comment"],
+                category=data["department"],
+                place='supplier',
+                status="Success",
+                products=[],
+                lead_qualification=EmailLog.LeadQualification.SUPPLIER
+            )
+        except Exception as e:
+            send_admin_email(text_body=f"An unexpected error occurred: {e}")
+
     except Exception as e:
         send_admin_email(text_body=f"An unexpected error occurred: {e}")

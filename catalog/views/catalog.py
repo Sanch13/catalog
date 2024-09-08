@@ -6,10 +6,19 @@ from django.db.models.functions import Coalesce
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
 
-from catalog.forms import CapFilterForm, JarFilterForm, BottlesFilterForm, SendDataToEmail, \
-    SendDataFromSupplierToEmail
 from catalog.models import Jar, Series, Cap, Category, Bottle, CapFile, JarFile, BottleFile
-from catalog.tasks import send_email_list_products, send_email_from_contact_customer
+from catalog.forms import (
+    CapFilterForm,
+    JarFilterForm,
+    BottlesFilterForm,
+    SendDataToEmail,
+    SendDataFromSupplierToEmail,
+)
+from catalog.tasks import (
+    send_email_list_products,
+    send_email_from_contact_customer,
+    send_department_email,
+)
 from catalog.utils import (
     create_pdf_from_data,
     file_exists_in_directory,
@@ -18,7 +27,8 @@ from catalog.utils import (
     get_list_params_jars_from_db,
     get_query_for_request_to_db,
     get_list_params_caps_from_db,
-    get_list_params_bottles_from_db
+    get_list_params_bottles_from_db,
+    get_size_category
 )
 
 
@@ -135,25 +145,38 @@ def get_category(request, category_slug):
         jar_image_subquery = JarFile.objects.filter(jar=OuterRef('pk')).values('file')[:1]
         bottle_image_subquery = BottleFile.objects.filter(
             bottle=OuterRef('pk')).values('file')[:1]
+        form_data_to_email = SendDataToEmail()
 
         caps = Cap.objects.filter(status='Новинка').annotate(
             image=Subquery(cap_image_subquery),
             series_slug=Value('')
-        ).values('name', 'slug', 'status', 'ratings', 'series_slug', 'category__slug', 'image')
+        ).values('id', 'name', 'slug', 'status', 'ratings', 'series_slug', 'category__slug',
+                 'image')
 
         jars = Jar.objects.filter(status='Новинка').annotate(
             image=Subquery(jar_image_subquery),
             series_slug=Value('')
-        ).values('name', 'slug', 'status', 'ratings', 'series_slug', 'category__slug', 'image')
+        ).values('id', 'name', 'slug', 'status', 'ratings', 'series_slug', 'category__slug',
+                 'image')
 
         bottles = Bottle.objects.filter(status='Новинка').annotate(
             image=Subquery(bottle_image_subquery),
             series_slug=Coalesce('series__slug', Value(''))
-        ).values('name', 'slug', 'status', 'ratings', 'series_slug', 'category__slug', 'image')
+        ).values('id', 'name', 'slug', 'status', 'ratings', 'series_slug', 'category__slug',
+                 'image')
+
+        new_products_ids = {
+            "bottles": [bottle["id"]for bottle in bottles],
+            "jars": [jar["id"] for jar in jars],
+            "caps": [cap["id"] for cap in caps],
+
+        }
 
         all_new_products = caps.union(jars, bottles).order_by('-ratings')
         context = {
-            'new_products': all_new_products
+            'new_products': all_new_products,
+            'new_products_ids': new_products_ids,
+            'form_data_to_email': form_data_to_email
         }
         return render(request=request,
                       template_name='catalog/new_products.html',
@@ -228,8 +251,9 @@ def send_data_to_email(request):
                 'place': place,
             }
             print("work")
+            print(category)
             if place != 'contact':
-                ids = convert_to_numbers(json.loads(request.POST.get('ids', [])))
+                ids = convert_to_numbers(json.loads(request.POST.get('ids', '[]')))
                 list_params = []
                 if category == 'jar':
                     list_params = get_list_params_jars_from_db(ids)
@@ -237,12 +261,21 @@ def send_data_to_email(request):
                     list_params = get_list_params_caps_from_db(ids)
                 if category in ('bottle', 'series'):
                     list_params = get_list_params_bottles_from_db(ids, category)
+                if category == 'new_products':
+                    new_products = json.loads(request.POST.get('new_products', []))
+                    bottles = convert_to_numbers(new_products['bottles'])
+                    list_params += get_list_params_bottles_from_db(bottles, category="bottle")
+                    jars = convert_to_numbers(new_products['jars'])
+                    list_params += get_list_params_jars_from_db(jars)
+                    caps = convert_to_numbers(new_products['caps'])
+                    list_params += get_list_params_caps_from_db(caps)
 
+                print("FROM catalog -> send email")
                 send_email_list_products.delay(list_params=list_params, data=user_data)
                 return JsonResponse({'success': True})
             else:
                 send_email_from_contact_customer.delay(data=user_data)
-                print("send email")
+                print("FROM contact -> send email")
                 return JsonResponse({'success': True})
         else:
             return JsonResponse({'success': False, 'errors': form.errors})
@@ -281,11 +314,53 @@ def about_miran(request):
 
 def contact_me(request):
     form_data_to_email = SendDataToEmail()
-    form_data_to_email_supplier = SendDataFromSupplierToEmail()
+    form_supplier = SendDataFromSupplierToEmail()
     context = {
         'form_data_to_email': form_data_to_email,
-        'form_data_to_email_supplier': form_data_to_email_supplier,
+        'form_supplier': form_supplier,
     }
     return render(request=request,
                   template_name="catalog/contact_me.html",
                   context=context)
+
+
+def send_data_to_email_from_supplier(request):
+    print('send_data_to_email_from_supplier', request.POST)
+    if request.method == 'POST':
+        form = SendDataFromSupplierToEmail(request.POST)
+        if form.is_valid():
+            cd = form.cleaned_data
+            user_data = {
+                'name': cd['name_sup'],
+                'company': cd['company_sup'],
+                'email': cd['email_sup'],
+                'department': cd['department_sup'],
+                'comment': cd['comment_sup'],
+            }
+            print("work supplier !!!")
+            send_department_email.delay(data=user_data)
+            return JsonResponse({'success': True})
+        else:
+            return JsonResponse({'success': False, 'errors': form.errors})
+
+
+def get_size_new_products(request):
+    if request.method == 'POST':
+        new_products = json.loads(request.POST.get('new_products', []))
+        bottles = convert_to_numbers(new_products['bottles'])
+        jars = convert_to_numbers(new_products['jars'])
+        caps = convert_to_numbers(new_products['caps'])
+
+        all_size = 0
+        if jars:
+            list_params = get_list_params_jars_from_db(jars)
+            all_size += get_size_category(list_params=list_params, category='jar')
+        if caps:
+            list_params = get_list_params_caps_from_db(caps)
+            all_size += get_size_category(list_params=list_params, category='cap')
+        if bottles:
+            list_params = get_list_params_bottles_from_db(bottles, category="bottle")
+            all_size += get_size_category(list_params=list_params, category='bottle')
+
+        file_size = get_formatted_file_size(size_bytes=all_size)
+        return JsonResponse({'success': True, 'file_size': file_size})

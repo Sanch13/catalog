@@ -12,7 +12,7 @@
 }
 
 
-.popup-content, .popup-content-sup  {
+.popup-content, .popup-content-sup {
     background-color: white;
     padding: 20px;
     border-radius: 15px;
@@ -40,7 +40,7 @@ h2 {
     text-align: center; /* Центрируем заголовок */
 }
 
-.success-popup-content, .success-popup-content-sup  {
+.success-popup-content, .success-popup-content-sup {
     background-color: #7F9A14; /* Задаем зеленый цвет фона только для successPopup */
     color: white; /* Цвет текста для лучшей видимости */
     padding: 60px 30px;
@@ -62,59 +62,55 @@ h2 {
     flex-direction: column;
     align-items: center; /* Центрирование всех элементов по центру */
 }
-input[type="checkbox"] {
-    position: absolute;
-    opacity: 0;
+
+
+/**************************
+CHECKBOX
+**************************/
+.custom-checkbox {
+    display: none; /* Скрываем стандартный чекбокс */
 }
 
-label {
-    display: flex;
-    align-items: center;
+.custom-label {
+    position: relative;
+    display: inline-block;
+    padding-left: 70px; /* Задан отступ для псевдоэлемента */
     cursor: pointer;
-    position: relative;
+    font-size: 1.2rem; /* Размер текста */
+    user-select: none; /* Запрет выделения текста */
 }
 
-.custom-checkbox, .custom-checkbox-sup {
-    width: 68px; /* Ширина кастомного чекбокса */
-    height: 44px; /* Высота кастомного чекбокса */
-    border: 1px solid #7F9A14;
-    background-color: white;
-    border-radius: 4px;
-    margin-right: 8px;
-    position: relative;
-}
-
-input[type="checkbox"]:checked + .custom-checkbox{
-    background-color: #7F9A14; /* Цвет фон при активном чекбоксе */
-}
-
-input[type="checkbox"]:checked + .custom-checkbox-sup{
-    background-color: #7F9A14; /* Цвет фон при активном чекбоксе */
-}
-
-input[type="checkbox"]:checked + .custom-checkbox::after{
+.custom-label:before {
     content: '';
     position: absolute;
-    left: 11px;
-    top: 5px;
-    width: 18px;
-    height: 22px;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%); /* Вертикальное центрирование */
+    width: 50px; /* Ширина чекбокса */
+    height: 50px; /* Высота чекбокса */
+    border: 1px solid #7F9A14; /* Цвет границы */
+    background-color: #FFF; /* Цвет фона */
+    border-radius: 3px; /* Округлые углы */
+}
+
+.custom-checkbox:checked + .custom-label:before {
+    background-color: #7F9A14; /* Цвет фона при отмеченном состоянии */
+    border-color: #7F9A14; /* Цвет границы при отмеченном состоянии */
+}
+
+.custom-checkbox:checked + .custom-label:after {
+    content: ''; /* Галочка при отмеченном состоянии */
+    position: absolute;
+    left: 16px;
+    top: 11px; /* Позиция галочки */
+    width: 20px;
+    height: 28px;
+    color: #FFF; /* Цвет галочки */
     border: solid white;
     border-width: 0 4px 4px 0;
     transform: rotate(45deg);
 }
 
-input[type="checkbox"]:checked + .custom-checkbox-sup::after{
-    content: '';
-    position: absolute;
-    left: 11px;
-    top: 5px;
-    width: 18px;
-    height: 22px;
-    border: solid white;
-    border-width: 0 4px 4px 0;
-    transform: rotate(45deg);
-}
 
 .text-danger {
     color: red;
@@ -146,6 +142,7 @@ input[type="checkbox"]:checked + .custom-checkbox-sup::after{
     text-decoration: none;
     cursor: pointer;
 }
+
 .btn-submit-form2 {
     display: block;
     padding: 13px 34px;
@@ -175,6 +172,7 @@ input[type="checkbox"]:checked + .custom-checkbox-sup::after{
     cursor: not-allowed;
     color: #a0a0a0;
 }
+
 .btn-submit-form2:disabled {
     background-color: #e0e0e0;
     border-color: #b0b0b0;

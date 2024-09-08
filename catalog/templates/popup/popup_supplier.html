@@ -1,3 +1,9 @@
+{% load static %}
+
+{% block css %}
+    <script src="{% static 'js/russian.js' %}"></script>
+{% endblock css %}
+
 <!-- Попап для отправки выбранных продуктов -->
 <div id="popupFormSupplier" class="popup-sup" style="display: none;">
     <div class="popup-content-sup">
@@ -5,7 +11,7 @@
         <h2>Заполните форму и нажмите отправить</h2>
         <form class="form-send-data-to-email"
               id="contactForm2"
-              action="{% url 'catalog:send_data_to_email' %}"
+              action="{% url 'catalog:send_data_to_email_from_supplier' %}"
               method="post"
               novalidate>
 
@@ -13,66 +19,56 @@
 
             {# NAME #}
             <div class="my-form-group">
-                <label>{{ form_data_to_email_supplier.name.label }}
+                <label>{{ form_supplier.name_sup.label }}
                     <span class="text-danger"> *</span>
                 </label>
-                {{ form_data_to_email_supplier.name }}
-                <div id="id_name-error" class="error-message"></div>
+                {{ form_supplier.name_sup }}
+                <div id="id_name_sup-error" class="error-message"></div>
             </div>
 
             {# COMPANY #}
             <div class="my-form-group">
-                <label>{{ form_data_to_email_supplier.company.label_tag }}<span
+                <label>{{ form_supplier.company_sup.label_tag }}<span
                         class="text-danger"> *</span>
                 </label>
-                {{ form_data_to_email_supplier.company }}
-                <div id="id_company-error" class="error-message"></div>
+                {{ form_supplier.company_sup }}
+                <div id="id_company_sup-error" class="error-message"></div>
             </div>
-
-            {# PHONE #}
-{#            <div class="my-form-group">#}
-{#                <label>{{ form_data_to_email_supplier.phone_number.label_tag }}#}
-{#                    <span class="text-danger"> *</span>#}
-{#                </label>#}
-{#                {{ form_data_to_email_supplier.phone_number }}#}
-{#                <div id="id_phone_number-error" class="error-message"></div>#}
-{#            </div>#}
 
             {# EMAIL #}
             <div class="my-form-group">
-                <label>{{ form_data_to_email_supplier.email.label_tag }}
+                <label>{{ form_supplier.email_sup.label_tag }}
                     <span class="text-danger"> *</span>
                 </label>
-                {{ form_data_to_email_supplier.email }}
-                <div id="id_email-error" class="error-message"></div>
+                {{ form_supplier.email_sup }}
+                <div id="id_email_sup-error" class="error-message"></div>
             </div>
 
             {# DEPARTMENT #}
             <div class="my-form-group">
-                <label>{{ form_data_to_email_supplier.department.label_tag }}
+                <label>{{ form_supplier.department_sup.label_tag }}
                     <span class="text-danger"> *</span>
                 </label>
-                {{ form_data_to_email_supplier.department }}
-                <div id="id_email-error" class="error-message"></div>
+                {{ form_supplier.department_sup }}
+                <div id="id_department_sup-error" class="error-message"></div>
             </div>
 
             {# COMMENT #}
             <div class="my-form-group">
-                <label>{{ form_data_to_email_supplier.comment.label_tag }}</label>
-                {{ form_data_to_email_supplier.comment }}
+                <label>{{ form_supplier.comment_sup.label_tag }}</label>
+                {{ form_supplier.comment_sup }}
             </div>
 
             {# CHECKBOX RULES #}
             <div class="my-form-group">
-                <label for="rulesCondition2">
-                    <input type="checkbox" id="rulesCondition2">
-                    <span class="custom-checkbox-sup"></span> Я согласен на обработку моих
-                    персональных данных
+                <input type="checkbox" class="custom-checkbox" id="checkbox2">
+                <label class="custom-label" for="checkbox2">
+                    Я даю свое согласие на обработку моих персональных данных
                 </label>
             </div>
 
             <button type="submit"
-                    class="btn-submit-form2"
+                    class="btn-submit-form"
                     id="sendForm2"
                     disabled>Отправить
             </button>
@@ -85,7 +81,7 @@
     <div class="success-popup-content-sup d-flex justify-content-center align-items-center">
         <div id="successMessage">
             Спасибо!<br>Ваша заявка принята!
-{#            <br>После выставки представитель компании свяжется с Вами#}
+            {#            <br>После выставки представитель компании свяжется с Вами#}
         </div>
     </div>
 </div>
@@ -113,5 +109,52 @@
         if (formPopup.style.display === 'flex' && !popup.contains(event.target) && event.target.id !== 'openPopupSupplier') {
             formPopup.style.display = 'none';
         }
+    });
+</script>
+
+{#  CHECK FIELDS AND CHECKBOX  #}
+<script>
+    const formSupplierElem = {
+        name: document.getElementById("id_name_sup"),
+        company: document.getElementById("id_company_sup"),
+        email: document.getElementById("id_email_sup"),
+        department: document.getElementById("id_department_sup")
+    };
+
+    document.addEventListener("DOMContentLoaded", function () {
+        formSupplierElem.name.addEventListener('blur', () => handleSimpleFieldBlur(formSupplierElem.name));
+        formSupplierElem.company.addEventListener('blur', () => handleSimpleFieldBlur(formSupplierElem.company));
+        formSupplierElem.email.addEventListener('blur', () => handleEmailBlur(formSupplierElem.email));
+        formSupplierElem.department.addEventListener('blur', () => handleDepartmentBlur(formSupplierElem.department));
+
+        const checkbox2 = document.getElementById('checkbox2');
+        const submitButton2 = document.getElementById('sendForm2');
+        checkbox2.addEventListener('change', function () {
+            submitButton2.disabled = !checkbox2.checked;
+        });
+    });
+</script>
+
+{#  VIRTUAL KEYBOARD  #}
+<script>
+    $(document).ready(function () {
+        // Функция для инициализации клавиатуры для определенного элемента
+        function initializeKeyboard(selector) {
+            $(selector).keyboard({
+                layout: 'russian-qwerty',
+                usePreview: false,
+                autoAccept: true,
+                position: {
+                    my: 'center top',
+                    at: 'center bottom'
+                },
+            });
+        }
+
+        // Инициализация клавиатуры для нужных полей ввода
+        initializeKeyboard('#id_name_sup');
+        initializeKeyboard('#id_company_sup');
+        initializeKeyboard('#id_email_sup');
+        initializeKeyboard('#id_comment_sup');
     });
 </script>

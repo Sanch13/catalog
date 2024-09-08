@@ -25,7 +25,7 @@
 
     </div>
 
-
+    <script src="{% static 'js/functions_for_validate_form.js' %}"></script>
     {% include 'popup/popup.html' %}
     {% include 'popup/popup_supplier.html' %}
 
@@ -73,20 +73,39 @@
         document.getElementById('contactForm2').addEventListener('submit', function (event) {
             event.preventDefault();
 
-            if (checkFields()) {
+            if (checkFieldsSupplierForm()) {
                 let data = new FormData(this);
                 data.append("place", 'contact');
                 console.log(data)
+
+                fetch("{% url 'catalog:send_data_to_email_from_supplier' %}", {
+                    method: 'POST',
+                    body: data,
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    }
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            document.getElementById('popupFormSupplier').style.display = 'none';
+                            document.getElementById('successPopupSupplier').style.display = 'flex';
+
+                            document.getElementById('contactForm2').reset();
+
+                            setTimeout(function () {
+                                document.getElementById('successPopupSupplier').style.display = 'none';
+                            }, 3000); // Закрытие через 3 секунды
+                        } else {
+                            alert('Ошибка: ' + JSON.stringify(data.errors));
+                        }
+                    });
 
 
             }
 
         });
 
-        const checkbox2 = document.getElementById('rulesCondition2');
-        const submitButton2 = document.getElementById('sendForm2');
-        checkbox2.addEventListener('change', function () {
-            submitButton2.disabled = !checkbox2.checked;
-        });
+
     </script>
 {% endblock %}

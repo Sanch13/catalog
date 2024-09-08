@@ -5,9 +5,7 @@
 {% endblock title %}
 
 {% block css %}
-    <link href="{% static 'css/pagination_styles.css' %}" rel="stylesheet"/>
     <link href="{% static 'css/popup_styles.css' %}" rel="stylesheet"/>
-
 {% endblock css %}
 
 {% block content %}
@@ -93,8 +91,11 @@
 
     <!-- Фиксированная кнопка send to email-->
     <button class="fixed-button btn-menu-header" id="openPopup">Отправить на свой e-mail</button>
+    <!-- Фиксированная кнопка Запросить прайс -->
     <button class="fixed-button2 btn-menu-header" id="openPopupPrice">Запросить прайс</button>
 
+    <!-- Функции для валидации полей формы -->
+    <script src="{% static 'js/functions_for_validate_form.js' %}"></script>
     {% include 'popup/popup.html' %}
 
     <!-- Секция с кнопками фильтров -->

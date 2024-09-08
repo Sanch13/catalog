@@ -61,9 +61,9 @@
 
             {# CHECKBOX RULES #}
             <div class="my-form-group">
-                <label for="rulesCondition">
-                    <input type="checkbox" id="rulesCondition">
-                    <span class="custom-checkbox"></span>Я даю свое согласие на обработку моих персональных данных
+                <input type="checkbox" class="custom-checkbox" id="checkbox1">
+                <label class="custom-label" for="checkbox1">
+                    Я даю свое согласие на обработку моих персональных данных
                 </label>
             </div>
 
@@ -128,109 +128,22 @@
     });
 </script>
 
+{#  CHECK FIELDS AND CHECKBOX  #}
 <script>
-    const nameInput = document.getElementById('id_name');
-    const companyInput = document.getElementById('id_company');
-    const phoneNumberInput = document.getElementById('id_phone_number');
-    const emailInput = document.getElementById('id_email');
-
-    function isEmptyField(valueField) {
-        return valueField.trim() === "";
-    }
-
-    function isValidEmail(value) {
-        return /\S+@\S+\.\S+/.test(value);
-    }
-
-    function showEmptyFieldError(nameInput, errorElement) {
-        nameInput.classList.add('is-invalid');
-        errorElement.textContent = "Поле не может быть пустым.";
-    }
-
-    function showLengthPhoneNumber(nameInput, errorElement) {
-        nameInput.classList.add('is-invalid');
-        errorElement.textContent = "Номер телефона должен содержать не менее 8 цифр.";
-    }
-
-    function handleNameBlur() {
-        const valueField = document.getElementById('id_name').value;
-        const errorElement = document.getElementById('id_name' + '-error');
-        let flag = false
-
-        if (isEmptyField(valueField)) {
-            showEmptyFieldError(nameInput, errorElement);
-        } else {
-            nameInput.classList.remove('is-invalid');
-            errorElement.textContent = '';
-            flag = true
-        }
-        return flag
-    }
-
-    function handleCompanyBlur() {
-        const valueField = document.getElementById('id_company').value;
-        const errorElement = document.getElementById('id_company' + '-error');
-        let flag = false
-
-        if (isEmptyField(valueField)) {
-            showEmptyFieldError(companyInput, errorElement);
-        } else {
-            companyInput.classList.remove('is-invalid');
-            errorElement.textContent = '';
-            flag = true
-        }
-        return flag
-    }
-
-    function handlePhoneNumberBlur() {
-        const valueField = document.getElementById('id_phone_number').value;
-        const errorElement = document.getElementById('id_phone_number' + '-error');
-        let flag = false
-
-        if (isEmptyField(valueField)) {
-            showEmptyFieldError(phoneNumberInput, errorElement);
-        } else if (valueField.length < 9) {
-            showLengthPhoneNumber(phoneNumberInput, errorElement)
-        } else {
-            phoneNumberInput.classList.remove('is-invalid');
-            errorElement.textContent = '';
-            flag = true
-        }
-        return flag
-    }
-
-    function handleEmailBlur() {
-        const valueField = document.getElementById('id_email').value;
-        const errorElement = document.getElementById('id_email' + '-error');
-        let flag = false
-
-        if (isEmptyField(valueField)) {
-            showEmptyFieldError(emailInput, errorElement);
-        } else if (!isValidEmail(valueField)) {
-            errorElement.textContent = 'Введите корректный email';
-        } else {
-            emailInput.classList.remove('is-invalid');
-            errorElement.textContent = '';
-            flag = true
-        }
-        return flag
-    }
-
-    function checkFields() {
-        const flag1 = handleNameBlur()
-        const flag2 = handleCompanyBlur()
-        const flag3 = handlePhoneNumberBlur()
-        const flag4 = handleEmailBlur()
-        return flag1 && flag2 && flag3 && flag4;
-    }
+    const formLidsElem = {
+        name: document.getElementById("id_name"),
+        company: document.getElementById("id_company"),
+        phone_number: document.getElementById("id_phone_number"),
+        email: document.getElementById("id_email")
+    };
 
     document.addEventListener("DOMContentLoaded", function () {
-        nameInput.addEventListener('blur', handleNameBlur);
-        companyInput.addEventListener('blur', handleCompanyBlur);
-        phoneNumberInput.addEventListener('blur', handlePhoneNumberBlur);
-        emailInput.addEventListener('blur', handleEmailBlur);
+        formLidsElem.name.addEventListener('blur', () => handleSimpleFieldBlur(formLidsElem.name));
+        formLidsElem.company.addEventListener('blur', () => handleSimpleFieldBlur(formLidsElem.company));
+        formLidsElem.phone_number.addEventListener('blur', () => handlePhoneNumberBlur(formLidsElem.phone_number));
+        formLidsElem.email.addEventListener('blur', () => handleEmailBlur(formLidsElem.email));
 
-        const checkbox = document.getElementById('rulesCondition');
+        const checkbox = document.getElementById('checkbox1');
         const submitButton = document.getElementById('sendForm');
 
         checkbox.addEventListener('change', function () {

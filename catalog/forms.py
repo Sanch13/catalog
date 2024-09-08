@@ -118,25 +118,23 @@ class SendDataToEmail(forms.Form):
 
 department_choices = [
     ('-------', '-------'),
-    ('email1', 'Отдел 1'),
-    ('email2', 'Отдел 2'),
-    ('email3', 'Отдел 3'),
+    ('production_email', 'Продажа оборудования'),
+    ('buying_email', 'Сообщение для закупок'),
+    ('marketing_email', 'Сообщение для маркетинга'),
+    ('miran_email', 'Общие вопросы'),
 ]
 
 
 class SendDataFromSupplierToEmail(forms.Form):
-    name = forms.CharField(max_length=100, label='Ваше ФИО', required=True)
-    company = forms.CharField(max_length=100, label='Компания', required=True)
-    # phone_number = forms.CharField(max_length=20,
-    #                                label='Номер телефона',
-    #                                required=True)
-    email = forms.EmailField(label='Ваш Email', required=True)
-    department = forms.ChoiceField(choices=department_choices,
-                                   label='Отдел',
-                                   required=True,
-                                   initial=department_choices[0][0])
+    name_sup = forms.CharField(max_length=100, label='Ваше ФИО', required=True)
+    company_sup = forms.CharField(max_length=100, label='Компания', required=True)
+    email_sup = forms.CharField(max_length=100, label='Ваш e-mail', required=True)
+    department_sup = forms.ChoiceField(choices=department_choices,
+                                       label='Отдел',
+                                       required=True,
+                                       initial=department_choices[0][0])
 
-    comment = forms.CharField(
+    comment_sup = forms.CharField(
         label='Комментарий',
         required=False,
         widget=forms.Textarea(attrs={
@@ -149,3 +147,5 @@ class SendDataFromSupplierToEmail(forms.Form):
         super(SendDataFromSupplierToEmail, self).__init__(*args, **kwargs)
         for field_name, filed in self.fields.items():
             filed.widget.attrs['class'] = 'my-form-control'
+            if field_name == "department_sup":
+                filed.widget.attrs['class'] += ' my-form-select'
