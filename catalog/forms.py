@@ -93,7 +93,7 @@ class BottlesFilterForm(forms.Form):
         return Bottle.YesNoStatusBottle.YES if 'декорирование' in data else None
 
 
-class SendDataToEmail(forms.Form):
+class ContactLidForm(forms.Form):
     name = forms.CharField(max_length=100, label='Ваше ФИО', required=True)
     company = forms.CharField(max_length=100, label='Компания', required=True)
     phone_number = forms.CharField(max_length=20,
@@ -111,7 +111,7 @@ class SendDataToEmail(forms.Form):
     )
 
     def __init__(self, *args, **kwargs):
-        super(SendDataToEmail, self).__init__(*args, **kwargs)
+        super(ContactLidForm, self).__init__(*args, **kwargs)
         for field_name, filed in self.fields.items():
             filed.widget.attrs['class'] = 'my-form-control'
 
@@ -125,7 +125,7 @@ department_choices = [
 ]
 
 
-class SendDataFromSupplierToEmail(forms.Form):
+class SupplierForm(forms.Form):
     name_sup = forms.CharField(max_length=100, label='Ваше ФИО', required=True)
     company_sup = forms.CharField(max_length=100, label='Компания', required=True)
     email_sup = forms.CharField(max_length=100, label='Ваш e-mail', required=True)
@@ -144,8 +144,16 @@ class SendDataFromSupplierToEmail(forms.Form):
     )
 
     def __init__(self, *args, **kwargs):
-        super(SendDataFromSupplierToEmail, self).__init__(*args, **kwargs)
+        super(SupplierForm, self).__init__(*args, **kwargs)
         for field_name, filed in self.fields.items():
             filed.widget.attrs['class'] = 'my-form-control'
             if field_name == "department_sup":
                 filed.widget.attrs['class'] += ' my-form-select'
+
+
+class ContactPriceForm(ContactLidForm):
+    def __init__(self, *args, **kwargs):
+        super(ContactPriceForm, self).__init__(*args, **kwargs)
+        for field_name, filed in self.fields.items():
+            filed.widget.attrs['class'] = 'my-form-control'
+            filed.widget.attrs['id'] = f'id_{field_name}_price'

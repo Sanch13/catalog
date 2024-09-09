@@ -1,16 +1,10 @@
-{% load static %}
-
-{% block css %}
-    <script src="{% static 'js/russian.js' %}"></script>
-{% endblock css %}
-
 <!-- Попап для отправки выбранных продуктов -->
-<div id="openPopupFormPrice" class="popup-price" style="display: none;">
+<div id="popupFormPrice" class="popup-price" style="display: none;">
     <div class="popup-content-price">
         <span id="closePopupPrice">&times;</span>
         <h2>Заполните форму и нажмите отправить</h2>
         <form class="form-send-data-to-email"
-              id="contactForm3"
+              id="contactFormPrice"
               action="{% url 'catalog:send_data_to_email' %}"
               method="post"
               novalidate>
@@ -19,101 +13,75 @@
 
             {# NAME #}
             <div class="my-form-group">
-                <label>{{ form_data_to_email.name.label }}
+                <label>{{ price_form.name.label }}
                     <span class="text-danger"> *</span>
                 </label>
-                {{ form_data_to_email.name }}
-                <div id="id_name-error" class="error-message"></div>
+                {{ price_form.name }}
+                <div id="id_name_price-error" class="error-message"></div>
             </div>
 
             {# COMPANY #}
             <div class="my-form-group">
-                <label>{{ form_data_to_email.company.label_tag }}<span
+                <label>{{ price_form.company.label_tag }}<span
                         class="text-danger"> *</span>
                 </label>
-                {{ form_data_to_email.company }}
-                <div id="id_company-error" class="error-message"></div>
+                {{ price_form.company }}
+                <div id="id_company_price-error" class="error-message"></div>
             </div>
 
             {# PHONE #}
             <div class="my-form-group">
-                <label>{{ form_data_to_email.phone_number.label_tag }}
+                <label>{{ price_form.phone_number.label_tag }}
                     <span class="text-danger"> *</span>
                 </label>
-                {{ form_data_to_email.phone_number }}
-                <div id="id_phone_number-error" class="error-message"></div>
+                {{ price_form.phone_number }}
+                <div id="id_phone_number_price-error" class="error-message"></div>
             </div>
 
             {# EMAIL #}
             <div class="my-form-group">
-                <label>{{ form_data_to_email.email.label_tag }}
+                <label>{{ price_form.email.label_tag }}
                     <span class="text-danger"> *</span>
                 </label>
-                {{ form_data_to_email.email }}
-                <div id="id_email-error" class="error-message"></div>
+                {{ price_form.email }}
+                <div id="id_email_price-error" class="error-message"></div>
             </div>
 
             {# COMMENT #}
             <div class="my-form-group">
-                <label>{{ form_data_to_email.comment.label_tag }}</label>
-                {{ form_data_to_email.comment }}
+                <label>{{ price_form.comment.label_tag }}</label>
+                {{ price_form.comment }}
             </div>
 
             {# CHECKBOX RULES #}
             <div class="my-form-group">
-                <input type="checkbox" class="custom-checkbox" id="checkbox3">
-                <label class="custom-label" for="checkbox3">
+                <input type="checkbox" class="custom-checkbox" id="checkbox-price">
+                <label class="custom-label" for="checkbox-price">
                     Я даю свое согласие на обработку моих персональных данных
                 </label>
             </div>
 
-            <div class="fileSizeDisplay">
-                <span id="fileSizeDisplay"></span>
-            </div>
-
             <button type="submit"
                     class="btn-submit-form"
-                    id="sendForm3"
+                    id="sendFormLidsPrice"
                     disabled>Отправить
             </button>
         </form>
     </div>
 </div>
 
-<!-- Попап о успешной отправке -->
-<div id="successPopup" class="popup" style="display: none;">
-    <div class="success-popup-content d-flex justify-content-center align-items-center">
-        <div id="successMessage">
-            Спасибо!<br>Ваша заявка принята!
-            {#            <br>После выставки представитель компании свяжется с Вами#}
-        </div>
-    </div>
-</div>
-
-{# PHONE_MASK #}
-<script src="{% static 'js/jquery.inputmask.js' %}"></script>
-<script>
-    $(document).ready(function () {
-        $('#id_phone_number').inputmask({
-            mask: '+9999999999999',  // позволяет ввод от 1 до 13 символов после +
-            placeholder: '',
-            clearMaskOnLostFocus: false,
-        });
-    });
-</script>
-
 {#  POPUP  #}
 <script>
     {# Закрытие попапа по кнопке Х #}
     document.getElementById('closePopupPrice').addEventListener('click', function () {
-        document.getElementById('openPopupFormPrice').style.display = 'none';
+        document.getElementById('popupFormPrice').style.display = 'none';
     });
 
     {# Закрытие попапа по клику вне окна #}
     document.addEventListener('click', function (event) {
         let popup = document.querySelector('.popup-content-price');
-        let formPopup = document.getElementById('openPopupFormPrice');
-        if (formPopup.style.display === 'flex' && !popup.contains(event.target) && event.target.id !== 'openPopup') {
+        let formPopup = document.getElementById('popupFormPrice');
+        if (formPopup.style.display === 'flex' && !popup.contains(event.target) && event.target.id !== 'openPopupPrice') {
             formPopup.style.display = 'none';
         }
     });
@@ -122,7 +90,7 @@
     document.addEventListener('click', function (event) {
         let popup = document.querySelector('.success-popup-content');
         let formPopup = document.getElementById('successPopup');
-        if (formPopup.style.display === 'flex' && !popup.contains(event.target) && event.target.id !== 'openPopup') {
+        if (formPopup.style.display === 'flex' && !popup.contains(event.target) && event.target.id !== 'openPopupPrice') {
             formPopup.style.display = 'none';
         }
     });
@@ -131,15 +99,14 @@
 {#  CHECK FIELDS AND CHECKBOX  #}
 <script>
     const formPriceElem = {
-        name: document.getElementById("id_name"),
-        company: document.getElementById("id_company"),
-        phone_number: document.getElementById("id_phone_number"),
-        email: document.getElementById("id_email")
+        name: document.getElementById("id_name_price"),
+        company: document.getElementById("id_company_price"),
+        phone_number: document.getElementById("id_phone_number_price"),
+        email: document.getElementById("id_email_price")
     };
 
     document.getElementById('openPopupPrice').addEventListener('click', function () {
-        console.log("yyyesss");
-        document.getElementById('openPopupFormPrice').style.display = 'flex';
+        document.getElementById('popupFormPrice').style.display = 'flex';
     });
 
     document.addEventListener("DOMContentLoaded", function () {
@@ -148,36 +115,12 @@
         formPriceElem.phone_number.addEventListener('blur', () => handlePhoneNumberBlur(formPriceElem.phone_number));
         formPriceElem.email.addEventListener('blur', () => handleEmailBlur(formPriceElem.email));
 
-        const checkbox3 = document.getElementById('checkbox3');
-        const submitButton3 = document.getElementById('sendForm3');
+        const checkboxFormPrice = document.getElementById('checkbox-price');
+        const submitButtonFormPrice = document.getElementById('sendFormLidsPrice');
 
-        checkbox3.addEventListener('change', function () {
-            submitButton3.disabled = !checkbox3.checked;
+        checkboxFormPrice.addEventListener('change', function () {
+            submitButtonFormPrice.disabled = !checkboxFormPrice.checked;
         });
     });
 </script>
 
-{#  VIRTUAL KEYBOARD  #}
-<script>
-    $(document).ready(function () {
-        // Функция для инициализации клавиатуры для определенного элемента
-        function initializeKeyboard(selector) {
-            $(selector).keyboard({
-                layout: 'russian-qwerty',
-                usePreview: false,
-                autoAccept: true,
-                position: {
-                    my: 'center top',
-                    at: 'center bottom'
-                },
-            });
-        }
-
-        // Инициализация клавиатуры для нужных полей ввода
-        initializeKeyboard('#id_name');
-        initializeKeyboard('#id_company');
-        initializeKeyboard('#id_phone_number');
-        initializeKeyboard('#id_email');
-        initializeKeyboard('#id_comment');
-    });
-</script>

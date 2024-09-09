@@ -11,8 +11,8 @@ from catalog.forms import (
     CapFilterForm,
     JarFilterForm,
     BottlesFilterForm,
-    SendDataToEmail,
-    SendDataFromSupplierToEmail,
+    ContactLidForm,
+    SupplierForm, ContactPriceForm,
 )
 from catalog.tasks import (
     send_email_list_products,
@@ -51,7 +51,8 @@ def get_category(request, category_slug):
     category = get_object_or_404(Category, slug=category_slug)
     if category.name == 'Флаконы':
         form_filter = BottlesFilterForm(request.GET or None)
-        form_data_to_email = SendDataToEmail()
+        form_data_to_email = ContactLidForm()
+        price_form = ContactPriceForm()
         series = Series.objects.filter(category=category)
 
         if form_filter.is_valid():
@@ -79,8 +80,11 @@ def get_category(request, category_slug):
 
         context = {
             'series': series,
+            'category': "series",
+            'place': "catalog",
             'form_filter': form_filter,
-            'form_data_to_email': form_data_to_email,
+            "price_form": price_form,
+            'form_data_to_email': form_data_to_email
         }
         return render(request=request,
                       template_name='catalog/series.html',
@@ -88,7 +92,7 @@ def get_category(request, category_slug):
 
     elif category.name == 'Баночки':
         form_filter = JarFilterForm(request.GET or None)
-        form_data_to_email = SendDataToEmail()
+        form_data_to_email = ContactLidForm()
         jars = Jar.objects.filter(category=category)
 
         if form_filter.is_valid():
@@ -117,7 +121,7 @@ def get_category(request, category_slug):
     elif category.name == 'Колпачки':
         form_filter = CapFilterForm(request.GET or None)
         caps = Cap.objects.filter(category=category)
-        form_data_to_email = SendDataToEmail()
+        form_data_to_email = ContactLidForm()
 
         if form_filter.is_valid():
             cd = form_filter.cleaned_data
@@ -145,7 +149,7 @@ def get_category(request, category_slug):
         jar_image_subquery = JarFile.objects.filter(jar=OuterRef('pk')).values('file')[:1]
         bottle_image_subquery = BottleFile.objects.filter(
             bottle=OuterRef('pk')).values('file')[:1]
-        form_data_to_email = SendDataToEmail()
+        form_data_to_email = ContactLidForm()
 
         caps = Cap.objects.filter(status='Новинка').annotate(
             image=Subquery(cap_image_subquery),
@@ -185,17 +189,19 @@ def get_category(request, category_slug):
 
 def get_product_detail(request, category_slug, series_slug=None, product_slug=None):
     """For bottles"""
-    form_data_to_email = SendDataToEmail()
+    form_data_to_email = ContactLidForm()
+    price_form = ContactPriceForm()
     bottle = get_object_or_404(Bottle,
                                category__slug=category_slug,
                                series__slug=series_slug,
                                slug=product_slug)
     bottles = Bottle.objects.filter(series__slug=series_slug)
-
+    print(price_form)
     context = {
         "bottle": bottle,
         "bottles": bottles,
-        "form_data_to_email": form_data_to_email,
+        "price_form": price_form,
+        "form_data_to_email": form_data_to_email
 
     }
     return render(request=request,
@@ -206,7 +212,7 @@ def get_product_detail(request, category_slug, series_slug=None, product_slug=No
 def product_detail_no_series(request, category_slug, product_slug):
     """For jars and caps"""
     if category_slug == "jars":
-        form_data_to_email = SendDataToEmail()
+        form_data_to_email = ContactLidForm()
         jar = get_object_or_404(Jar,
                                 category__slug=category_slug,
                                 slug=product_slug)
@@ -220,7 +226,7 @@ def product_detail_no_series(request, category_slug, product_slug):
                       context=context)
 
     elif category_slug == 'caps':
-        form_data_to_email = SendDataToEmail()
+        form_data_to_email = ContactLidForm()
         cap = get_object_or_404(Cap,
                                 category__slug=category_slug,
                                 slug=product_slug)
@@ -236,7 +242,7 @@ def product_detail_no_series(request, category_slug, product_slug):
 def send_data_to_email(request):
     print('send_data_to_email', request.POST)
     if request.method == 'POST':
-        form = SendDataToEmail(request.POST)
+        form = ContactLidForm(request.POST)
         if form.is_valid():
             cd = form.cleaned_data
             category = request.POST.get('category', [])
@@ -313,8 +319,8 @@ def about_miran(request):
 
 
 def contact_me(request):
-    form_data_to_email = SendDataToEmail()
-    form_supplier = SendDataFromSupplierToEmail()
+    form_data_to_email = ContactLidForm()
+    form_supplier = SupplierForm()
     context = {
         'form_data_to_email': form_data_to_email,
         'form_supplier': form_supplier,
@@ -327,7 +333,7 @@ def contact_me(request):
 def send_data_to_email_from_supplier(request):
     print('send_data_to_email_from_supplier', request.POST)
     if request.method == 'POST':
-        form = SendDataFromSupplierToEmail(request.POST)
+        form = SupplierForm(request.POST)
         if form.is_valid():
             cd = form.cleaned_data
             user_data = {

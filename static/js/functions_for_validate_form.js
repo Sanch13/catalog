@@ -84,11 +84,11 @@ function handleDepartmentBlur(nameInput) {
     return flag
 }
 
-function checkFields() {
-    const flag1 = handleSimpleFieldBlur(formLidsElem.name)
-    const flag2 = handleSimpleFieldBlur(formLidsElem.company)
-    const flag3 = handlePhoneNumberBlur(formLidsElem.phone_number)
-    const flag4 = handleEmailBlur(formLidsElem.email)
+function checkFields(name, company, phone_number, email) {
+    const flag1 = handleSimpleFieldBlur(name)
+    const flag2 = handleSimpleFieldBlur(company)
+    const flag3 = handlePhoneNumberBlur(phone_number)
+    const flag4 = handleEmailBlur(email)
     return flag1 && flag2 && flag3 && flag4;
 }
 
@@ -98,5 +98,17 @@ function checkFieldsSupplierForm() {
     const flag3 = handleEmailBlur(formSupplierElem.email)
     const flag4 = handleDepartmentBlur(formSupplierElem.department)
     return flag1 && flag2 && flag3 && flag4;
+}
+
+function initializeKeyboard(selector) {
+    $(selector).keyboard({
+        layout: 'russian-qwerty',
+        usePreview: false,
+        autoAccept: true,
+        position: {
+            my: 'center top',
+            at: 'center bottom'
+        },
+    });
 }
 
