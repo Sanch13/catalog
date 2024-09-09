@@ -96,7 +96,9 @@
 
     <!-- Функции для валидации полей формы -->
     <script src="{% static 'js/functions_for_validate_form.js' %}"></script>
+
     {% include 'popup/popup.html' %}
+    {% include 'popup/popup_price.html' %}
 
     <!-- Секция с кнопками фильтров -->
     <script>
@@ -226,18 +228,7 @@
                 });
         });
 
-        document.getElementById('openPopupPrice').addEventListener('click', function () {
-            console.log("yyyesss")
-            const popupForm = document.getElementById('popupForm');
-            if (popupForm) {
-                console.log("PopupForm found");
-                popupForm.style.display = 'flex'; // Меняем стиль на flex
-                console.log("PopupForm display set to flex");
-            } else {
-                console.log("PopupForm not found");
-            }
 
-        });
     </script>
 
     {#  VALIDATION FIELDS AND SEND FORM TO SERVER #}

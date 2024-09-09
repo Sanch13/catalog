@@ -1,4 +1,4 @@
-.popup, .popup-sup {
+.popup, .popup-sup, .popup-price {
     position: fixed;
     top: 0;
     left: 0;
@@ -12,7 +12,7 @@
 }
 
 
-.popup-content, .popup-content-sup {
+.popup-content, .popup-content-sup, .popup-content-price {
     background-color: white;
     padding: 20px;
     border-radius: 15px;
@@ -21,7 +21,7 @@
     max-width: 80%;
 }
 
-#closePopup, #closePopup-sup {
+#closePopup, #closePopup-sup, #closePopupPrice {
     position: absolute;
     /*top: 2px;*/
     /*right: 12px;*/

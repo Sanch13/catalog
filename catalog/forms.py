@@ -117,7 +117,7 @@ class SendDataToEmail(forms.Form):
 
 
 department_choices = [
-    ('-------', '-------'),
+    ('', ''),
     ('production_email', 'Продажа оборудования'),
     ('buying_email', 'Сообщение для закупок'),
     ('marketing_email', 'Сообщение для маркетинга'),

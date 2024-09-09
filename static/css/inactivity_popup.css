@@ -18,16 +18,22 @@
 }
 
 /* Стили для кнопок */
-.popup-button {
+.popup-button, .popup-button-no {
     width: 150px;
     padding: 10px 20px;
     margin: 10px 20px;
-    background-color: white;
+    background-color: #7F9A14;
     border: 2px solid #7F9A14;
     border-radius: 50px;
     cursor: pointer;
-    color: black;
+    color: white;
     font-size: 22px;
+}
+
+.popup-button-no {
+    background-color: white;
+    border: 2px solid #7F9A14;
+    color: black;
 }
 
 .popup-button:hover {

@@ -33,8 +33,8 @@ class BottleFile(models.Model):
                             verbose_name='Файл')
     rating = models.PositiveSmallIntegerField(blank=True,
                                               null=True,
-                                              default=1,
-                                              verbose_name='Порядок фотографий')
+                                              default=100,
+                                              verbose_name='Порядок')
     thumbnail = ImageSpecField(source='file',
                                processors=[ResizeToFill(150, 150)],
                                format='JPEG',
@@ -55,5 +55,5 @@ class BottleFile(models.Model):
         verbose_name = 'Файл'
         verbose_name_plural = 'Файлы'
         ordering = [
-            "-rating",
+            "rating",
         ]
