@@ -340,7 +340,7 @@ Filter_block
     cursor: pointer;
 }
 
-.btn-miran-filter {
+.btn-miran-filter, .btn-miran-filter-contact {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -357,7 +357,9 @@ Filter_block
     user-select: none;
     cursor: pointer;
 }
-
+.btn-miran-filter-contact {
+    background: white;
+}
 .btn-miran-filter label {
     cursor: pointer;
     font-size: 1.5rem;
@@ -553,7 +555,7 @@ img {
     display: flex;
     font-size: 1.2rem;
     flex-direction: column; /* Чтобы элементы располагались один под другим */
-    width: 60%; /* Убедитесь, что родительский блок занимает всю ширину */
+    width: 85%; /* Убедитесь, что родительский блок занимает всю ширину */
     position: relative;
     margin-bottom: 5px;
 }

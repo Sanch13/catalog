@@ -26,8 +26,14 @@
 
 {% block content %}
     <div class="video-wrapper">
-        <video src="{% static 'video/about_miran.mp4' %}" controls autoplay muted playsinline
-               type="video/mp4">
+        <video id="myVideo" src="{% static 'video/about_miran.mp4' %}" controls playsinline type="video/mp4">
         </video>
     </div>
+
+    <script>
+        window.onload = function() {
+            const video = document.getElementById('myVideo');
+            video.play();
+        };
+    </script>
 {% endblock %}

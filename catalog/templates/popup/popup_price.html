@@ -5,7 +5,7 @@
 {% endblock css %}
 
 <!-- Попап для отправки выбранных продуктов -->
-<div id="popupForm" class="popup" style="display: none;">
+<div id="openPopupFormPrice" class="popup" style="display: none;">
     <div class="popup-content">
         <span id="closePopup">&times;</span>
         <h2>Заполните форму и нажмите отправить</h2>
@@ -106,7 +106,7 @@
 <script>
     {# Закрытие попапа по кнопке Х #}
     document.getElementById('closePopup').addEventListener('click', function () {
-        document.getElementById('popupForm').style.display = 'none';
+        document.getElementById('openPopupPrice').style.display = 'none';
     });
 
     {# Закрытие попапа по клику вне окна #}
@@ -137,6 +137,11 @@
         email: document.getElementById("id_email")
     };
 
+    document.getElementById('openPopupPrice').addEventListener('click', function () {
+        document.getElementById('openPopupFormPrice').style.display = 'flex';
+
+    });
+
     document.addEventListener("DOMContentLoaded", function () {
         formLidsElem.name.addEventListener('blur', () => handleSimpleFieldBlur(formLidsElem.name));
         formLidsElem.company.addEventListener('blur', () => handleSimpleFieldBlur(formLidsElem.company));
@@ -165,7 +170,6 @@
                     my: 'center top',
                     at: 'center bottom'
                 },
-
             });
         }
 

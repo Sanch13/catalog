@@ -73,7 +73,7 @@ function handleDepartmentBlur(nameInput) {
     const errorElement = document.getElementById(nameInput.id + '-error');
     let flag = false
 
-    if (valueField === "-------") {
+    if (valueField === "") {
         nameInput.classList.add("is-invalid");
         errorElement.textContent = 'Выберете отдел';
     } else {
