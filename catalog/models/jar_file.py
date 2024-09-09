@@ -30,6 +30,10 @@ class JarFile(models.Model):
                                  verbose_name='Тип файла')
     file = models.FileField(upload_to=get_file_upload_path_jar,
                             verbose_name='Файл')
+    rating = models.PositiveSmallIntegerField(blank=True,
+                                              null=True,
+                                              default=1,
+                                              verbose_name='Порядок фотографий')
     thumbnail = ImageSpecField(source='file',
                                processors=[ResizeToFill(150, 150)],
                                format='JPEG',
@@ -48,3 +52,6 @@ class JarFile(models.Model):
     class Meta:
         verbose_name = 'Файл'
         verbose_name_plural = 'Файлы'
+        ordering = [
+            "-rating",
+        ]

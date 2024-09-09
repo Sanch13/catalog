@@ -30,7 +30,7 @@ class Category(models.Model):
     rating = models.PositiveSmallIntegerField(blank=True,
                                               null=True,
                                               default=1,
-                                              verbose_name='Рейтинг Категории')
+                                              verbose_name='Порядок фотографий')
     description = models.TextField(blank=True,
                                    null=True,
                                    verbose_name='Описание')

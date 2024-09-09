@@ -13,7 +13,7 @@ from tinymce.widgets import TinyMCE
 ##############################################
 class CapFileForm(forms.ModelForm):
     model = CapFile
-    fields = ['file_type', 'file']
+    fields = ['file_type', 'file', 'rating']
     widgets = {
         'file': CustomClearableFilesInput,
     }
@@ -63,7 +63,7 @@ class CapAdmin(admin.ModelAdmin):
 ##############################################
 class JarFileForm(forms.ModelForm):
     model = JarFile
-    fields = ['file_type', 'file']
+    fields = ['file_type', 'file', 'rating']
     widgets = {
         'file': CustomClearableFilesInput,
     }
@@ -102,7 +102,7 @@ class JarAdmin(admin.ModelAdmin):
 ##############################################
 class BottleFileForm(forms.ModelForm):
     model = BottleFile
-    fields = ['file_type', 'file']
+    fields = ['file_type', 'file', 'rating']
     widgets = {
         'file': CustomClearableFilesInput,
     }
