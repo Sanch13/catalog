@@ -5,12 +5,12 @@
 {% endblock css %}
 
 <!-- Попап для отправки выбранных продуктов -->
-<div id="openPopupFormPrice" class="popup" style="display: none;">
-    <div class="popup-content">
-        <span id="closePopup">&times;</span>
+<div id="openPopupFormPrice" class="popup-price" style="display: none;">
+    <div class="popup-content-price">
+        <span id="closePopupPrice">&times;</span>
         <h2>Заполните форму и нажмите отправить</h2>
         <form class="form-send-data-to-email"
-              id="contactForm"
+              id="contactForm3"
               action="{% url 'catalog:send_data_to_email' %}"
               method="post"
               novalidate>
@@ -61,8 +61,8 @@
 
             {# CHECKBOX RULES #}
             <div class="my-form-group">
-                <input type="checkbox" class="custom-checkbox" id="checkbox1">
-                <label class="custom-label" for="checkbox1">
+                <input type="checkbox" class="custom-checkbox" id="checkbox3">
+                <label class="custom-label" for="checkbox3">
                     Я даю свое согласие на обработку моих персональных данных
                 </label>
             </div>
@@ -73,7 +73,7 @@
 
             <button type="submit"
                     class="btn-submit-form"
-                    id="sendForm"
+                    id="sendForm3"
                     disabled>Отправить
             </button>
         </form>
@@ -105,14 +105,14 @@
 {#  POPUP  #}
 <script>
     {# Закрытие попапа по кнопке Х #}
-    document.getElementById('closePopup').addEventListener('click', function () {
-        document.getElementById('openPopupPrice').style.display = 'none';
+    document.getElementById('closePopupPrice').addEventListener('click', function () {
+        document.getElementById('openPopupFormPrice').style.display = 'none';
     });
 
     {# Закрытие попапа по клику вне окна #}
     document.addEventListener('click', function (event) {
-        let popup = document.querySelector('.popup-content');
-        let formPopup = document.getElementById('popupForm');
+        let popup = document.querySelector('.popup-content-price');
+        let formPopup = document.getElementById('openPopupFormPrice');
         if (formPopup.style.display === 'flex' && !popup.contains(event.target) && event.target.id !== 'openPopup') {
             formPopup.style.display = 'none';
         }
@@ -130,7 +130,7 @@
 
 {#  CHECK FIELDS AND CHECKBOX  #}
 <script>
-    const formLidsElem = {
+    const formPriceElem = {
         name: document.getElementById("id_name"),
         company: document.getElementById("id_company"),
         phone_number: document.getElementById("id_phone_number"),
@@ -138,21 +138,21 @@
     };
 
     document.getElementById('openPopupPrice').addEventListener('click', function () {
+        console.log("yyyesss");
         document.getElementById('openPopupFormPrice').style.display = 'flex';
-
     });
 
     document.addEventListener("DOMContentLoaded", function () {
-        formLidsElem.name.addEventListener('blur', () => handleSimpleFieldBlur(formLidsElem.name));
-        formLidsElem.company.addEventListener('blur', () => handleSimpleFieldBlur(formLidsElem.company));
-        formLidsElem.phone_number.addEventListener('blur', () => handlePhoneNumberBlur(formLidsElem.phone_number));
-        formLidsElem.email.addEventListener('blur', () => handleEmailBlur(formLidsElem.email));
+        formPriceElem.name.addEventListener('blur', () => handleSimpleFieldBlur(formPriceElem.name));
+        formPriceElem.company.addEventListener('blur', () => handleSimpleFieldBlur(formPriceElem.company));
+        formPriceElem.phone_number.addEventListener('blur', () => handlePhoneNumberBlur(formPriceElem.phone_number));
+        formPriceElem.email.addEventListener('blur', () => handleEmailBlur(formPriceElem.email));
 
-        const checkbox = document.getElementById('checkbox1');
-        const submitButton = document.getElementById('sendForm');
+        const checkbox3 = document.getElementById('checkbox3');
+        const submitButton3 = document.getElementById('sendForm3');
 
-        checkbox.addEventListener('change', function () {
-            submitButton.disabled = !checkbox.checked;
+        checkbox3.addEventListener('change', function () {
+            submitButton3.disabled = !checkbox3.checked;
         });
     });
 </script>
