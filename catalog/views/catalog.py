@@ -112,7 +112,6 @@ def get_category(request, category_slug):
             if status_decoration:
                 jars = jars.filter(status_decoration=status_decoration)
 
-        products = json.dumps([{'id': jar.id, 'name': jar.name} for jar in jars])
         context = {
             'jars': jars,
             'form_filter': form_filter,
@@ -120,7 +119,7 @@ def get_category(request, category_slug):
             "price_form": price_form,
             'category': 'jars',
             'place': "catalog",
-            'products': products,
+            'products_id': json.dumps([{'id': jar.id} for jar in jars]),
         }
         return render(request=request,
                       template_name='catalog/jars.html',
@@ -269,11 +268,11 @@ def send_data_to_email(request):
             if place != 'contact':
                 ids = convert_to_numbers(json.loads(request.POST.get('ids', '[]')))
                 list_params = []
-                if category == 'jar':
+                if category == 'jars':
                     list_params = get_list_params_jars_from_db(ids)
-                if category == 'cap':
+                if category == 'caps':
                     list_params = get_list_params_caps_from_db(ids)
-                if category in ('bottle', 'series'):
+                if category in ('bottles', 'series'):
                     list_params = get_list_params_bottles_from_db(ids, category)
                 if category == 'new_products':
                     new_products = json.loads(request.POST.get('new_products', []))
@@ -285,7 +284,7 @@ def send_data_to_email(request):
                     list_params += get_list_params_caps_from_db(caps)
 
                 print("FROM catalog -> send email")
-                send_email_list_products.delay(list_params=list_params, data=user_data)
+                send_email_list_products.delay(list_params=list_params, user_data=user_data)
                 return JsonResponse({'success': True})
             else:
                 send_email_from_contact_customer.delay(data=user_data)
@@ -299,13 +298,13 @@ def get_size_list_pdf_files(request):
     if request.method == 'POST':
         ids = convert_to_numbers(json.loads(request.POST.get('ids', [])))
         category = request.POST.get("category")
-        print(category)
+        print("GET FILE SIZE: ", category)
         list_params = []
-        if category == 'jar':
+        if category == 'jars':
             list_params = get_list_params_jars_from_db(ids)
-        if category == 'cap':
+        if category == 'caps':
             list_params = get_list_params_caps_from_db(ids)
-        if category in ('bottle', 'series'):
+        if category in ('bottles', 'series'):
             list_params = get_list_params_bottles_from_db(ids, category)
 
         all_size = 0

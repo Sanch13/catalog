@@ -90,6 +90,7 @@
     <!-- Функции для валидации полей формы -->
     <script src="{% static 'js/functions_for_validate_form.js' %}"></script>
     {% include 'popup/popup.html' %}
+    {% include 'popup/popup_price.html' %}
 
     <!-- Секция с кнопками фильтров -->
     <script>
@@ -178,32 +179,19 @@
     <script>
         const category = "{{ category|escapejs }}";
         const place = "{{ place|escapejs }}";
-        const productsString = "{{ products|escapejs }}";
-        const products = productsString ? JSON.parse(productsString) : [];
+        const idsString = "{{ products_id|escapejs }}";
+        let productsId;
 
-        function createFormGetSizeFile(category, products){
-            const data = new FormData();
-            data.append("category", category);
-            data.append("products", products ? JSON.stringify(products.map(product => product.name)): '');
-            data.append("ids", products ? JSON.stringify(products.map(product => product.id)): '');
-            return data
+        try {
+            ids = idsString ? JSON.parse(idsString) : [];
+        } catch (error) {
+            ids = [];
         }
-
-        function createFormData(formElement, category, place, products=null) {
-            let data = new FormData(formElement);
-                data.append("category", category);
-                data.append("place", place);
-                data.append("ids", products ? JSON.stringify(products.map(product => product.id)): '');
-                data.append("products", products ? JSON.stringify(products.map(product => product.name)): '');
-            return data
-        }
-
     </script>
 
     {#  GET FILESIZE  #}
     <script>
-        {# Возвращает список ids #}
-
+        {# Return list ids products #}
         function get_ids() {
             const cards = document.querySelectorAll('.card');
             const ids = [];
@@ -217,10 +205,7 @@
         {# Запрос на размер отправляемого файла #}
         document.getElementById('openPopup').addEventListener('click', function () {
             document.getElementById('popupForm').style.display = 'flex';
-            {#let data =  createFormGetSizeFile(category, products)#}
-            const data = new FormData();
-            data.append('ids', JSON.stringify(get_ids()));
-            data.append("category", 'jar');
+            let data =  createFormGetSizeFile(category, ids)
 
             fetch("{% url 'catalog:get_size_list_files' %}", {
                 method: 'POST',
@@ -250,12 +235,15 @@
     <script>
         document.getElementById('contactForm').addEventListener('submit', function (event) {
             event.preventDefault();
-
-            if (checkFields()) {
-                let data = new FormData(this);
-                data.append("ids", JSON.stringify(get_ids()));
-                data.append("category", 'jar');
-                data.append("place", 'catalog');
+            let flag = checkFields(
+                formLidsElem.name,
+                formLidsElem.company,
+                formLidsElem.phone_number,
+                formLidsElem.email
+            )
+            if (flag) {
+                const formLids = document.getElementById('contactForm');
+                let data = createFormData(formLids, category, place, ids)
 
                 fetch("{% url 'catalog:send_data_to_email' %}", {
                     method: 'POST',
@@ -281,5 +269,47 @@
                     });
             }
         });
+
+        document.getElementById('contactFormPrice').addEventListener('submit', function (event) {
+            event.preventDefault();
+            const flag = checkFields(
+                formPriceElem.name,
+                formPriceElem.company,
+                formPriceElem.phone_number,
+                formPriceElem.email
+            )
+
+            if (flag) {
+                const formLidsPrice = document.getElementById('contactFormPrice');
+                let data = createFormData(formLidsPrice, category, place, ids);
+                fetch("{% url 'catalog:send_data_form_price_to_email' %}", {
+                    method: 'POST',
+                    body: data,
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    }
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            document.getElementById('popupFormPrice').style.display = 'none';
+                            document.getElementById('successPopup').style.display = 'flex';
+
+                            document.getElementById('contactFormPrice').reset();
+
+                            setTimeout(function () {
+                                document.getElementById('successPopup').style.display = 'none';
+                            }, 3000); // Закрытие через 3 секунды
+                        } else {
+                            alert('Ошибка: ' + JSON.stringify(data.errors));
+                        }
+                    });
+            }
+    });
     </script>
+
+{# PHONE_MASK #}
+<script src="{% static 'js/jquery.inputmask.js' %}"></script>
+{# INIT FIELDS VIRTUAL KEYBOARDS #}
+<script src="{% static 'js/initKeyboardFields.js' %}"></script>
 {% endblock %}

@@ -42,8 +42,9 @@ class JarFile(models.Model):
                                        verbose_name='Дата загрузки')
 
     def save(self, *args, **kwargs):
-        image_content = convert_img_to_webp(image=self.file)
-        self.file.save(image_content.name, image_content, save=False)
+        if not self.pk:
+            image_content = convert_img_to_webp(image=self.file)
+            self.file.save(image_content.name, image_content, save=False)
         super().save(*args, **kwargs)
 
     def __str__(self):

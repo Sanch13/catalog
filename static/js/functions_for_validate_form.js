@@ -112,3 +112,17 @@ function initializeKeyboard(selector) {
     });
 }
 
+function createFormGetSizeFile(category, ids){
+    const data = new FormData();
+    data.append("category", category);
+    data.append("ids", ids ? JSON.stringify(ids.map(product => product.id)): '');
+    return data
+}
+
+function createFormData(formElement, category, place, ids=null) {
+    let data = new FormData(formElement);
+        data.append("category", category);
+        data.append("place", place);
+        data.append("ids", ids ? JSON.stringify(ids.map(product => product.id)): '');
+    return data
+}

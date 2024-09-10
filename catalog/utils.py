@@ -15,6 +15,8 @@ from django.db.models import Q
 from django.template.loader import render_to_string
 
 from pypdf import PdfWriter, PdfReader
+
+
 from settings import settings
 
 
@@ -156,22 +158,21 @@ def convert_webp_to_jpeg_bytes(file):
 
 
 def get_params_category_for_table(params, category):
-    if category == 'jar':
+    items = []
+    if category == 'jars':
         items = [
             ("Объем мл.", params['volume']),
             ("Поверхность", params['surface']),
             ("Декорирование", params['status_decoration']),
             ("Доп. характеристики", params['feature']),
         ]
-        return items
-    if category == 'cap':
+    if category == 'caps':
         items = [
             ("Стандарт горла", params['throat_standard']),
             ("Тип колпачка", params['type_of_closure']),
             ("Поверхность", params['surface']),
         ]
-        return items
-    if category in ('bottle', 'series'):
+    if category in ('bottles', 'series'):
         items = [
             ("Объем мл.", params['volume']),
             ("Стандарт горла", params['throat_standard']),
@@ -179,7 +180,7 @@ def get_params_category_for_table(params, category):
             ("Поверхность", params['surface']),
             ("Декорирование", params['status_decoration']),
         ]
-        return items
+    return items
 
 
 def create_pdf_from_data(params, category):
@@ -391,7 +392,7 @@ def send_data_to_client(list_params, data, file_stream):
     print("sent email to client")
 
 
-def send_data_to_sale(data, status, products):
+def send_data_to_sale(user_data, status):
     message = EmailMessage()
     message['Subject'] = "Информация о Лидах"
     message['From'] = settings.FROM_APP  # send app
@@ -400,7 +401,7 @@ def send_data_to_sale(data, status, products):
     text_body = "Информация о потенциальном покупателе"
     message.set_content(text_body)
 
-    html = render_email_template(data, status, products)
+    html = render_email_template(user_data, status)
     message.add_alternative(html, subtype='html')
     context = ssl.create_default_context()
     with smtplib.SMTP(settings.SMTP_SERVER, settings.PORT_TLS) as server:
@@ -410,16 +411,16 @@ def send_data_to_sale(data, status, products):
     print("sent email to sale")
 
 
-def render_email_template(data, status=None, products=None):
+def render_email_template(user_data, status=None):
     context = {
-        'name': data["name"],
-        'company': data["company"],
-        'phone_number': data["phone_number"],
-        'email': data["email"],
-        'category': data["category"],
-        'products': products if products else '',
-        'comment': data["comment"],
-        'place': data["place"],
+        'name': user_data["name"],
+        'company': user_data["company"],
+        'phone_number': user_data["phone_number"] if user_data["phone_number"] else '',
+        'email': user_data["email"],
+        'category': user_data["category"],
+        'products': user_data["products"] if user_data["products"] else '',
+        'comment': user_data["comment"],
+        'place': user_data["place"],
         'status': status if status else '',
     }
     return render_to_string(template_name="template_for_emails/template_email.html",
@@ -436,3 +437,39 @@ def get_size_category(list_params, category):
         size = Path(pdf_file_path).stat().st_size
         all_size += size
     return all_size
+
+
+def save_data_to_db_with_status(user_data, status, lead_qualification):
+    from catalog.models import EmailLog
+
+    EmailLog.objects.create(
+        name=user_data["name"],
+        company=user_data["company"],
+        phone_number=user_data["phone_number"] if user_data["phone_number"] else '',
+        email=user_data["email"],
+        comment=user_data["comment"],
+        category=user_data["category"],
+        place=user_data["place"],
+        status=status,
+        products=user_data["products"] if user_data["products"] else '',
+        lead_qualification=lead_qualification
+    )
+
+
+def get_params_from_category(category, ids, new_products=None):
+    list_params = []
+    if category == 'jars':
+        list_params = get_list_params_jars_from_db(ids)
+    if category == 'caps':
+        list_params = get_list_params_caps_from_db(ids)
+    if category in ('bottles', 'series'):
+        list_params = get_list_params_bottles_from_db(ids, category)
+    if category == 'new_products':
+        bottles = convert_to_numbers(new_products['bottles'])
+        list_params += get_list_params_bottles_from_db(bottles, category="bottle")
+        jars = convert_to_numbers(new_products['jars'])
+        list_params += get_list_params_jars_from_db(jars)
+        caps = convert_to_numbers(new_products['caps'])
+        list_params += get_list_params_caps_from_db(caps)
+
+    return list_params
