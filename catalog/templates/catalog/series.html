@@ -293,7 +293,7 @@
 
         if (flag) {
             let data = createFormData(this, category, place);
-            fetch("{% url 'catalog:send_data_to_email' %}", {
+            fetch("{% url 'catalog:send_data_form_price_to_email' %}", {
                 method: 'POST',
                 body: data,
                 headers: {
@@ -303,10 +303,10 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        document.getElementById('popupForm').style.display = 'none';
+                        document.getElementById('popupFormPrice').style.display = 'none';
                         document.getElementById('successPopup').style.display = 'flex';
 
-                        document.getElementById('contactForm').reset();
+                        document.getElementById('contactFormPrice').reset();
 
                         setTimeout(function () {
                             document.getElementById('successPopup').style.display = 'none';
@@ -324,6 +324,12 @@
 <script>
     $(document).ready(function () {
         $('#id_phone_number').inputmask({
+            mask: '+9999999999999',  // позволяет ввод от 1 до 13 символов после +
+            placeholder: '',
+            clearMaskOnLostFocus: false,
+        });
+
+        $('#id_phone_number_price').inputmask({
             mask: '+9999999999999',  // позволяет ввод от 1 до 13 символов после +
             placeholder: '',
             clearMaskOnLostFocus: false,

@@ -17,6 +17,7 @@ urlpatterns = [
     path('new/<slug:product_slug>/', catalog.product_detail_no_series,
          name="new_products"),
     path('send_data_to_email', catalog.send_data_to_email, name="send_data_to_email"),
+    path('send_data_form_price_to_email', catalog.send_data_form_price_to_email, name="send_data_form_price_to_email"),
     path('send_data_to_email_from_supplier',
          catalog.send_data_to_email_from_supplier,
          name="send_data_to_email_from_supplier"),

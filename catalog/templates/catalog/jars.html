@@ -175,6 +175,31 @@
         });
     </script>
 
+    <script>
+        const category = "{{ category|escapejs }}";
+        const place = "{{ place|escapejs }}";
+        const productsString = "{{ products|escapejs }}";
+        const products = productsString ? JSON.parse(productsString) : [];
+
+        function createFormGetSizeFile(category, products){
+            const data = new FormData();
+            data.append("category", category);
+            data.append("products", products ? JSON.stringify(products.map(product => product.name)): '');
+            data.append("ids", products ? JSON.stringify(products.map(product => product.id)): '');
+            return data
+        }
+
+        function createFormData(formElement, category, place, products=null) {
+            let data = new FormData(formElement);
+                data.append("category", category);
+                data.append("place", place);
+                data.append("ids", products ? JSON.stringify(products.map(product => product.id)): '');
+                data.append("products", products ? JSON.stringify(products.map(product => product.name)): '');
+            return data
+        }
+
+    </script>
+
     {#  GET FILESIZE  #}
     <script>
         {# Возвращает список ids #}
@@ -192,6 +217,7 @@
         {# Запрос на размер отправляемого файла #}
         document.getElementById('openPopup').addEventListener('click', function () {
             document.getElementById('popupForm').style.display = 'flex';
+            {#let data =  createFormGetSizeFile(category, products)#}
             const data = new FormData();
             data.append('ids', JSON.stringify(get_ids()));
             data.append("category", 'jar');

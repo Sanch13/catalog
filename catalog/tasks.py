@@ -3,7 +3,7 @@ from catalog.models import EmailLog
 from catalog.utils import (
     merge_pdfs_to_stream,
     send_data_to_client,
-    send_data_to_marketing,
+    send_data_to_sale,
     send_admin_email,
     send_email_to_department
 )
@@ -31,7 +31,7 @@ def send_email_list_products(list_params, data):
                 products=products,
                 lead_qualification=EmailLog.LeadQualification.CUSTOMER
             )
-            send_data_to_marketing(data, status, products)
+            send_data_to_sale(data, status, products)
         except Exception as e:
             send_admin_email(text_body=f"An unexpected error occurred: {e}")
 
@@ -68,7 +68,7 @@ def send_email_from_contact_customer(data):
             products=[],
             lead_qualification=EmailLog.LeadQualification.CUSTOMER,
         )
-        send_data_to_marketing(data, status=status, products=None)
+        send_data_to_sale(data, status=status, products=None)
     except Exception as e:
         send_admin_email(text_body=f"An unexpected error occurred: {e}")
 
@@ -93,5 +93,27 @@ def send_department_email(data):
         except Exception as e:
             send_admin_email(text_body=f"An unexpected error occurred: {e}")
 
+    except Exception as e:
+        send_admin_email(text_body=f"An unexpected error occurred: {e}")
+
+
+@shared_task()
+def send_data_form_price_to_sale(user_data):
+    products = user_data['ids']
+    status = "Success"
+    try:
+        send_data_to_sale(user_data, status, products)
+        EmailLog.objects.create(
+            name=user_data["name"],
+            company=user_data["company"],
+            phone_number=user_data['phone_number'] if user_data['phone_number'] else '',
+            email=user_data["email"],
+            comment=user_data["comment"],
+            category=user_data["category"],
+            place=user_data["category"],
+            status=status,
+            products=user_data["ids"] if user_data["ids"] else [],
+            lead_qualification=EmailLog.LeadQualification.SUPPLIER
+        )
     except Exception as e:
         send_admin_email(text_body=f"An unexpected error occurred: {e}")

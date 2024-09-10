@@ -391,7 +391,7 @@ def send_data_to_client(list_params, data, file_stream):
     print("sent email to client")
 
 
-def send_data_to_marketing(data, status, products):
+def send_data_to_sale(data, status, products):
     message = EmailMessage()
     message['Subject'] = "Информация о Лидах"
     message['From'] = settings.FROM_APP  # send app
@@ -407,15 +407,15 @@ def send_data_to_marketing(data, status, products):
         server.starttls(context=context)
         server.login(settings.FROM_APP, settings.PASSWORD_APP)
         server.send_message(message)
-    print("sent email to marketing")
+    print("sent email to sale")
 
 
 def render_email_template(data, status=None, products=None):
     context = {
         'name': data["name"],
         'company': data["company"],
-        'email': data["email"],
         'phone_number': data["phone_number"],
+        'email': data["email"],
         'category': data["category"],
         'products': products if products else '',
         'comment': data["comment"],
