@@ -184,6 +184,19 @@
     });
 </script>
 
+<script>
+    const category = "{{ category|escapejs }}";
+    const place = "{{ place|escapejs }}";
+    const idsString = "{{ products_id|escapejs }}";
+    let productsId;
+
+    try {
+        ids = idsString ? JSON.parse(idsString) : [];
+    } catch (error) {
+        ids = [];
+    }
+</script>
+
 {#  GET FILESIZE  #}
 <script>
     {# Возвращает список ids #}
@@ -201,9 +214,7 @@
     {# Запрос на размер отправляемого файла #}
     document.getElementById('openPopup').addEventListener('click', function () {
         document.getElementById('popupForm').style.display = 'flex';
-        const data = new FormData();
-        data.append('ids', JSON.stringify(get_ids()));
-        data.append("category", 'series');
+        let data =  createFormGetSizeFile(category, ids)
 
         fetch("{% url 'catalog:get_size_list_files' %}", {
             method: 'POST',
@@ -233,20 +244,8 @@
 
 {#  VALIDATION FIELDS AND SEND FORM TO SERVER #}
 <script>
-    const category = "{{ category|escapejs }}";
-    const place = "{{ place|escapejs }}";
-
-    function createFormData(formElement, category, place) {
-        let data = new FormData(formElement);
-            data.append("ids", JSON.stringify(get_ids()));
-            data.append("category", category);
-            data.append("place", place);
-        return data
-    }
-
     document.getElementById('contactForm').addEventListener('submit', function (event) {
         event.preventDefault();
-
         const flag = checkFields(
             formLidsElem.name,
             formLidsElem.company,
@@ -255,7 +254,9 @@
         )
 
         if (flag) {
-            let data = createFormData(this, category, place);
+            const formLids = document.getElementById('contactForm');
+            let data = createFormData(formLids, category, place, ids)
+
             fetch("{% url 'catalog:send_data_to_email' %}", {
                 method: 'POST',
                 body: data,
@@ -283,7 +284,6 @@
 
     document.getElementById('contactFormPrice').addEventListener('submit', function (event) {
         event.preventDefault();
-
         const flag = checkFields(
             formPriceElem.name,
             formPriceElem.company,
@@ -292,7 +292,8 @@
         )
 
         if (flag) {
-            let data = createFormData(this, category, place);
+            const formLidsPrice = document.getElementById('contactFormPrice');
+            let data = createFormData(formLidsPrice, category, place, ids);
             fetch("{% url 'catalog:send_data_form_price_to_email' %}", {
                 method: 'POST',
                 body: data,
