@@ -63,7 +63,7 @@
 
 <body>
     <div class="header">
-        {{ status }}
+        Информация
     </div>
     <div class="container">
 
@@ -82,48 +82,10 @@
             <div class="value">{{ email }}</div>
         </div>
 
-        {% if phone_number %}
-            <div class="info-block">
-                <div class="key">Телефон:</div>
-                <div class="value">{{ phone_number }}</div>
-            </div>
-        {% else %}
-        {% endif %}
-
         <div class="info-block">
             <div class="key">Комментарий:</div>
             <div class="value">{{ comment }}</div>
         </div>
-
-        {% if status %}
-            <div class="info-block">
-                <div class="key">Статус:</div>
-                <div class="value">{{ status }}</div>
-            </div>
-        {% else %}
-        {% endif %}
-
-        <div class="info-block">
-            <div class="key">От куда пользователь:</div>
-            <div class="value">{{ place }}</div>
-        </div>
-
-        <div class="info-block">
-            <div class="key">Категория :</div>
-            <div class="value">{{ category }}</div>
-        </div>
-
-        {% if products %}
-            <div class="info-block">
-                <div class="key">Список продуктов:</div>
-                <div class="value">
-                    {% for product in products %}
-                        {{ product }}<br>
-                    {% endfor %}
-                </div>
-            </div>
-        {% else %}
-        {% endif %}
 
     </div>
 </body>

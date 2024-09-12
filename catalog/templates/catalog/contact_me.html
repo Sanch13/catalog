@@ -55,7 +55,7 @@
 
             if (flag) {
                 const data = new FormData(this);
-                data.append("category", 'no category');
+                data.append("category", '');
                 data.append("place", "contact");
 
                 fetch("{% url 'catalog:send_data_to_email' %}", {

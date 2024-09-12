@@ -16,7 +16,6 @@ from django.template.loader import render_to_string
 
 from pypdf import PdfWriter, PdfReader
 
-
 from settings import settings
 
 
@@ -116,7 +115,7 @@ def get_list_params_bottles_from_db(ids: list[int], category) -> list:
 
     pdf_dir = config_settings.PDF_DIR
     params = []
-    if category == 'bottle':
+    if category == 'bottles':
         bottles = Bottle.objects.prefetch_related('bottle_files').filter(id__in=ids)
     else:
         bottles = Bottle.objects.filter(
@@ -181,6 +180,27 @@ def get_params_category_for_table(params, category):
             ("Декорирование", params['status_decoration']),
         ]
     return items
+
+
+def get_text_for_email_table(user_data):
+    categoies = {
+        "new_products": "Новинки",
+        "series": "Серии флаконов",
+        "bottles": "Флаконы",
+        "jars": "Баночки",
+        "caps": "Колпачки",
+    }
+    places = {
+        "catalog": "Из каталога продукции",
+        "contact": "Из Свяжитесь со мной",
+    }
+
+    if user_data.get("category") in categoies:
+        user_data["category"] = categoies[user_data.get("category")]
+    if user_data.get("place") in places:
+        user_data["place"] = places[user_data.get("place")]
+
+    return user_data
 
 
 def create_pdf_from_data(params, category):
@@ -337,24 +357,25 @@ def send_admin_email(text_body):
     print("sent email to admin")
 
 
-def send_email_to_department(data):
+def get_text_subject_for_email_to_department(department) -> str:
+    subject = {
+        'production_email': "Информация о оборудовании",
+        'buying_email': "Информация о материалах",
+        'marketing_email': "Информация для маркетинга",
+        'miran_email': "Информация для секретаря",
+    }
+
+    return subject.get(department, '')
+
+
+def send_email_to_department(user_data):
     message = EmailMessage()
-    message['Subject'] = 'Supplier'
+    message['Subject'] = get_text_subject_for_email_to_department(user_data.get('department', ''))
     message['From'] = settings.FROM_APP
-    message['To'] = settings.DEPARTMENT[data['department']]
-    text_body = f"""
-    Поставщик: {data["name"]}
-    Компания: {data["company"]}
-    Почта: {data["email"]}
-    Комментарий: {data["comment"]}
-    {data.keys()}
-    """
-    message.set_content(text_body)
-    context = ssl.create_default_context()
-    with smtplib.SMTP(settings.SMTP_SERVER, settings.PORT_TLS) as server:
-        server.starttls(context=context)
-        server.login(settings.FROM_APP, settings.PASSWORD_APP)
-        server.send_message(message)
+    message['To'] = settings.DEPARTMENT[user_data['department']]
+
+    template = 'template_for_emails/department.html'
+    render_template_and_send_email(message, template, user_data)
     print("sent email to DEPARTMENT")
 
 
@@ -394,36 +415,40 @@ def send_data_to_client(list_params, data, file_stream):
 
 def send_data_to_sale(user_data):
     message = EmailMessage()
-    message['Subject'] = "Информация о Лидах"
+    message['Subject'] = "Запрос цены на выбранную продукцию" if user_data.get("form") == "price" else "Информация о Лидах"
     message['From'] = settings.FROM_APP  # send app
     message['To'] = ['a.zubchyk@miran-bel.com']  # sent email [SALE_EMAIL] to sale@miran-bel.com
 
     # text_body = "Информация о потенциальном покупателе"
     # message.set_content(text_body)
+    template = "template_for_emails/template_email.html"
+    render_template_and_send_email(message, template, user_data)
+    print("sent email to sale")
 
-    html = render_email_template(user_data)
+
+def render_template_and_send_email(message, template, user_data):
+    html = render_email_template(user_data=user_data, template_name=template)
     message.add_alternative(html, subtype='html')
     context = ssl.create_default_context()
     with smtplib.SMTP(settings.SMTP_SERVER, settings.PORT_TLS) as server:
         server.starttls(context=context)
         server.login(settings.FROM_APP, settings.PASSWORD_APP)
         server.send_message(message)
-    print("sent email to sale")
 
 
-def render_email_template(user_data):
+def render_email_template(user_data, template_name):
     context = {
         'name': user_data["name"],
         'company': user_data["company"],
         'phone_number': user_data.get("phone_number", ''),
         'email': user_data["email"],
-        'category': user_data["category"],
+        'category': user_data.get("category", ''),
         'products': user_data.get("products", ""),
         'comment': user_data["comment"],
-        'place': user_data["place"],
+        'place': user_data.get("place", ''),
         'status': user_data.get("status", ''),
     }
-    return render_to_string(template_name="template_for_emails/template_email.html",
+    return render_to_string(template_name=template_name,
                             context=context)
 
 
@@ -448,8 +473,8 @@ def save_data_to_db_with_status(user_data, lead_qualification):
         phone_number=user_data.get("phone_number", ''),
         email=user_data["email"],
         comment=user_data["comment"],
-        category=user_data["category"],
-        place=user_data["place"],
+        category=user_data.get("category", ''),
+        place=user_data.get("place", ''),
         status=user_data.get("status", ''),
         products=user_data.get("products", ''),
         lead_qualification=lead_qualification

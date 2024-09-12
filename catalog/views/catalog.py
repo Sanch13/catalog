@@ -371,9 +371,10 @@ def send_data_to_email_from_supplier(request):
                 'email': cd['email_sup'],
                 'department': cd['department_sup'],
                 'comment': cd['comment_sup'],
+                'place': request.POST.get('place', []),
             }
             print("work supplier !!!")
-            send_department_email.delay(data=user_data)
+            send_department_email.delay(user_data=user_data)
             return JsonResponse({'success': True})
         else:
             return JsonResponse({'success': False, 'errors': form.errors})
