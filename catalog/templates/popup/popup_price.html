@@ -70,6 +70,19 @@
     </div>
 </div>
 
+<!-- Попап предупреждения -->
+<div id="warningPopup" class="popupWarning" style="display: none;">
+    <div class="popup-content">
+        <span class="close" onclick="closePopupWarning()">&times;</span>
+        <p>Пожалуйста, отметьте не более 5 карточек.</p>
+    </div>
+</div>
+
+<!-- Счетчик отмеченных карточек -->
+<div id="checkboxCounter" class="checkbox-counter" style="display: none;">
+    Количество: <span id="checkedCount">0</span>
+</div>
+
 {#  POPUP  #}
 <script>
     {# Закрытие попапа по кнопке Х #}
@@ -105,8 +118,37 @@
         email: document.getElementById("id_email_price")
     };
 
+    function openPopupWarning() {
+        const warningPopup = document.getElementById('warningPopup');
+        warningPopup.style.display = 'flex';
+    }
+
+    function closePopupWarning() {
+        const warningPopup = document.getElementById('warningPopup');
+        warningPopup.style.display = 'none';
+    }
+
+    function getIdsFromCheckedCheckBoxes() {
+        const checkedCheckboxes = document.querySelectorAll('.checkbox-product:checked');
+        return Array.from(checkedCheckboxes).map(checkbox => ({id: parseInt(checkbox.id.replace('checkbox-', ''), 10)}))
+    }
+
+
     document.getElementById('openPopupPrice').addEventListener('click', function () {
-        document.getElementById('popupFormPrice').style.display = 'flex';
+        let idsLenght = getIdsFromCheckedCheckBoxes().length;
+        if (ids.length < 5){
+            console.log("Fill in FORM and send USUAL IDS");
+            document.getElementById('popupFormPrice').style.display = 'flex';
+        }  else if (idsLenght === 0 || idsLenght > 5) {
+            console.log("check from 1 to 10 items");
+            openPopupWarning();
+            const checkboxCounterElement = document.getElementById('checkboxCounter');
+            checkboxCounterElement.style.display = 'flex';
+        } else {
+            console.log("Fill in FORM and send CHECKED-CARDS IDS");
+            document.getElementById('popupFormPrice').style.display = 'flex';
+        }
+
     });
 
     document.addEventListener("DOMContentLoaded", function () {

@@ -112,7 +112,6 @@ def get_category(request, category_slug):
                 jars = jars.filter(surface__in=surface)
             if status_decoration:
                 jars = jars.filter(status_decoration=status_decoration)
-
         context = {
             'jars': jars,
             'form_filter': form_filter,

@@ -184,7 +184,7 @@
         const category = "{{ category|escapejs }}";
         const place = "{{ place|escapejs }}";
         const idsString = "{{ products_id|escapejs }}";
-        let productsId;
+        let ids;
 
         try {
             ids = idsString ? JSON.parse(idsString) : [];
@@ -274,6 +274,7 @@
             }
         });
 
+
         document.getElementById('contactFormPrice').addEventListener('submit', function (event) {
             event.preventDefault();
             const flag = checkFields(
@@ -284,6 +285,10 @@
             )
 
             if (flag) {
+                const idsCheckProducts = getIdsFromCheckedCheckBoxes()
+                console.log(typeof idsCheckProducts, idsCheckProducts);
+                ids = idsCheckProducts.length ? idsCheckProducts : ids
+                console.log(typeof ids, ids);
                 const formLidsPrice = document.getElementById('contactFormPrice');
                 let data = createFormData(formLidsPrice, category, place, ids);
                 fetch("{% url 'catalog:send_data_form_price_to_email' %}", {
@@ -298,6 +303,12 @@
                         if (data.success) {
                             document.getElementById('popupFormPrice').style.display = 'none';
                             document.getElementById('successPopup').style.display = 'flex';
+                            document.getElementById('checkboxCounter').style.display = 'none';
+                            document.getElementById('checkedCount').textContent = String(0);
+                            const allCheckboxes = document.querySelectorAll('.checkbox-product');
+                            allCheckboxes.forEach(checkbox => {
+                                checkbox.checked = false; // Снимаем галочку
+                            });
 
                             document.getElementById('contactFormPrice').reset();
 
@@ -308,8 +319,38 @@
                             alert('Ошибка: ' + JSON.stringify(data.errors));
                         }
                     });
+                }
+        });
+
+
+        const checkboxesProducts = document.querySelectorAll('.checkbox-product');
+
+        checkboxesProducts.forEach(checkbox => {
+            checkbox.addEventListener('change', updateCheckedCount);
+
+        });
+
+
+        function updateCheckedCount() {
+            const checkedCheckboxes = document.querySelectorAll('.checkbox-product:checked');
+            const checkedCountElement = document.getElementById('checkedCount');
+            const count = checkedCheckboxes.length;
+            checkedCountElement.textContent = String(count);
+
+            if (count > 0 && count <= 10) {
+                checkedCountElement.style.color = 'green'; // Зеленый для значений от 1 до 10
+            } else if (count > 10) {
+                checkedCountElement.style.color = 'red'; // Красный для значений более 10
+            } else {
+                checkedCountElement.style.color = 'black'; // Черный для 0
             }
-    });
+
+
+        }
+
+
+
+
     </script>
 
 {# PHONE_MASK #}

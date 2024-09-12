@@ -183,7 +183,7 @@ def get_params_category_for_table(params, category):
 
 
 def get_text_for_email_table(user_data):
-    categoies = {
+    categories = {
         "new_products": "Новинки",
         "series": "Серии флаконов",
         "bottles": "Флаконы",
@@ -195,8 +195,8 @@ def get_text_for_email_table(user_data):
         "contact": "Из Свяжитесь со мной",
     }
 
-    if user_data.get("category") in categoies:
-        user_data["category"] = categoies[user_data.get("category")]
+    if user_data.get("category") in categories:
+        user_data["category"] = categories[user_data.get("category")]
     if user_data.get("place") in places:
         user_data["place"] = places[user_data.get("place")]
 

@@ -76,6 +76,7 @@ def send_data_form_price_to_sale(user_data):
         user_data["status"] = "Запрос цены на выбранную продукцию"
 
     user_data["products"] = [params['name'] for params in list_params]
+    user_data = get_text_for_email_table(user_data=user_data)
     try:
         send_data_to_sale(user_data)
         save_data_to_db_with_status(user_data,

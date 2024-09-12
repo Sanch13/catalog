@@ -701,26 +701,79 @@ img {
     position: absolute;
     top: 10px;
     left: 10px;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    border: 2px solid #ccc;
-    background: transparent;
+
+    /* circle */
+    /*width: 70px;*/
+    /*height: 70px;*/
+    /*border-radius: 50%;*/
+    /*border: 3px solid #7F9A14;*/
+
+    /* square */
+    width: 70px;
+    height: 70px;
+    border-radius: 25%;
+    border: 3px solid #7F9A14;
+
+    background: transparent;  /* прозрачный задний фон */
+    /*background: #c3c6c500;*/
     cursor: pointer;
 }
 
-.custom-checkbox:checked + .checkbox-label {
+.checkbox-product :checked + .checkbox-label-product {
     background: transparent; /* Сохраняем прозрачный фон при отметке */
 }
 
-.custom-checkbox:checked + .checkbox-label::after {
+.checkbox-product:checked + .checkbox-label-product::after {
     content: '';
     position: absolute;
-    top: 50%;
+
+    /* circle */
+    /*top: 50%;*/
+    /*left: 50%;*/
+    /*width: 37px;*/
+    /*height: 37px;*/
+    /*background: #7F9A14;*/
+    /*border-radius: 50%;*/
+    /*transform: translate(-50%, -50%);*/
+
+    /* square */
+    top: 10%;
+    left: 24%;
+    width: 35px;
+    height: 40px;
+    color: #7F9A14; /* Цвет галочки */
+    border: solid #7F9A14;
+    border-width: 0 8px 8px 0;
+    transform: rotate(45deg);
+}
+
+.popupWarning {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Полупрозрачный фон */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    font-size: 1.8rem;
+}
+
+.checkbox-counter {
+    position: fixed;
     left: 50%;
-    width: 10px;
-    height: 10px;
-    background: green;
-    border-radius: 50%;
-    transform: translate(-50%, -50%);
+    bottom: 3px;
+    background-color: white;
+    padding: 10px 20px;
+    border: 3px solid #7F9A14;
+    border-radius: 40px;
+    z-index: 1001;
+    font-size: 1.8rem;
+}
+
+#checkedCount {
+    font-weight: bold;
+    padding-left: 5px;
 }
