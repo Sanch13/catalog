@@ -24,7 +24,8 @@ def send_email_list_products(list_params, user_data):
         status = "Клиент запросил информацию из каталога.\nПисьмо клиенту доставлено"
         user_data["status"] = status
         try:
-            save_data_to_db_with_status(user_data, lead_qualification=EmailLog.LeadQualification.CUSTOMER)
+            save_data_to_db_with_status(user_data,
+                                        lead_qualification=EmailLog.LeadQualification.CUSTOMER)
             send_data_to_sale(user_data)
         except Exception as e:
             send_admin_email(text_body=f"An unexpected error occurred: {e}")
@@ -33,30 +34,17 @@ def send_email_list_products(list_params, user_data):
         status = f"Failed: {str(e)}"
         user_data["status"] = status
         send_admin_email(text_body=f"An unexpected error occurred: {e}")
-        save_data_to_db_with_status(user_data, lead_qualification=EmailLog.LeadQualification.CUSTOMER)
+        save_data_to_db_with_status(user_data,
+                                    lead_qualification=EmailLog.LeadQualification.CUSTOMER)
 
 
 @shared_task()
-def send_email_from_contact_customer(data):
-    status = "Покупатель из <Свяжитесь со  мной> "
+def send_email_from_contact_customer(user_data):
+    user_data["status"] = "покупатель из свяжитесь со мной"
     try:
-        # save_data_to_db_with_status(user_data,
-        #                             status=status,
-        #                             lead_qualification=EmailLog.LeadQualification.CUSTOMER
-        #                             )
-        EmailLog.objects.create(
-            name=data["name"],
-            company=data["company"],
-            phone_number=data["phone_number"],
-            email=data["email"],
-            comment=data["comment"],
-            category='no category',
-            place=data["place"],
-            status=status,
-            products=[],
-            lead_qualification=EmailLog.LeadQualification.CUSTOMER,
-        )
-        send_data_to_sale(data, status=status, products=None)
+        save_data_to_db_with_status(user_data,
+                                    lead_qualification=EmailLog.LeadQualification.CUSTOMER)
+        send_data_to_sale(user_data)
     except Exception as e:
         send_admin_email(text_body=f"An unexpected error occurred: {e}")
 
@@ -95,9 +83,11 @@ def send_data_form_price_to_sale(user_data):
     user_data["products"] = [params['name'] for params in list_params]
     try:
         send_data_to_sale(user_data)
-        save_data_to_db_with_status(user_data, lead_qualification=EmailLog.LeadQualification.CUSTOMER)
+        save_data_to_db_with_status(user_data,
+                                    lead_qualification=EmailLog.LeadQualification.CUSTOMER)
     except Exception as e:
         status = f"Failed: {str(e)}"
         user_data["status"] = status
         send_admin_email(text_body=user_data)
-        save_data_to_db_with_status(user_data, lead_qualification=EmailLog.LeadQualification.CUSTOMER)
+        save_data_to_db_with_status(user_data,
+                                    lead_qualification=EmailLog.LeadQualification.CUSTOMER)

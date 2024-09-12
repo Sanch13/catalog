@@ -205,7 +205,7 @@
         {# Запрос на размер отправляемого файла #}
         document.getElementById('openPopup').addEventListener('click', function () {
             document.getElementById('popupForm').style.display = 'flex';
-            let data =  createFormGetSizeFile(category, ids)
+            let data =  createFormGetSizeFile(category, ids);
 
             fetch("{% url 'catalog:get_size_list_files' %}", {
                 method: 'POST',

@@ -114,24 +114,25 @@
 {# SOCIAL NETWORKS #}
 <div class="floating-container">
     <div class="image-container">
-        <img src="{% static 'img/instagram.svg' %}" class="thumbnail" alt="Instagram"
+        <img src="{% static 'img/icon-instagram-70x70-80.webp' %}" class="thumbnail" alt="Instagram"
              onclick="showSocialQrPopup(this)" data-popup-id="popup-1">
-        <img src="{% static 'img/telegram.svg' %}" class="thumbnail" alt="Telegram"
+        <img src="{% static 'img/icon-pinterest-70x70-90.webp' %}" class="thumbnail" alt="Telegram"
              onclick="showSocialQrPopup(this)" data-popup-id="popup-2">
-        <img src="{% static 'img/youtube.svg' %}" class="thumbnail" alt="YouTube"
+        <img src="{% static 'img/icon-youtube-70x70-90.webp' %}" class="thumbnail" alt="YouTube"
              onclick="showSocialQrPopup(this)" data-popup-id="popup-3">
     </div>
     <div class="popup-qr" id="popup-1">
         <span class="close" onclick="closePopup('popup-1')">&times;</span>
-        <img src="{% static 'img/instagram.png' %}" alt="Popup Image" id="popupImage-1">
+        <img src="{% static 'img/instagram-400x400-80.webp' %}" alt="Popup Image" id="popupImage-1">
+        <p class="text-center">* деятельность корпорации META запрещена в РФ</p>
     </div>
     <div class="popup-qr" id="popup-2">
         <span class="close" onclick="closePopup('popup-2')">&times;</span>
-        <img src="{% static 'img/telegram.png' %}" alt="Popup Image" id="popupImage-2">
+        <img src="{% static 'img/pinterest-400x400-80.webp' %}" alt="Popup Image" id="popupImage-2">
     </div>
     <div class="popup-qr" id="popup-3">
         <span class="close" onclick="closePopup('popup-3')">&times;</span>
-        <img src="{% static 'img/youtube.png' %}" alt="Popup Image" id="popupImage-3">
+        <img src="{% static 'img/youtube-400x400-80.webp' %}" alt="Popup Image" id="popupImage-3">
     </div>
 </div>
 

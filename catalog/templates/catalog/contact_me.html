@@ -11,98 +11,112 @@
 
 {% block content %}
 
-<div class="container-contact">
-    <div class="question-lid">
-        Вы являетесь покупателем или поставщиком?
+    <div class="container-contact">
+        <div class="question-lid">
+            Вас интересует консультация по нашей упаковке или вы хотите предложить нам свои
+            услуги?<br>Пожалуйста, выберите один из вариантов вашего обращения!
+        </div>
+        <div class="block-buttons ">
+            <div class="mx-5">
+                <button class="btn-miran-filter-contact" id="openPopup">
+                    Интересует упаковка МИРАН
+                </button>
+            </div>
+            <div class="mx-5">
+                <button class="btn-miran-filter-contact" id="openPopupSupplier">
+                    Хочу предложить услуги/товар
+                </button>
+            </div>
+        </div>
+
     </div>
-    <div class="block-buttons">
-        <button class="btn-miran-filter-contact" id="openPopup">
-            Покупатель
-        </button>
-        <button class="btn-miran-filter-contact" id="openPopupSupplier">
-            Поставщик
-        </button>
-    </div>
 
-</div>
+    <!-- Функции для валидации полей формы -->
+    <script src="{% static 'js/functions_for_validate_form.js' %}"></script>
+    {% include 'popup/popup.html' %}
+    {% include 'popup/popup_supplier.html' %}
 
-<!-- Функции для валидации полей формы -->
-<script src="{% static 'js/functions_for_validate_form.js' %}"></script>
-{% include 'popup/popup.html' %}
-{% include 'popup/popup_supplier.html' %}
+    {#  VALIDATION FIELDS AND SEND FORM TO SERVER #}
+    <script>
+        document.getElementById('openPopup').addEventListener('click', function () {
+            document.getElementById('popupForm').style.display = 'flex';
 
-{#  VALIDATION FIELDS AND SEND FORM TO SERVER #}
-<script>
-    document.getElementById('openPopup').addEventListener('click', function () {
-        document.getElementById('popupForm').style.display = 'flex';
-    });
-
-    document.getElementById('contactForm').addEventListener('submit', function (event) {
-        event.preventDefault();
-
-        if (checkFields()) {
-            let data = new FormData(this);
-            data.append("place", 'contact');
-
-            fetch("{% url 'catalog:send_data_to_email' %}", {
-                method: 'POST',
-                body: data,
-                headers: {
-                    'X-CSRFToken': '{{ csrf_token }}'
-                }
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        document.getElementById('popupForm').style.display = 'none';
-                        document.getElementById('successPopup').style.display = 'flex';
-
-                        document.getElementById('contactForm').reset();
-
-                        setTimeout(function () {
-                            document.getElementById('successPopup').style.display = 'none';
-                        }, 3000); // Закрытие через 3 секунды
-                    } else {
-                        alert('Ошибка: ' + JSON.stringify(data.errors));
-                    }
-                });
-        }
-    });
-</script>
-
-{# PHONE_MASK #}
-<script src="{% static 'js/jquery.inputmask.js' %}"></script>
-<script>
-    $(document).ready(function () {
-        $('#id_phone_number').inputmask({
-            mask: '+9999999999999',  // позволяет ввод от 1 до 13 символов после +
-            placeholder: '',
-            clearMaskOnLostFocus: false,
         });
 
-        function initializeKeyboard(selector) {
-            $(selector).keyboard({
-                layout: 'russian-qwerty',
-                usePreview: false,
-                autoAccept: true,
-                position: {
-                    my: 'center top',
-                    at: 'center bottom'
-                },
+        document.getElementById('contactForm').addEventListener('submit', function (event) {
+            event.preventDefault();
 
+            let flag = checkFields(
+                formLidsElem.name,
+                formLidsElem.company,
+                formLidsElem.phone_number,
+                formLidsElem.email
+            )
+
+            if (flag) {
+                const data = new FormData(this);
+                data.append("category", 'no category');
+                data.append("place", "contact");
+
+                fetch("{% url 'catalog:send_data_to_email' %}", {
+                    method: 'POST',
+                    body: data,
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    }
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            document.getElementById('popupForm').style.display = 'none';
+                            document.getElementById('successPopup').style.display = 'flex';
+
+                            document.getElementById('contactForm').reset();
+
+                            setTimeout(function () {
+                                document.getElementById('successPopup').style.display = 'none';
+                            }, 3000); // Закрытие через 3 секунды
+                        } else {
+                            alert('Ошибка: ' + JSON.stringify(data.errors));
+                        }
+                    });
+            }
+        });
+    </script>
+
+    {# PHONE_MASK #}
+    <script src="{% static 'js/jquery.inputmask.js' %}"></script>
+    <script>
+        $(document).ready(function () {
+            $('#id_phone_number').inputmask({
+                mask: '+9999999999999',  // позволяет ввод от 1 до 13 символов после +
+                placeholder: '',
+                clearMaskOnLostFocus: false,
             });
-        }
 
-        // Инициализация клавиатуры для нужных полей ввода
-        initializeKeyboard('#id_name');
-        initializeKeyboard('#id_company');
-        initializeKeyboard('#id_phone_number');
-        initializeKeyboard('#id_email');
-        initializeKeyboard('#id_comment');
-        initializeKeyboard('#id_name_sup');
-        initializeKeyboard('#id_company_sup');
-        initializeKeyboard('#id_email_sup');
-        initializeKeyboard('#id_comment_sup');
-    });
-</script>
+            function initializeKeyboard(selector) {
+                $(selector).keyboard({
+                    layout: 'russian-qwerty',
+                    usePreview: false,
+                    autoAccept: true,
+                    position: {
+                        my: 'center top',
+                        at: 'center bottom'
+                    },
+
+                });
+            }
+
+            // Инициализация клавиатуры для нужных полей ввода
+            initializeKeyboard('#id_name');
+            initializeKeyboard('#id_company');
+            initializeKeyboard('#id_phone_number');
+            initializeKeyboard('#id_email');
+            initializeKeyboard('#id_comment');
+            initializeKeyboard('#id_name_sup');
+            initializeKeyboard('#id_company_sup');
+            initializeKeyboard('#id_email_sup');
+            initializeKeyboard('#id_comment_sup');
+        });
+    </script>
 {% endblock %}

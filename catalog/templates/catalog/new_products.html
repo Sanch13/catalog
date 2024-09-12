@@ -104,7 +104,7 @@
             if (flag) {
                 let data = new FormData(this);
                 data.append("category", 'new_products');
-                data.append("place", 'new_products');
+                data.append("place", 'catalog');
                 data.append('new_products', JSON.stringify(newProdIds));
 
                 fetch("{% url 'catalog:send_data_to_email' %}", {

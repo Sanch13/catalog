@@ -415,13 +415,13 @@ def render_email_template(user_data):
     context = {
         'name': user_data["name"],
         'company': user_data["company"],
-        'phone_number': user_data["phone_number"] if user_data["phone_number"] else '',
+        'phone_number': user_data.get("phone_number", ''),
         'email': user_data["email"],
         'category': user_data["category"],
-        'products': user_data["products"] if user_data["products"] else '',
+        'products': user_data.get("products", ""),
         'comment': user_data["comment"],
         'place': user_data["place"],
-        'status': user_data["status"] if user_data["status"] else '',
+        'status': user_data.get("status", ''),
     }
     return render_to_string(template_name="template_for_emails/template_email.html",
                             context=context)
@@ -445,13 +445,13 @@ def save_data_to_db_with_status(user_data, lead_qualification):
     EmailLog.objects.create(
         name=user_data["name"],
         company=user_data["company"],
-        phone_number=user_data["phone_number"] if user_data["phone_number"] else '',
+        phone_number=user_data.get("phone_number", ''),
         email=user_data["email"],
         comment=user_data["comment"],
         category=user_data["category"],
         place=user_data["place"],
-        status=user_data["status"] if user_data["status"] else '',
-        products=user_data["products"] if user_data["products"] else '',
+        status=user_data.get("status", ''),
+        products=user_data.get("products", ''),
         lead_qualification=lead_qualification
     )
 

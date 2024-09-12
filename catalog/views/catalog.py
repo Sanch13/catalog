@@ -309,7 +309,7 @@ def send_data_to_email(request):
                 send_email_list_products.delay(list_params=list_params, user_data=user_data)
                 return JsonResponse({'success': True})
             else:
-                send_email_from_contact_customer.delay(data=user_data)
+                send_email_from_contact_customer.delay(user_data=user_data)
                 print("FROM contact -> send email")
                 return JsonResponse({'success': True})
         else:
