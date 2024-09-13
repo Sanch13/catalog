@@ -56,7 +56,7 @@ HEADER
     left: 0;
     top: 0;
 
-    z-index: 1000;
+    z-index: 99;
 
     box-shadow: 0 0 18px rgba(0, 0, 0, .14);
 }
@@ -73,7 +73,7 @@ HEADER
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000;
+    z-index: 99;
     box-shadow: 0 0 18px rgba(0, 0, 0, .14);
     opacity: 0.8;
 }
@@ -598,7 +598,7 @@ img {
     color: white;
     border-radius: 50px;
     cursor: pointer;
-    z-index: 1001; /* Убедитесь, что кнопка находится выше других элементов */
+    z-index: 100; /* Убедитесь, что кнопка находится выше других элементов */
 }
 
 .fixed-button2 {
@@ -626,7 +626,7 @@ img {
     border-radius: 50%;
     /*font-size: 44px;*/
     cursor: pointer;
-    z-index: 1000;
+    z-index: 99;
     transition: opacity 0.3s;
 }
 

@@ -1,8 +1,7 @@
 {% extends 'catalog/base.html' %}
 {% load static %}
 
-{% block title %}
-{% endblock title %}
+{% block title %}<title></title>{% endblock title %}
 
 {% block css %}
     <link href="{% static 'css/popup_styles.css' %}" rel="stylesheet"/>
@@ -10,351 +9,194 @@
 
 {% block content %}
 
-    <!-- Секция с кнопками фильтров -->
-    <section class="filter__block">
-        <div class="filter__buttons">
-            <form method="get" id="filter-jars-form">
-                <div class="btn-miran-filter" id="All">
-                    <div class="check">
-                        <svg version="1.1" xmlns="http://www.w3.org/2000/svg"
-                             viewBox="0 0 26 26"
-                             xmlns:xlink="http://www.w3.org/1999/xlink"
-                             enable-background="new 0 0 26 26">
-                            <path d="m.3,14c-0.2-0.2-0.3-0.5-0.3-0.7s0.1-0.5 0.3-0.7l1.4-1.4c0.4-0.4 1-0.4 1.4,0l.1,.1 5.5,5.9c0.2,0.2 0.5,0.2 0.7,0l13.4-13.9h0.1v-8.88178e-16c0.4-0.4 1-0.4 1.4,0l1.4,1.4c0.4,0.4 0.4,1 0,1.4l0,0-16,16.6c-0.2,0.2-0.4,0.3-0.7,0.3-0.3,0-0.5-0.1-0.7-0.3l-7.8-8.4-.2-.3z"></path>
-                        </svg>
-                    </div>
-                    <label for="all">
-                        <input type="checkbox"
-                               name="all"
-                               value="all"
-                               id="all">
-                        Сбросить
-                    </label>
+<!-- Секция с кнопками фильтров -->
+<section class="filter__block">
+    <div class="filter__buttons">
+        <form method="get" id="filter-jars-form">
+            <div class="btn-miran-filter" id="All">
+                <div class="check">
+                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg"
+                         viewBox="0 0 26 26"
+                         xmlns:xlink="http://www.w3.org/1999/xlink"
+                         enable-background="new 0 0 26 26">
+                        <path d="m.3,14c-0.2-0.2-0.3-0.5-0.3-0.7s0.1-0.5 0.3-0.7l1.4-1.4c0.4-0.4 1-0.4 1.4,0l.1,.1 5.5,5.9c0.2,0.2 0.5,0.2 0.7,0l13.4-13.9h0.1v-8.88178e-16c0.4-0.4 1-0.4 1.4,0l1.4,1.4c0.4,0.4 0.4,1 0,1.4l0,0-16,16.6c-0.2,0.2-0.4,0.3-0.7,0.3-0.3,0-0.5-0.1-0.7-0.3l-7.8-8.4-.2-.3z"></path>
+                    </svg>
                 </div>
-                {% for field in form_filter %}
-                    {% for item in field %}
-                        <div class="btn-miran-filter">
-                            <div class="check">
-                                <svg version="1.1" xmlns="http://www.w3.org/2000/svg"
-                                     viewBox="0 0 26 26"
-                                     xmlns:xlink="http://www.w3.org/1999/xlink"
-                                     enable-background="new 0 0 26 26">
-                                    <path d="m.3,14c-0.2-0.2-0.3-0.5-0.3-0.7s0.1-0.5 0.3-0.7l1.4-1.4c0.4-0.4 1-0.4 1.4,0l.1,.1 5.5,5.9c0.2,0.2 0.5,0.2 0.7,0l13.4-13.9h0.1v-8.88178e-16c0.4-0.4 1-0.4 1.4,0l1.4,1.4c0.4,0.4 0.4,1 0,1.4l0,0-16,16.6c-0.2,0.2-0.4,0.3-0.7,0.3-0.3,0-0.5-0.1-0.7-0.3l-7.8-8.4-.2-.3z"></path>
-                                </svg>
-                            </div>
-                            {{ item }}
+                <label for="all">
+                    <input type="checkbox"
+                           name="all"
+                           value="all"
+                           id="all">
+                    Сбросить
+                </label>
+            </div>
+            {% for field in form_filter %}
+                {% for item in field %}
+                    <div class="btn-miran-filter">
+                        <div class="check">
+                            <svg version="1.1" xmlns="http://www.w3.org/2000/svg"
+                                 viewBox="0 0 26 26"
+                                 xmlns:xlink="http://www.w3.org/1999/xlink"
+                                 enable-background="new 0 0 26 26">
+                                <path d="m.3,14c-0.2-0.2-0.3-0.5-0.3-0.7s0.1-0.5 0.3-0.7l1.4-1.4c0.4-0.4 1-0.4 1.4,0l.1,.1 5.5,5.9c0.2,0.2 0.5,0.2 0.7,0l13.4-13.9h0.1v-8.88178e-16c0.4-0.4 1-0.4 1.4,0l1.4,1.4c0.4,0.4 0.4,1 0,1.4l0,0-16,16.6c-0.2,0.2-0.4,0.3-0.7,0.3-0.3,0-0.5-0.1-0.7-0.3l-7.8-8.4-.2-.3z"></path>
+                            </svg>
                         </div>
-                    {% endfor %}
-                {% endfor %}
-            </form>
-        </div>
-    </section>
-
-    <!-- Контейнер с карточками товара -->
-    <div class="my-container">
-        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4">
-            {% for jar in jars %}
-                <div class="col">
-                    <div class="card" id="{{ jar.id }}">
-                        {% if jars|length > 5 %}
-                            <input type="checkbox" class="checkbox-product" id="checkbox-{{ jar.id }}">
-                            <label for="checkbox-{{ jar.id }}" class="checkbox-label-product"></label>
-                        {% endif %}
-                        <a href="{{ jar.get_absolute_url }}">
-                            {% if jar.jar_files.all %}
-                                {% for file in jar.jar_files.all %}
-                                    {% if forloop.first %}
-                                        <img src="{{ file.file.url }}" class="card-img-top"
-                                             alt="...">
-                                    {% endif %}
-                                {% endfor %}
-                            {% endif %}
-                            <div class="card-body">
-                                <div class="text-center">
-                                    <h5 class="card-title">{{ jar.name }}</h5>
-                                </div>
-                            </div>
-                            {% if jar.status == 'Новинка' %}
-                                <span class="badge-new">НОВИНКА</span>
-                            {% elif jar.status == 'Бестселлер' %}
-                                <span class="badge-best">БЕСТСЕЛЛЕР</span>
-                            {% endif %}
-                        </a>
+                        {{ item }}
                     </div>
-                </div>
+                {% endfor %}
             {% endfor %}
-        </div>
+        </form>
     </div>
+</section>
 
-    <!-- Фиксированная кнопка send to email-->
-    <button class="fixed-button btn-menu-header" id="openPopup">Отправить на свой e-mail</button>
-    <!-- Фиксированная кнопка Запросить прайс -->
-    <button class="fixed-button2 btn-menu-header" id="openPopupPrice">Запросить прайс</button>
+<!-- Контейнер с карточками товара -->
+<div class="my-container">
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4">
+        {% for jar in jars %}
+            <div class="col">
+                <div class="card" id="{{ jar.id }}">
 
-    <!-- Функции для валидации полей формы -->
-    <script src="{% static 'js/functions_for_validate_form.js' %}"></script>
-    {% include 'popup/popup.html' %}
-    {% include 'popup/popup_price.html' %}
+                    <a href="{{ jar.get_absolute_url }}">
+                        {% if jar.jar_files.all %}
+                            {% for file in jar.jar_files.all %}
+                                {% if forloop.first %}
+                                    <img src="{{ file.file.url }}" class="card-img-top"
+                                         alt="...">
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                        <div class="card-body">
+                            <div class="text-center">
+                                <h5 class="card-title">{{ jar.name }}</h5>
+                            </div>
+                        </div>
+                        {% if jar.status == 'Новинка' %}
+                            <span class="badge-new">НОВИНКА</span>
+                        {% elif jar.status == 'Бестселлер' %}
+                            <span class="badge-best">БЕСТСЕЛЛЕР</span>
+                        {% endif %}
+                    </a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
 
-    <!-- Секция с кнопками фильтров -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const form = document.getElementById('filter-jars-form');
-            const filterItems = document.querySelectorAll('#filter-jars-form div.btn-miran-filter');
-            const allButton = document.getElementById('All');
-            const allCheckbox = allButton.querySelector('input[type="checkbox"]');
+<!-- Фиксированная кнопка send to email-->
+<button class="fixed-button btn-menu-header" id="openPopup">Отправить на свой e-mail</button>
+<!-- Фиксированная кнопка Запросить прайс -->
+<button class="fixed-button2 btn-menu-header" id="openPopupPrice">Запросить прайс</button>
 
-            function updateAllButtonState() {
-                const hasActiveItem = Array.from(filterItems).some(item => item.classList.contains('active'));
+<!-- Секция с данными -->
+<script>
+    const category = '{{ category|escapejs }}';
+    const place = '{{ place|escapejs }}';
+    const idsString = '{{ products_id|escapejs }}';
+    let ids;
 
-                if (hasActiveItem) {
-                    allButton.classList.remove('active');
-                    allCheckbox.checked = false;
-                } else {
-                    allButton.classList.add('active');
-                    allCheckbox.checked = true;
-                }
+    try {
+        ids = idsString ? JSON.parse(idsString) : [];
+    } catch (error) {
+        ids = [];
+    }
+</script>
+
+<!-- Функции для валидации полей формы -->
+<script src="{% static 'js/functions_for_validate_form.js' %}"></script>
+
+<!-- Popups -->
+{% include 'popup/popup.html' %}
+{% include 'popup/popup_price.html' %}
+
+<!-- Секция с кнопками фильтров -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById('filter-jars-form');
+        const filterItems = document.querySelectorAll('#filter-jars-form div.btn-miran-filter');
+        const allButton = document.getElementById('All');
+        const allCheckbox = allButton.querySelector('input[type="checkbox"]');
+
+        function updateAllButtonState() {
+            const hasActiveItem = Array.from(filterItems).some(item => item.classList.contains('active'));
+
+            if (hasActiveItem) {
+                allButton.classList.remove('active');
+                allCheckbox.checked = false;
+            } else {
+                allButton.classList.add('active');
+                allCheckbox.checked = true;
             }
+        }
 
-            // Начальная проверка состояния кнопок
-            filterItems.forEach(item => {
-                const checkbox = item.querySelector('input[type="checkbox"]');
+        // Начальная проверка состояния кнопок
+        filterItems.forEach(item => {
+            const checkbox = item.querySelector('input[type="checkbox"]');
 
+            if (checkbox.checked) {
+                item.classList.add('active');
+            }
+        });
+
+        updateAllButtonState();
+
+        filterItems.forEach(item => {
+            const checkbox = item.querySelector('input[type="checkbox"]');
+
+            item.addEventListener('click', function () {
+                // Переключение состояния чекбокса
+                checkbox.checked = !checkbox.checked;
+
+                // Переключение класса active
                 if (checkbox.checked) {
                     item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
                 }
+
+                updateAllButtonState();
+
+                // Запуск формы для отправки данных
+                form.dispatchEvent(new Event('change'));
+            });
+        });
+
+        form.addEventListener('change', function (e) {
+            const hasActiveItem = Array.from(filterItems).some(item => item.classList.contains('active'));
+
+            if (!hasActiveItem) {
+                // Если нет активных кнопок, загружаем текущую страницу
+                window.location.href = window.location.pathname;
+            } else {
+                // Считываем данные формы
+                const formData = new FormData(form);
+                const params = new URLSearchParams(formData);
+
+                // Генерируем URL с параметрами
+                const queryString = params.toString();
+                const actionUrl = window.location.pathname;
+                window.location.href = `${actionUrl}?${queryString}`;
+            }
+        });
+
+        allButton.addEventListener('click', function () {
+            filterItems.forEach(item => {
+                const checkbox = item.querySelector('input[type="checkbox"]');
+                item.classList.remove('active');
+                checkbox.checked = false;
             });
 
             updateAllButtonState();
 
-            filterItems.forEach(item => {
-                const checkbox = item.querySelector('input[type="checkbox"]');
-
-                item.addEventListener('click', function () {
-                    // Переключение состояния чекбокса
-                    checkbox.checked = !checkbox.checked;
-
-                    // Переключение класса active
-                    if (checkbox.checked) {
-                        item.classList.add('active');
-                    } else {
-                        item.classList.remove('active');
-                    }
-
-                    updateAllButtonState();
-
-                    // Запуск формы для отправки данных
-                    form.dispatchEvent(new Event('change'));
-                });
-            });
-
-            form.addEventListener('change', function (e) {
-                const hasActiveItem = Array.from(filterItems).some(item => item.classList.contains('active'));
-
-                if (!hasActiveItem) {
-                    // Если нет активных кнопок, загружаем текущую страницу
-                    window.location.href = window.location.pathname;
-                } else {
-                    // Считываем данные формы
-                    const formData = new FormData(form);
-                    const params = new URLSearchParams(formData);
-
-                    // Генерируем URL с параметрами
-                    const queryString = params.toString();
-                    const actionUrl = window.location.pathname;
-                    window.location.href = `${actionUrl}?${queryString}`;
-                }
-            });
-
-            allButton.addEventListener('click', function () {
-                filterItems.forEach(item => {
-                    const checkbox = item.querySelector('input[type="checkbox"]');
-                    item.classList.remove('active');
-                    checkbox.checked = false;
-                });
-
-                updateAllButtonState();
-
-                form.dispatchEvent(new Event('change'));
-            });
+            form.dispatchEvent(new Event('change'));
         });
-    </script>
+    });
+</script>
 
-    <script>
-        const category = "{{ category|escapejs }}";
-        const place = "{{ place|escapejs }}";
-        const idsString = "{{ products_id|escapejs }}";
-        let ids;
-
-        try {
-            ids = idsString ? JSON.parse(idsString) : [];
-        } catch (error) {
-            ids = [];
-        }
-    </script>
-
-    {#  GET FILESIZE  #}
-    <script>
-        {# Return list ids products #}
-        function get_ids() {
-            const cards = document.querySelectorAll('.card');
-            const ids = [];
-
-            cards.forEach(function (card) {
-                ids.push(card.id);
-            });
-            return ids
-        }
-
-        {# Запрос на размер отправляемого файла #}
-        document.getElementById('openPopup').addEventListener('click', function () {
-            document.getElementById('popupForm').style.display = 'flex';
-            let data =  createFormGetSizeFile(category, ids);
-
-            fetch("{% url 'catalog:get_size_list_files' %}", {
-                method: 'POST',
-                body: data,
-                headers: {
-                    'X-CSRFToken': '{{ csrf_token }}'
-                }
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        // Если ответ успешный, вставляем размер файла в блок div
-                        document.getElementById('fileSizeDisplay').innerText = `Размер файла: ${data.file_size} `;
-                    } else {
-                        // Если возникла ошибка, отображаем сообщение об ошибке
-                        document.getElementById('fileSizeDisplay').innerText = "Ошибка при получении размера файла.";
-                    }
-                })
-                .catch(error => {
-                    console.error('Ошибка:', error);
-                    document.getElementById('fileSizeDisplay').innerText = "Произошла ошибка при выполнении запроса.";
-                });
-        });
-    </script>
-
-    {#  VALIDATION FIELDS AND SEND FORM TO SERVER #}
-    <script>
-        document.getElementById('contactForm').addEventListener('submit', function (event) {
-            event.preventDefault();
-            let flag = checkFields(
-                formLidsElem.name,
-                formLidsElem.company,
-                formLidsElem.phone_number,
-                formLidsElem.email
-            )
-            if (flag) {
-                const formLids = document.getElementById('contactForm');
-                let data = createFormData(formLids, category, place, ids)
-
-                fetch("{% url 'catalog:send_data_to_email' %}", {
-                    method: 'POST',
-                    body: data,
-                    headers: {
-                        'X-CSRFToken': '{{ csrf_token }}'
-                    }
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            document.getElementById('popupForm').style.display = 'none';
-                            document.getElementById('successPopup').style.display = 'flex';
-
-                            document.getElementById('contactForm').reset();
-
-                            setTimeout(function () {
-                                document.getElementById('successPopup').style.display = 'none';
-                            }, 3000); // Закрытие через 3 секунды
-                        } else {
-                            alert('Ошибка: ' + JSON.stringify(data.errors));
-                        }
-                    });
-            }
-        });
-
-
-        document.getElementById('contactFormPrice').addEventListener('submit', function (event) {
-            event.preventDefault();
-            const flag = checkFields(
-                formPriceElem.name,
-                formPriceElem.company,
-                formPriceElem.phone_number,
-                formPriceElem.email
-            )
-
-            if (flag) {
-                const idsCheckProducts = getIdsFromCheckedCheckBoxes()
-                console.log(typeof idsCheckProducts, idsCheckProducts);
-                ids = idsCheckProducts.length ? idsCheckProducts : ids
-                console.log(typeof ids, ids);
-                const formLidsPrice = document.getElementById('contactFormPrice');
-                let data = createFormData(formLidsPrice, category, place, ids);
-                fetch("{% url 'catalog:send_data_form_price_to_email' %}", {
-                    method: 'POST',
-                    body: data,
-                    headers: {
-                        'X-CSRFToken': '{{ csrf_token }}'
-                    }
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            document.getElementById('popupFormPrice').style.display = 'none';
-                            document.getElementById('successPopup').style.display = 'flex';
-                            document.getElementById('checkboxCounter').style.display = 'none';
-                            document.getElementById('checkedCount').textContent = String(0);
-                            const allCheckboxes = document.querySelectorAll('.checkbox-product');
-                            allCheckboxes.forEach(checkbox => {
-                                checkbox.checked = false; // Снимаем галочку
-                            });
-
-                            document.getElementById('contactFormPrice').reset();
-
-                            setTimeout(function () {
-                                document.getElementById('successPopup').style.display = 'none';
-                            }, 3000); // Закрытие через 3 секунды
-                        } else {
-                            alert('Ошибка: ' + JSON.stringify(data.errors));
-                        }
-                    });
-                }
-        });
-
-
-        const checkboxesProducts = document.querySelectorAll('.checkbox-product');
-
-        checkboxesProducts.forEach(checkbox => {
-            checkbox.addEventListener('change', updateCheckedCount);
-
-        });
-
-
-        function updateCheckedCount() {
-            const checkedCheckboxes = document.querySelectorAll('.checkbox-product:checked');
-            const checkedCountElement = document.getElementById('checkedCount');
-            const count = checkedCheckboxes.length;
-            checkedCountElement.textContent = String(count);
-
-            if (count > 0 && count <= 10) {
-                checkedCountElement.style.color = 'green'; // Зеленый для значений от 1 до 10
-            } else if (count > 10) {
-                checkedCountElement.style.color = 'red'; // Красный для значений более 10
-            } else {
-                checkedCountElement.style.color = 'black'; // Черный для 0
-            }
-
-
-        }
-
-
-
-
-    </script>
-
+{# RUSSIAN/ENGLAND KEYBOARD #}
+<script src="{% static 'js/russian.js' %}"></script>
 {# PHONE_MASK #}
 <script src="{% static 'js/jquery.inputmask.js' %}"></script>
 {# INIT FIELDS VIRTUAL KEYBOARDS #}
 <script src="{% static 'js/initKeyboardFields.js' %}"></script>
+
 {% endblock %}

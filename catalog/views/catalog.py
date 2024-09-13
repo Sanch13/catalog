@@ -412,7 +412,6 @@ def send_data_form_price_to_email(request):
             place = request.POST.get('place', [])
             ids = convert_to_numbers(json.loads(request.POST.get('ids', '[]')))
             new_products = json.loads(request.POST.get('new_products', '[]'))
-            print(type(new_products), new_products)
             user_data = {
                 'name': cd['name'],
                 'company': cd['company'],

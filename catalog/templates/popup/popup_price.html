@@ -83,7 +83,7 @@
     Количество: <span id="checkedCount">0</span>
 </div>
 
-{#  POPUP  #}
+{# Закрытие POPUPS FORM PRICE #}
 <script>
     {# Закрытие попапа по кнопке Х #}
     document.getElementById('closePopupPrice').addEventListener('click', function () {
@@ -117,6 +117,31 @@
         phone_number: document.getElementById("id_phone_number_price"),
         email: document.getElementById("id_email_price")
     };
+    const checkboxesProducts = document.querySelectorAll('.checkbox-product');
+    checkboxesProducts.forEach(checkbox => {
+            checkbox.addEventListener('change', updateCheckedCount);
+
+        });
+    const productCards = document.querySelectorAll('.card'); // Выбираем все карточки
+    const haveCheckboxes = document.querySelectorAll('.checkbox-product').length > 0; // Проверяем, есть ли уже чекбоксы
+
+    function updateCheckedCount() {
+            const checkedCheckboxes = document.querySelectorAll('.checkbox-product:checked');
+            const checkedCountElement = document.getElementById('checkedCount');
+            const count = checkedCheckboxes.length;
+            console.log(count);
+            checkedCountElement.textContent = String(count);
+
+            if (count > 0 && count <= 10) {
+                checkedCountElement.style.color = 'green'; // Зеленый для значений от 1 до 10
+            } else if (count > 10) {
+                checkedCountElement.style.color = 'red'; // Красный для значений более 10
+            } else {
+                checkedCountElement.style.color = 'black'; // Черный для 0
+            }
+
+
+        }
 
     function openPopupWarning() {
         const warningPopup = document.getElementById('warningPopup');
@@ -133,7 +158,6 @@
         return Array.from(checkedCheckboxes).map(checkbox => ({id: parseInt(checkbox.id.replace('checkbox-', ''), 10)}))
     }
 
-
     document.getElementById('openPopupPrice').addEventListener('click', function () {
         let idsLenght = getIdsFromCheckedCheckBoxes().length;
         if (ids.length < 5){
@@ -144,11 +168,33 @@
             openPopupWarning();
             const checkboxCounterElement = document.getElementById('checkboxCounter');
             checkboxCounterElement.style.display = 'flex';
+            if (!haveCheckboxes) {
+                productCards.forEach(function (card) {
+                    const cardId = card.id; // Получаем id карточки
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.className = 'checkbox-product';
+                    checkbox.id = `checkbox-${cardId}`; // Устанавливаем id
+
+                    const label = document.createElement('label'); // Создаем метку для чекбокса
+                    label.htmlFor = checkbox.id; // Привязываем метку к чекбоксу
+                    label.className = 'checkbox-label-product'; // Устанавливаем класс для метки
+
+                    // Вставляем чекбокс и метку в карточку
+                    card.insertBefore(label, card.firstChild);
+                    card.insertBefore(checkbox, card.firstChild);
+                });
+
+                const checkboxesProducts = document.querySelectorAll('.checkbox-product');
+                checkboxesProducts.forEach(checkbox => {
+                        checkbox.addEventListener('change', updateCheckedCount);
+
+        });
+            }
         } else {
             console.log("Fill in FORM and send CHECKED-CARDS IDS");
             document.getElementById('popupFormPrice').style.display = 'flex';
         }
-
     });
 
     document.addEventListener("DOMContentLoaded", function () {
@@ -164,5 +210,51 @@
             submitButtonFormPrice.disabled = !checkboxFormPrice.checked;
         });
     });
-</script>
 
+    document.getElementById('contactFormPrice').addEventListener('submit', function (event) {
+            event.preventDefault();
+            const flag = checkFields(
+                formPriceElem.name,
+                formPriceElem.company,
+                formPriceElem.phone_number,
+                formPriceElem.email
+            )
+
+            if (flag) {
+                const idsCheckProducts = getIdsFromCheckedCheckBoxes()
+                console.log(typeof idsCheckProducts, idsCheckProducts);
+                ids = idsCheckProducts.length ? idsCheckProducts : ids
+                console.log(typeof ids, ids);
+                const formLidsPrice = document.getElementById('contactFormPrice');
+                let data = createFormData(formLidsPrice, category, place, ids);
+                fetch("{% url 'catalog:send_data_form_price_to_email' %}", {
+                    method: 'POST',
+                    body: data,
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    }
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            document.getElementById('popupFormPrice').style.display = 'none';
+                            document.getElementById('successPopup').style.display = 'flex';
+                            document.getElementById('checkboxCounter').style.display = 'none';
+                            document.getElementById('checkedCount').textContent = String(0);
+                            const allCheckboxes = document.querySelectorAll('.checkbox-product');
+                            allCheckboxes.forEach(checkbox => {
+                                checkbox.checked = false; // Снимаем галочку
+                            });
+                            // СКРЫТЬ ЧЕКБОКСЫ ПРИ ОТПРАВКЕ ФОРМЫ
+                            document.getElementById('contactFormPrice').reset();
+
+                            setTimeout(function () {
+                                document.getElementById('successPopup').style.display = 'none';
+                            }, 3000); // Закрытие через 3 секунды
+                        } else {
+                            alert('Ошибка: ' + JSON.stringify(data.errors));
+                        }
+                    });
+                }
+        });
+</script>

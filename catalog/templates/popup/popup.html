@@ -1,9 +1,5 @@
 {% load static %}
 
-{% block css %}
-    <script src="{% static 'js/russian.js' %}"></script>
-{% endblock css %}
-
 <!-- Попап для отправки выбранных продуктов -->
 <div id="popupForm" class="popup" style="display: none;">
     <div class="popup-content">
@@ -85,12 +81,11 @@
     <div class="success-popup-content d-flex justify-content-center align-items-center">
         <div id="successMessage">
             Спасибо!<br>Ваша заявка принята!
-            {#            <br>После выставки представитель компании свяжется с Вами#}
         </div>
     </div>
 </div>
 
-{#  POPUP  #}
+{# Закрытие POPUPS  #}
 <script>
     {# Закрытие попапа по кнопке Х #}
     document.getElementById('closePopup').addEventListener('click', function () {
@@ -116,7 +111,38 @@
     });
 </script>
 
-{#  CHECK FIELDS AND CHECKBOX  #}
+{#  GET FILESIZE  #}
+<script>
+    {# Запрос на размер отправляемого файла #}
+    document.getElementById('openPopup').addEventListener('click', function () {
+        document.getElementById('popupForm').style.display = 'flex';
+        let data =  createFormGetSizeFile(category, ids);
+
+        fetch("{% url 'catalog:get_size_list_files' %}", {
+            method: 'POST',
+            body: data,
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}'
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Если ответ успешный, вставляем размер файла в блок div
+                    document.getElementById('fileSizeDisplay').innerText = `Размер файла: ${data.file_size} `;
+                } else {
+                    // Если возникла ошибка, отображаем сообщение об ошибке
+                    document.getElementById('fileSizeDisplay').innerText = "Ошибка при получении размера файла.";
+                }
+            })
+            .catch(error => {
+                console.error('Ошибка:', error);
+                document.getElementById('fileSizeDisplay').innerText = "Произошла ошибка при выполнении запроса.";
+            });
+    });
+</script>
+
+{#  CHECK FIELDS AND CHECKBOX | VALIDATION FIELDS AND SEND FORM TO SERVER #}
 <script>
     const formLidsElem = {
         name: document.getElementById("id_name"),
@@ -137,5 +163,42 @@
         checkbox.addEventListener('change', function () {
             submitButton.disabled = !checkbox.checked;
         });
+    });
+
+    document.getElementById('contactForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+        let flag = checkFields(
+            formLidsElem.name,
+            formLidsElem.company,
+            formLidsElem.phone_number,
+            formLidsElem.email
+        )
+        if (flag) {
+            const formLids = document.getElementById('contactForm');
+            let data = createFormData(formLids, category, place, ids)
+
+            fetch("{% url 'catalog:send_data_to_email' %}", {
+                method: 'POST',
+                body: data,
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('popupForm').style.display = 'none';
+                        document.getElementById('successPopup').style.display = 'flex';
+
+                        document.getElementById('contactForm').reset();
+
+                        setTimeout(function () {
+                            document.getElementById('successPopup').style.display = 'none';
+                        }, 3000); // Закрытие через 3 секунды
+                    } else {
+                        alert('Ошибка: ' + JSON.stringify(data.errors));
+                    }
+                });
+        }
     });
 </script>
