@@ -74,7 +74,7 @@
 <div id="warningPopup" class="popupWarning" style="display: none;">
     <div class="popup-content">
         <span class="close" onclick="closePopupWarning()">&times;</span>
-        <p>Пожалуйста, отметьте не более 5 карточек.</p>
+        <p class="count-popup">Пожалуйста, отметьте не более 5 карточек.</p>
     </div>
 </div>
 
@@ -171,24 +171,25 @@
             if (!haveCheckboxes) {
                 productCards.forEach(function (card) {
                     const cardId = card.id; // Получаем id карточки
-                    const checkbox = document.createElement('input');
-                    checkbox.type = 'checkbox';
-                    checkbox.className = 'checkbox-product';
-                    checkbox.id = `checkbox-${cardId}`; // Устанавливаем id
+                    const existingCheckbox = document.getElementById(`checkbox-${cardId}`); // Проверяем, существует ли чекбокс
+                    if (!existingCheckbox) {
+                        const checkbox = document.createElement('input');
+                        checkbox.type = 'checkbox';
+                        checkbox.className = 'checkbox-product';
+                        checkbox.id = `checkbox-${cardId}`; // Устанавливаем id
 
-                    const label = document.createElement('label'); // Создаем метку для чекбокса
-                    label.htmlFor = checkbox.id; // Привязываем метку к чекбоксу
-                    label.className = 'checkbox-label-product'; // Устанавливаем класс для метки
+                        const label = document.createElement('label'); // Создаем метку для чекбокса
+                        label.htmlFor = checkbox.id; // Привязываем метку к чекбоксу
+                        label.className = 'checkbox-label-product'; // Устанавливаем класс для метки
 
-                    // Вставляем чекбокс и метку в карточку
-                    card.insertBefore(label, card.firstChild);
-                    card.insertBefore(checkbox, card.firstChild);
+                        // Вставляем чекбокс и метку в карточку
+                        card.insertBefore(label, card.firstChild);
+                        card.insertBefore(checkbox, card.firstChild);
+                        }
                 });
-
                 const checkboxesProducts = document.querySelectorAll('.checkbox-product');
                 checkboxesProducts.forEach(checkbox => {
-                        checkbox.addEventListener('change', updateCheckedCount);
-
+                    checkbox.addEventListener('change', updateCheckedCount);
         });
             }
         } else {
@@ -244,8 +245,15 @@
                             const allCheckboxes = document.querySelectorAll('.checkbox-product');
                             allCheckboxes.forEach(checkbox => {
                                 checkbox.checked = false; // Снимаем галочку
-                            });
-                            // СКРЫТЬ ЧЕКБОКСЫ ПРИ ОТПРАВКЕ ФОРМЫ
+                                checkbox.remove();
+                                // Удаляем связанный лейбл
+                                const label = document.querySelector(`label[for="${checkbox.id}"]`);
+                                if (label) {
+                                    label.remove();
+                                }
+                            }); // СКРЫТЬ ЧЕКБОКСЫ ПРИ ОТПРАВКЕ ФОРМЫ
+                            ids = productCards.length
+                            console.log('deleted --- ids.length:', ids);
                             document.getElementById('contactFormPrice').reset();
 
                             setTimeout(function () {

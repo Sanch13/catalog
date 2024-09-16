@@ -194,7 +194,7 @@ def get_category(request, category_slug):
             'new_products': all_new_products,
             'new_products_ids': json.dumps(new_products_ids),
             'form_lids': form_lids,
-            'category': "series",
+            'category': "new_products",
             'place': "catalog",
             "price_form": price_form,
         }

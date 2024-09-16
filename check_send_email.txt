@@ -1,0 +1,6 @@
+
+            category     price       detail      price
+novinki     +            +           None        None
+series      +            -           -           -
+jars        +            -           -           -
+caps        +            -           -           -

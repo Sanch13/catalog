@@ -777,3 +777,8 @@ img {
     font-weight: bold;
     padding-left: 5px;
 }
+
+.count-popup {
+    margin-top: 1rem;
+    text-align: center;
+}

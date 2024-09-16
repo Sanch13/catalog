@@ -359,10 +359,10 @@ def send_admin_email(text_body):
 
 def get_text_subject_for_email_to_department(department) -> str:
     subject = {
-        'production_email': "Информация о оборудовании",
-        'buying_email': "Информация о материалах",
-        'marketing_email': "Информация для маркетинга",
-        'miran_email': "Информация для секретаря",
+        'production_email': "Предложение оборудования с выставки InterCharm",
+        'buying_email': "Коммерческое предложение на материалы с выставки InterCharm",
+        'marketing_email': "Предложение для маркетинга с выставки InterCharm",
+        'miran_email': "Предложение о сотрудничестве с выставки InterCharm",
     }
 
     return subject.get(department, '')
@@ -415,9 +415,9 @@ def send_data_to_client(list_params, data, file_stream):
 
 def send_data_to_sale(user_data):
     message = EmailMessage()
-    message['Subject'] = "Запрос цены на выбранную продукцию" if user_data.get("form") == "price" else "Информация о Лидах"
+    message['Subject'] = "Запрос цены на выбранную продукцию с InterCharm" if user_data.get("form") == "price" else "Информация о загрузке информации из каталога клиентом на InterCharm"
     message['From'] = settings.FROM_APP  # send app
-    message['To'] = ['a.zubchyk@miran-bel.com']  # sent email [SALE_EMAIL] to sale@miran-bel.com
+    message['To'] = ['a.zubchyk@miran-bel.com']  # sent email settings.SALE_EMAIL to sale@miran-bel.com
 
     # text_body = "Информация о потенциальном покупателе"
     # message.set_content(text_body)

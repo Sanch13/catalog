@@ -55,7 +55,6 @@
         {% for jar in jars %}
             <div class="col">
                 <div class="card" id="{{ jar.id }}">
-
                     <a href="{{ jar.get_absolute_url }}">
                         {% if jar.jar_files.all %}
                             {% for file in jar.jar_files.all %}
