@@ -89,6 +89,7 @@ class JarAdmin(admin.ModelAdmin):
     inlines = [JarFileInline]
     list_display = ('name',)
     prepopulated_fields = {"slug": ("name",)}
+    list_filter = ('status', 'volume', )
 
     class Media:
         js = ('tinymce/tinymce.min.js', 'admin/js/tinymce_setup.js', 'admin/js/image-previews.js')

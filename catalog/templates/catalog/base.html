@@ -176,15 +176,18 @@
 
 {# DISPLAY POPUP IN INACTIVITY_TIMEOUT #}
 <script>
-    const INACTIVITY_TIMEOUT = 6000000;
+    const INACTIVITY_TIMEOUT = 6000;
     const POPUP_TIMEOUT = 10000;
 
     let inactivityTimer;
     let countdownInterval;
+    let isVideoPlaying = false;
 
     function resetInactivityTimer() {
-        clearTimeout(inactivityTimer);
-        inactivityTimer = setTimeout(showPopup, INACTIVITY_TIMEOUT);
+        if (!isVideoPlaying) {
+            clearTimeout(inactivityTimer);
+            inactivityTimer = setTimeout(showPopup, INACTIVITY_TIMEOUT);
+        }
     }
 
     function stopInactivityTimer() {
@@ -239,11 +242,23 @@
         const videos = document.querySelectorAll('video');
 
         videos.forEach(video => {
-            // Приостановка таймера при начале воспроизведения видео
-            video.addEventListener('play', stopInactivityTimer);
-            // Возобновление таймера при паузе или завершении воспроизведения видео
-            video.addEventListener('pause', resetInactivityTimer);
-            video.addEventListener('ended', resetInactivityTimer);
+            // Устанавливаем флаг, когда видео воспроизводится
+            video.addEventListener('play', () => {
+                isVideoPlaying = true;
+                stopInactivityTimer();
+            });
+            // Сброс флага и таймера при паузе или завершении воспроизведения видео
+            video.addEventListener('pause', () => {
+                isVideoPlaying = false;
+                resetInactivityTimer();
+            });
+            video.addEventListener('ended', () => {
+                setTimeout(() => {
+                    window.location.href = '/'
+                }, 5000);
+                {#isVideoPlaying = false;#}
+                {#resetInactivityTimer();#}
+            });
         });
     });
 </script>
