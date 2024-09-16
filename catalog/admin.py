@@ -48,7 +48,7 @@ class CapAdminForm(forms.ModelForm):
 class CapAdmin(admin.ModelAdmin):
     form = CapAdminForm
     inlines = [CapFileInline]
-    list_display = ('name', 'slug')
+    list_display = ('name', 'status', 'slug')
     prepopulated_fields = {"slug": ("name",)}
 
     class Media:
@@ -87,7 +87,7 @@ class JarFileInline(admin.TabularInline):
 class JarAdmin(admin.ModelAdmin):
     form = JarFileForm
     inlines = [JarFileInline]
-    list_display = ('name',)
+    list_display = ('name', 'status')
     prepopulated_fields = {"slug": ("name",)}
     list_filter = ('status', 'volume', )
 
@@ -127,7 +127,7 @@ class BottleFileInline(admin.TabularInline):
 class BottleAdmin(admin.ModelAdmin):
     form = BottleFileForm
     inlines = [BottleFileInline]
-    list_display = ('name',)
+    list_display = ('name', 'status')
     prepopulated_fields = {"slug": ("name",)}
 
     class Media:

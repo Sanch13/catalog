@@ -74,7 +74,7 @@
 <div id="warningPopup" class="popupWarning" style="display: none;">
     <div class="popup-content">
         <span class="close" onclick="closePopupWarning()">&times;</span>
-        <p class="count-popup">Пожалуйста, отметьте не более 5 карточек.</p>
+        <p class="count-popup">Пожалуйста, отметьте не более 10 карточек.</p>
     </div>
 </div>
 
@@ -117,6 +117,7 @@
         phone_number: document.getElementById("id_phone_number_price"),
         email: document.getElementById("id_email_price")
     };
+    const LIMIT_PRODUCT = 10;
     const checkboxesProducts = document.querySelectorAll('.checkbox-product');
     checkboxesProducts.forEach(checkbox => {
             checkbox.addEventListener('change', updateCheckedCount);
@@ -132,15 +133,13 @@
             console.log(count);
             checkedCountElement.textContent = String(count);
 
-            if (count > 0 && count <= 10) {
+            if (count > 0 && count <= LIMIT_PRODUCT) {
                 checkedCountElement.style.color = 'green'; // Зеленый для значений от 1 до 10
-            } else if (count > 10) {
+            } else if (count > LIMIT_PRODUCT) {
                 checkedCountElement.style.color = 'red'; // Красный для значений более 10
             } else {
                 checkedCountElement.style.color = 'black'; // Черный для 0
             }
-
-
         }
 
     function openPopupWarning() {
@@ -160,11 +159,11 @@
 
     document.getElementById('openPopupPrice').addEventListener('click', function () {
         let idsLenght = getIdsFromCheckedCheckBoxes().length;
-        if (ids.length < 5){
-            console.log("Fill in FORM and send USUAL IDS");
+        console.log(typeof idsLenght, idsLenght);
+        console.log(typeof ids, ids.length);
+        if (productCards.length < LIMIT_PRODUCT){
             document.getElementById('popupFormPrice').style.display = 'flex';
-        }  else if (idsLenght === 0 || idsLenght > 5) {
-            console.log("check from 1 to 10 items");
+        }  else if (idsLenght === 0 || idsLenght > LIMIT_PRODUCT) {
             openPopupWarning();
             const checkboxCounterElement = document.getElementById('checkboxCounter');
             checkboxCounterElement.style.display = 'flex';
@@ -193,7 +192,6 @@
         });
             }
         } else {
-            console.log("Fill in FORM and send CHECKED-CARDS IDS");
             document.getElementById('popupFormPrice').style.display = 'flex';
         }
     });
@@ -223,11 +221,10 @@
 
             if (flag) {
                 const idsCheckProducts = getIdsFromCheckedCheckBoxes()
-                console.log(typeof idsCheckProducts, idsCheckProducts);
                 ids = idsCheckProducts.length ? idsCheckProducts : ids
-                console.log(typeof ids, ids);
                 const formLidsPrice = document.getElementById('contactFormPrice');
                 let data = createFormData(formLidsPrice, category, place, ids);
+
                 fetch("{% url 'catalog:send_data_form_price_to_email' %}", {
                     method: 'POST',
                     body: data,
@@ -244,16 +241,13 @@
                             document.getElementById('checkedCount').textContent = String(0);
                             const allCheckboxes = document.querySelectorAll('.checkbox-product');
                             allCheckboxes.forEach(checkbox => {
-                                checkbox.checked = false; // Снимаем галочку
+                                checkbox.checked = false;
                                 checkbox.remove();
-                                // Удаляем связанный лейбл
                                 const label = document.querySelector(`label[for="${checkbox.id}"]`);
                                 if (label) {
                                     label.remove();
                                 }
-                            }); // СКРЫТЬ ЧЕКБОКСЫ ПРИ ОТПРАВКЕ ФОРМЫ
-                            ids = productCards.length
-                            console.log('deleted --- ids.length:', ids);
+                            });
                             document.getElementById('contactFormPrice').reset();
 
                             setTimeout(function () {

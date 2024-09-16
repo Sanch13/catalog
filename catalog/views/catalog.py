@@ -298,7 +298,7 @@ def send_data_to_email(request):
                 if category == 'new_products':
                     new_products = json.loads(request.POST.get('new_products', []))
                     bottles = convert_to_numbers(new_products.get('bottles', []))
-                    list_params += get_list_params_bottles_from_db(bottles, category="bottle")
+                    list_params += get_list_params_bottles_from_db(bottles, category="bottles")
                     jars = convert_to_numbers(new_products.get('jars', []))
                     list_params += get_list_params_jars_from_db(jars)
                     caps = convert_to_numbers(new_products.get('caps', []))
@@ -395,7 +395,7 @@ def get_size_new_products(request):
             list_params = get_list_params_caps_from_db(caps)
             all_size += get_size_category(list_params=list_params, category='cap')
         if bottles:
-            list_params = get_list_params_bottles_from_db(bottles, category="bottle")
+            list_params = get_list_params_bottles_from_db(bottles, category="bottles")
             all_size += get_size_category(list_params=list_params, category='bottle')
 
         file_size = get_formatted_file_size(size_bytes=all_size)
@@ -424,7 +424,7 @@ def send_data_form_price_to_email(request):
                 'ids': ids,
                 'new_products': new_products,
             }
-            print(user_data)
+            print('user_data', user_data)
             send_data_form_price_to_sale.delay(user_data=user_data)
             return JsonResponse({'success': True})
         else:

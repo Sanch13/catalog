@@ -492,7 +492,7 @@ def get_params_from_category(user_data):
         list_params = get_list_params_bottles_from_db(user_data["ids"], category)
     if category == 'new_products':
         bottles = convert_to_numbers(user_data["new_products"].get('bottles', []))
-        list_params += get_list_params_bottles_from_db(bottles, category="bottle")
+        list_params += get_list_params_bottles_from_db(bottles, category="bottles")
         jars = convert_to_numbers(user_data["new_products"].get('jars', []))
         list_params += get_list_params_jars_from_db(jars)
         caps = convert_to_numbers(user_data["new_products"].get('caps', []))
