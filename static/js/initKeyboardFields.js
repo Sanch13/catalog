@@ -14,12 +14,16 @@ $(document).ready(function () {
         // Инициализация клавиатуры для нужных полей ввода
         initializeKeyboard('#id_name');
         initializeKeyboard('#id_name_price');
+        initializeKeyboard('#id_name_sup');
         initializeKeyboard('#id_company');
         initializeKeyboard('#id_company_price');
+        initializeKeyboard('#id_company_sup');
         initializeKeyboard('#id_phone_number');
         initializeKeyboard('#id_phone_number_price');
         initializeKeyboard('#id_email');
         initializeKeyboard('#id_email_price');
+        initializeKeyboard('#id_email_sup');
         initializeKeyboard('#id_comment');
         initializeKeyboard('#id_comment_price');
+        initializeKeyboard('#id_comment_sup');
     });

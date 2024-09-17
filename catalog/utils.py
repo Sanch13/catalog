@@ -189,6 +189,7 @@ def get_text_for_email_table(user_data):
         "bottles": "Флаконы",
         "jars": "Баночки",
         "caps": "Колпачки",
+        "no category": "",
     }
     places = {
         "catalog": "Из каталога продукции",
@@ -413,9 +414,28 @@ def send_data_to_client(list_params, data, file_stream):
     print("sent email to client")
 
 
+def get_subject_for_email(user_data):
+    subject = {
+        'catalog': "Информация о загрузке информации из каталога клиентом на InterCharm",
+        'price': "Запрос цены на выбранную продукцию с InterCharm",
+        'contact': "Запрос обратной связи с InterCharm",
+    }
+    if user_data.get("form") == "price" and user_data.get("place") == "catalog":
+        user_data['subject'] = subject["price"]
+
+    if user_data.get("form") == "catalog" and user_data.get("place") == "catalog":
+        user_data['subject'] = subject["catalog"]
+
+    if user_data.get("form") == "catalog" and user_data.get("place") == "contact":
+        user_data['subject'] = subject["contact"]
+
+    return user_data
+
+
 def send_data_to_sale(user_data):
     message = EmailMessage()
-    message['Subject'] = "Запрос цены на выбранную продукцию с InterCharm" if user_data.get("form") == "price" else "Информация о загрузке информации из каталога клиентом на InterCharm"
+    message['Subject'] = user_data.get('subject', "")
+    # message['Subject'] = "Запрос цены на выбранную продукцию с InterCharm" if user_data.get("form") == "price" else "Информация о загрузке информации из каталога клиентом на InterCharm"
     message['From'] = settings.FROM_APP  # send app
     message['To'] = ['a.zubchyk@miran-bel.com']  # sent email settings.SALE_EMAIL to sale@miran-bel.com
 

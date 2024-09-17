@@ -13,120 +13,91 @@
 {% endblock css %}
 
 {% block content %}
-    <div class="my-container">
-        <div class="product-card" id="{{ cap.id }}">
-            <div class="row mb-5">
-                <div class="col-lg-6">
-                    <div class="carousel-container ">
-                        <div class="f-carousel " id="myCarousel">
-                            <div class="f-carousel__viewport">
-                                <div class="f-carousel__track">
-                                    {% if cap.cap_files.all %}
-                                        {% for file in cap.cap_files.all %}
-                                            <div class="f-carousel__slide"
-                                                 data-thumb-src="{{ file.file.url }}">
-                                                <a href="{{ file.file.url }}"
-                                                   data-fancybox="gallery">
-                                                    <img width="700" height="700" alt=""
-                                                         data-lazy-src="{{ file.file.url }}"/>
-                                                </a>
+<!-- Контейнер с карточкой товара и описанием -->
+<div class="my-container">
+    <div class="product-card" id="{{ cap.id }}">
+        <div class="row mb-5">
+            <div class="col-lg-6">
+                <div class="carousel-container ">
+                    <div class="f-carousel " id="myCarousel">
+                        <div class="f-carousel__viewport">
+                            <div class="f-carousel__track">
+                                {% if cap.cap_files.all %}
+                                    {% for file in cap.cap_files.all %}
+                                        <div class="f-carousel__slide"
+                                             data-thumb-src="{{ file.file.url }}">
+                                            <a href="{{ file.file.url }}"
+                                               data-fancybox="gallery">
+                                                <img width="700" height="700" alt=""
+                                                     data-lazy-src="{{ file.file.url }}"/>
+                                            </a>
 
-                                            </div>
-                                        {% endfor %}
-                                    {% endif %}
-                                </div>
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
                             </div>
-                            {% if cap.status == 'Новинка' %}
-                                <span class="badge-new">НОВИНКА</span>
-                            {% elif cap.status == 'Бестселлер' %}
-                                <span class="badge-best">БЕСТСЕЛЛЕР</span>
-                            {% endif %}
                         </div>
+                        {% if cap.status == 'Новинка' %}
+                            <span class="badge-new">НОВИНКА</span>
+                        {% elif cap.status == 'Бестселлер' %}
+                            <span class="badge-best">БЕСТСЕЛЛЕР</span>
+                        {% endif %}
                     </div>
                 </div>
-                <div class="col-lg-6">
-                    <div class="container">
-                        <div>
-                            <h1 class="text-center my-2"
-                                style="border-bottom: 1px solid #7F9A14;">{{ cap.name }}</h1>
-                        </div>
-                        <div class="my-3">
-                            <div class="row px-0">
-                                <div class="col-md-8 col-12 px-1">
-                                    <div class="product-details">
-                                        <div class="detail-item">
-                                            <div class="detail-label">Стандарт горла</div>
-                                            <div class="detail-value">{{ cap.throat_standard }}</div>
-                                        </div>
-                                        <div class="detail-item">
-                                            <div class="detail-label">Тип колпачка</div>
-                                            <div class="detail-value">{{ cap.type_of_closure }}</div>
-                                        </div>
-                                        <div class="detail-item">
-                                            <div class="detail-label">Поверхность</div>
-                                            <div class="detail-value">{{ cap.surface }}</div>
-                                        </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="container">
+                    <div>
+                        <h1 class="text-center my-2"
+                            style="border-bottom: 1px solid #7F9A14;">{{ cap.name }}</h1>
+                    </div>
+                    <div class="my-3">
+                        <div class="row px-0">
+                            <div class="col-md-8 col-12 px-1">
+                                <div class="product-details">
+                                    <div class="detail-item">
+                                        <div class="detail-label">Стандарт горла</div>
+                                        <div class="detail-value">{{ cap.throat_standard }}</div>
                                     </div>
-                                </div>
-                                <div class="col-md-4 col-12 d-flex flex-column align-items-center justify-content-center px-1">
-                                    <div class="w-100 d-flex my-1 align-items-center justify-content-center">
-                                        <button id="openPopup" class="btn-menu-header-send">
-                                            Отправить на свой e-mail
-                                        </button>
+                                    <div class="detail-item">
+                                        <div class="detail-label">Тип колпачка</div>
+                                        <div class="detail-value">{{ cap.type_of_closure }}</div>
                                     </div>
-                                    <div class="w-100 d-flex my-1 align-items-center justify-content-center">
-                                        <button id="openPopupPrice" class="btn-menu-header-send">
-                                            Запросить прайс
-                                        </button>
+                                    <div class="detail-item">
+                                        <div class="detail-label">Поверхность</div>
+                                        <div class="detail-value">{{ cap.surface }}</div>
                                     </div>
                                 </div>
                             </div>
+                            <div class="col-md-4 col-12 d-flex flex-column align-items-center justify-content-center px-1">
+                                <div class="w-100 d-flex my-1 align-items-center justify-content-center">
+                                    <button id="openPopup" class="btn-menu-header-send">
+                                        Отправить на свой e-mail
+                                    </button>
+                                </div>
+                                <div class="w-100 d-flex my-1 align-items-center justify-content-center">
+                                    <button id="openPopupPrice" class="btn-menu-header-send">
+                                        Запросить прайс
+                                    </button>
+                                </div>
+                            </div>
                         </div>
-                        <div class="py-2 product-description">
-                            {{ cap.description|safe }}
-                        </div>
+                    </div>
+                    <div class="py-2 product-description">
+                        {{ cap.description|safe }}
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <script src="{% static 'js/functions_for_validate_form.js' %}"></script>
-    {% include 'popup/popup.html' %}
-    {% include 'popup/popup_price.html' %}
-
-    <script src="{% static 'js/carousel.umd.js' %}"></script>
-    <script src="{% static 'js/carousel.thumbs.umd.js' %}"></script>
-    <script src="{% static 'js/fancybox.umd.js' %}"></script>
-
-    {#  CARUSEL SETTINGS  #}
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const myCarousel = new Carousel(document.getElementById("myCarousel"), {
-                Dots: false,
-                Thumbs: {
-                    type: "classic",
-                },
-                Navigation: true,
-            }, {Thumbs});
-
-            Fancybox.bind('[data-fancybox="gallery"]', {
-                Images: {
-                    zoom: true,
-                    Panzoom: {
-                        {#maxScale: 2,#}
-                    },
-                },
-                Thumbs: false,
-            });
-        });
-    </script>
-
-    <script>
+<!-- Секция с данными -->
+<script>
     const category = "{{ category|escapejs }}";
     const place = "{{ place|escapejs }}";
     const idsString = "{{ products_id|escapejs }}";
-    let productsId;
+    let ids;
 
     try {
         ids = idsString ? JSON.parse(idsString) : [];
@@ -135,129 +106,46 @@
     }
 </script>
 
-    {#  GET FILESIZE  #}
-    <script>
-        {# Возвращает список ids #}
+<!-- Функции для валидации полей формы -->
+<script src="{% static 'js/functions_for_validate_form.js' %}"></script>
 
-        function get_ids() {
-            const cards = document.querySelectorAll('.product-card');
-            const ids = [];
+<!-- Popups -->
+{% include 'popup/popup.html' %}
+{% include 'popup/popup_price.html' %}
 
-            cards.forEach(function (card) {
-                ids.push(card.id);
-            });
-            return ids
-        }
+<!-- Сarousel fancybox -->
+<script src="{% static 'js/carousel.umd.js' %}"></script>
+<script src="{% static 'js/carousel.thumbs.umd.js' %}"></script>
+<script src="{% static 'js/fancybox.umd.js' %}"></script>
 
-        {# Запрос на размер отправляемого файла #}
-        document.getElementById('openPopup').addEventListener('click', function () {
-            document.getElementById('popupForm').style.display = 'flex';
-            let data =  createFormGetSizeFile(category, ids)
+{#  CARUSEL SETTINGS  #}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const myCarousel = new Carousel(document.getElementById("myCarousel"), {
+            Dots: false,
+            Thumbs: {
+                type: "classic",
+            },
+            Navigation: true,
+        }, {Thumbs});
 
-            fetch("{% url 'catalog:get_size_list_files' %}", {
-                method: 'POST',
-                body: data,
-                headers: {
-                    'X-CSRFToken': '{{ csrf_token }}'
-                }
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        // Если ответ успешный, вставляем размер файла в блок div
-                        document.getElementById('fileSizeDisplay').innerText = `Размер файла: ${data.file_size} `;
-                    } else {
-                        // Если возникла ошибка, отображаем сообщение об ошибке
-                        document.getElementById('fileSizeDisplay').innerText = "Ошибка при получении размера файла.";
-                    }
-                })
-                .catch(error => {
-                    console.error('Ошибка:', error);
-                    document.getElementById('fileSizeDisplay').innerText = "Произошла ошибка при выполнении запроса.";
-                });
+        Fancybox.bind('[data-fancybox="gallery"]', {
+            Images: {
+                zoom: true,
+                Panzoom: {
+                    {#maxScale: 2,#}
+                },
+            },
+            Thumbs: false,
         });
-    </script>
-
-
-    {#  VALIDATION FIELDS AND SEND FORM TO SERVER #}
-    <script>
-        document.getElementById('contactForm').addEventListener('submit', function (event) {
-            event.preventDefault();
-            let flag = checkFields(
-                formLidsElem.name,
-                formLidsElem.company,
-                formLidsElem.phone_number,
-                formLidsElem.email
-            )
-
-            if (flag) {
-                const formLids = document.getElementById('contactForm');
-                let data = createFormData(formLids, category, place, ids)
-                fetch("{% url 'catalog:send_data_to_email' %}", {
-                    method: 'POST',
-                    body: data,
-                    headers: {
-                        'X-CSRFToken': '{{ csrf_token }}'
-                    }
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            document.getElementById('popupForm').style.display = 'none';
-                            document.getElementById('successPopup').style.display = 'flex';
-
-                            document.getElementById('contactForm').reset();
-
-                            setTimeout(function () {
-                                document.getElementById('successPopup').style.display = 'none';
-                            }, 3000); // Закрытие через 3 секунды
-                        } else {
-                            alert('Ошибка: ' + JSON.stringify(data.errors));
-                        }
-                    });
-            }
-        });
-
-        document.getElementById('contactFormPrice').addEventListener('submit', function (event) {
-            event.preventDefault();
-            const flag = checkFields(
-                formPriceElem.name,
-                formPriceElem.company,
-                formPriceElem.phone_number,
-                formPriceElem.email
-            )
-
-            if (flag) {
-                const formLidsPrice = document.getElementById('contactFormPrice');
-                let data = createFormData(formLidsPrice, category, place, ids);
-                fetch("{% url 'catalog:send_data_form_price_to_email' %}", {
-                    method: 'POST',
-                    body: data,
-                    headers: {
-                        'X-CSRFToken': '{{ csrf_token }}'
-                    }
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            document.getElementById('popupFormPrice').style.display = 'none';
-                            document.getElementById('successPopup').style.display = 'flex';
-
-                            document.getElementById('contactFormPrice').reset();
-
-                            setTimeout(function () {
-                                document.getElementById('successPopup').style.display = 'none';
-                            }, 3000); // Закрытие через 3 секунды
-                        } else {
-                            alert('Ошибка: ' + JSON.stringify(data.errors));
-                        }
-                    });
-            }
     });
-    </script>
+</script>
 
+{# RUSSIAN/ENGLAND KEYBOARD #}
+<script src="{% static 'js/russian.js' %}"></script>
 {# PHONE_MASK #}
 <script src="{% static 'js/jquery.inputmask.js' %}"></script>
 {# INIT FIELDS VIRTUAL KEYBOARDS #}
 <script src="{% static 'js/initKeyboardFields.js' %}"></script>
+
 {% endblock %}

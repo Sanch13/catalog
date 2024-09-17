@@ -763,14 +763,15 @@ img {
 
 .checkbox-counter {
     position: fixed;
-    left: 50%;
-    bottom: 3px;
+    left: 48%;
+    bottom: 0px;
     background-color: white;
     padding: 10px 20px;
-    border: 3px solid #7F9A14;
+    /*border: 1px solid #7F9A14;*/
     border-radius: 40px;
     z-index: 1001;
     font-size: 1.8rem;
+    font-weight: bold;
 }
 
 #checkedCount {

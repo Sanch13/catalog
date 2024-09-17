@@ -7,7 +7,7 @@ from catalog.utils import (
     send_data_to_sale,
     send_admin_email,
     send_email_to_department,
-    save_data_to_db_with_status, get_params_from_category, get_text_for_email_table
+    save_data_to_db_with_status, get_params_from_category, get_text_for_email_table, get_subject_for_email
 )
 
 from settings import settings
@@ -21,6 +21,7 @@ def send_email_list_products(list_params, user_data):
     list_of_path_pdf = [params['path_to_pdf'] for params in list_params]
     file_stream = merge_pdfs_to_stream(pdf_paths=list_of_path_pdf)
     user_data["products"] = [params['name'] for params in list_params]
+    user_data = get_subject_for_email(user_data=user_data)
     user_data = get_text_for_email_table(user_data=user_data)
     try:
         send_data_to_client(list_params, user_data, file_stream)
@@ -44,6 +45,9 @@ def send_email_list_products(list_params, user_data):
 @shared_task()
 def send_email_from_contact_customer(user_data):
     user_data["status"] = "покупатель из свяжитесь со мной"
+    user_data = get_subject_for_email(user_data=user_data)
+    user_data = get_text_for_email_table(user_data=user_data)
+
     try:
         save_data_to_db_with_status(user_data,
                                     lead_qualification=EmailLog.LeadQualification.CUSTOMER)
@@ -76,6 +80,7 @@ def send_data_form_price_to_sale(user_data):
         user_data["status"] = "Запрос цены на выбранную продукцию"
 
     user_data["products"] = [params['name'] for params in list_params]
+    user_data = get_subject_for_email(user_data=user_data)
     user_data = get_text_for_email_table(user_data=user_data)
     try:
         send_data_to_sale(user_data)

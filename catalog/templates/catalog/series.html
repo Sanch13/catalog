@@ -100,7 +100,7 @@
     const category = "{{ category|escapejs }}";
     const place = "{{ place|escapejs }}";
     const idsString = "{{ products_id|escapejs }}";
-    let productsId;
+    let ids;
 
     try {
         ids = idsString ? JSON.parse(idsString) : [];

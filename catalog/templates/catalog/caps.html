@@ -88,11 +88,11 @@
 <button class="fixed-button2 btn-menu-header" id="openPopupPrice">Запросить прайс</button>
 
 <!-- Секция с данными -->
-    <script>
+<script>
     const category = "{{ category|escapejs }}";
     const place = "{{ place|escapejs }}";
     const idsString = "{{ products_id|escapejs }}";
-    let productsId;
+    let ids;
 
     try {
         ids = idsString ? JSON.parse(idsString) : [];

@@ -115,6 +115,7 @@
             if (checkFieldsSupplierForm()) {
                 let data = new FormData(this);
                 data.append("place", 'contact');
+                data.append('category', 'no category');
 
                 fetch("{% url 'catalog:send_data_to_email_from_supplier' %}", {
                     method: 'POST',

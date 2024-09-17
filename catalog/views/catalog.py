@@ -285,7 +285,7 @@ def send_data_to_email(request):
                 'form': 'catalog',
             }
             print("work")
-            print(category)
+            print(category, user_data)
             if place != 'contact':
                 ids = convert_to_numbers(json.loads(request.POST.get('ids', '[]')))
                 list_params = []
@@ -352,6 +352,8 @@ def contact_me(request):
     context = {
         'form_lids': form_lids,
         'form_supplier': form_supplier,
+        'category': 'no category',
+        'place': "contact",
     }
     return render(request=request,
                   template_name="catalog/contact_me.html",

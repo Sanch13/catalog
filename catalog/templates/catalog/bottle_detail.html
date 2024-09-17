@@ -1,8 +1,7 @@
 {% extends 'catalog/base.html' %}
 {% load static %}
 
-{% block title %}
-{% endblock title %}
+{% block title %}<title></title>{% endblock title %}
 
 {% block css %}
     <link href="{% static 'css/carousel.css' %}" rel="stylesheet"/>
@@ -13,7 +12,7 @@
 {% endblock css %}
 
 {% block content %}
-    <section class="filter__block">
+<section class="filter__block">
         <div class="filter__buttons">
             {% for item in bottles %}
                 <a class="btn btn-miran-filter {% if item.volume == bottle.volume %}active{% else %}{% endif %}"
@@ -31,7 +30,8 @@
         </div>
     </section>
 
-    <div class="my-container">
+<!-- Контейнер с карточкой товара и описанием -->
+<div class="my-container">
         <div class="product-card" id="{{ bottle.id }}">
             <div class="row mb-5">
                 <div class="col-lg-6">
@@ -117,168 +117,57 @@
         </div>
     </div>
 
-    <script src="{% static 'js/functions_for_validate_form.js' %}"></script>
-    {% include 'popup/popup.html' %}
-    {% include 'popup/popup_price.html' %}
+<!-- Секция с данными -->
+<script>
+    const category = "{{ category|escapejs }}";
+    const place = "{{ place|escapejs }}";
+    const idsString = "{{ products_id|escapejs }}";
+    let ids;
 
-    <script src="{% static 'js/carousel.umd.js' %}"></script>
-    <script src="{% static 'js/carousel.thumbs.umd.js' %}"></script>
-    <script src="{% static 'js/fancybox.umd.js' %}"></script>
+    try {
+        ids = idsString ? JSON.parse(idsString) : [];
+    } catch (error) {
+        ids = [];
+    }
+</script>
 
-    {#  CARUSEL SETTINGS  #}
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const myCarousel = new Carousel(document.getElementById("myCarousel"), {
-                Dots: false,
-                Thumbs: {
-                    type: "classic",
+<!-- Функции для валидации полей формы -->
+<script src="{% static 'js/functions_for_validate_form.js' %}"></script>
+
+<!-- Popups -->
+{% include 'popup/popup.html' %}
+{% include 'popup/popup_price.html' %}
+
+<!-- Сarousel fancybox -->
+<script src="{% static 'js/carousel.umd.js' %}"></script>
+<script src="{% static 'js/carousel.thumbs.umd.js' %}"></script>
+<script src="{% static 'js/fancybox.umd.js' %}"></script>
+
+{#  CARUSEL SETTINGS  #}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const myCarousel = new Carousel(document.getElementById("myCarousel"), {
+            Dots: false,
+            Thumbs: {
+                type: "classic",
+            },
+            Navigation: true,
+        }, {Thumbs});
+
+        Fancybox.bind('[data-fancybox="gallery"]', {
+            Images: {
+                zoom: true,
+                Panzoom: {
+                    {#maxScale: 2,#}
                 },
-                Navigation: true,
-            }, {Thumbs});
-
-            Fancybox.bind('[data-fancybox="gallery"]', {
-                Images: {
-                    zoom: true,
-                    Panzoom: {
-                        {#maxScale: 2,#}
-                    },
-                },
-                Thumbs: false,
-            });
+            },
+            Thumbs: false,
         });
-    </script>
-
-    <script>
-        const category = "{{ category|escapejs }}";
-        const place = "{{ place|escapejs }}";
-        const idsString = "{{ products_id|escapejs }}";
-        let productsId;
-
-        try {
-            ids = idsString ? JSON.parse(idsString) : [];
-        } catch (error) {
-            ids = [];
-        }
-    </script>
-
-    {#  GET FILESIZE  #}
-    <script>
-        {# Возвращает список ids #}
-
-        function get_ids() {
-            const cards = document.querySelectorAll('.product-card');
-            const ids = [];
-
-            cards.forEach(function (card) {
-                ids.push(card.id);
-            });
-            return ids
-        }
-
-        {# Запрос на размер отправляемого файла #}
-        document.getElementById('openPopup').addEventListener('click', function () {
-            document.getElementById('popupForm').style.display = 'flex';
-
-            let data =  createFormGetSizeFile(category, ids)
-            fetch("{% url 'catalog:get_size_list_files' %}", {
-                method: 'POST',
-                body: data,
-                headers: {
-                    'X-CSRFToken': '{{ csrf_token }}'
-                }
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        // Если ответ успешный, вставляем размер файла в блок div
-                        document.getElementById('fileSizeDisplay').innerText = `Размер файла: ${data.file_size} `;
-                    } else {
-                        // Если возникла ошибка, отображаем сообщение об ошибке
-                        document.getElementById('fileSizeDisplay').innerText = "Ошибка при получении размера файла.";
-                    }
-                })
-                .catch(error => {
-                    console.error('Ошибка:', error);
-                    document.getElementById('fileSizeDisplay').innerText = "Произошла ошибка при выполнении запроса.";
-                });
-        });
-    </script>
-
-    {#  VALIDATION FIELDS AND SEND FORM TO SERVER #}
-    <script>
-        document.getElementById('contactForm').addEventListener('submit', function (event) {
-            event.preventDefault();
-            let flag = checkFields(
-                formLidsElem.name,
-                formLidsElem.company,
-                formLidsElem.phone_number,
-                formLidsElem.email
-            )
-            if (flag) {
-                const formLids = document.getElementById('contactForm');
-                let data = createFormData(formLids, category, place, ids)
-                fetch("{% url 'catalog:send_data_to_email' %}", {
-                    method: 'POST',
-                    body: data,
-                    headers: {
-                        'X-CSRFToken': '{{ csrf_token }}'
-                    }
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            document.getElementById('popupForm').style.display = 'none';
-                            document.getElementById('successPopup').style.display = 'flex';
-
-                            document.getElementById('contactForm').reset();
-
-                            setTimeout(function () {
-                                document.getElementById('successPopup').style.display = 'none';
-                            }, 3000); // Закрытие через 3 секунды
-                        } else {
-                            alert('Ошибка: ' + JSON.stringify(data.errors));
-                        }
-                    });
-            }
-        });
-        document.getElementById('contactFormPrice').addEventListener('submit', function (event) {
-            event.preventDefault();
-            const flag = checkFields(
-                formPriceElem.name,
-                formPriceElem.company,
-                formPriceElem.phone_number,
-                formPriceElem.email
-            )
-
-            if (flag) {
-                const formLidsPrice = document.getElementById('contactFormPrice');
-                let data = createFormData(formLidsPrice, category, place, ids);
-                fetch("{% url 'catalog:send_data_form_price_to_email' %}", {
-                    method: 'POST',
-                    body: data,
-                    headers: {
-                        'X-CSRFToken': '{{ csrf_token }}'
-                    }
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            document.getElementById('popupFormPrice').style.display = 'none';
-                            document.getElementById('successPopup').style.display = 'flex';
-
-                            document.getElementById('contactFormPrice').reset();
-
-                            setTimeout(function () {
-                                document.getElementById('successPopup').style.display = 'none';
-                            }, 3000); // Закрытие через 3 секунды
-                        } else {
-                            alert('Ошибка: ' + JSON.stringify(data.errors));
-                        }
-                    });
-            }
     });
-    </script>
+</script>
 
+{# RUSSIAN/ENGLAND KEYBOARD #}
+<script src="{% static 'js/russian.js' %}"></script>
 {# PHONE_MASK #}
 <script src="{% static 'js/jquery.inputmask.js' %}"></script>
 {# INIT FIELDS VIRTUAL KEYBOARDS #}
