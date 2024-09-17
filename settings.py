@@ -1,3 +1,5 @@
+from typing import List, Dict
+
 from pydantic import SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -17,6 +19,21 @@ class Settings(BaseSettings):
     REDIS_HOST: str
     REDIS_PORT: int
     REDIS_DB: int
+
+    CELERY_BROKER_URL: str
+    CELERY_RESULT_BACKEND: str
+
+    SMTP_SERVER: str
+    SALE_EMAIL: str
+    SALE_PASSWORD_EMAIL: str
+    SUBJECT: str
+    BODY: str
+    PORT_TLS: int
+    TO: str
+
+    FROM_APP: str
+    PASSWORD_APP: str
+    DEPARTMENT: Dict[str, List[str]]
 
     # CORS_ORIGIN_ALLOW_ALL: bool
     # CORS_ALLOW_CREDENTIALS: bool

@@ -6,3 +6,4 @@ from .bottle import Bottle
 from .bottle_file import BottleFile
 from .category import Category
 from .series import Series
+from .email_log import EmailLog

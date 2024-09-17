@@ -8,6 +8,7 @@ from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
 
 from catalog.models.category import Category
+from catalog.utils import convert_img_to_webp
 
 
 def get_upload_path_series(instance, filename):
@@ -75,6 +76,10 @@ class Series(models.Model):
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.name)
+
+        image_content = convert_img_to_webp(image=self.series_image)
+        self.series_image.save(image_content.name, image_content, save=False)
+
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):

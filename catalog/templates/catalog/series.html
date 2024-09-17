@@ -5,13 +5,16 @@
 {% endblock title %}
 
 {% block css %}
-    <link href="{% static 'css/pagination_styles.css' %}" rel="stylesheet"/>
+    <link href="{% static 'css/popup_styles.css' %}" rel="stylesheet"/>
+    <script src="{% static 'js/russian.js' %}"></script>
 {% endblock css %}
 
 {% block content %}
 
-    <section class="filter__block">
-        <div class="filter__buttons">
+<!-- Секция с кнопками фильтров -->
+<section class="filter__block">
+    <div class="filter__buttons">
+        <form method="get" id="filter-bottles-form">
             <div class="btn-miran-filter" id="All">
                 <div class="check">
                     <svg version="1.1" xmlns="http://www.w3.org/2000/svg"
@@ -26,69 +29,95 @@
                            name="all"
                            value="all"
                            id="all">
-                    Все
+                    Сбросить
                 </label>
             </div>
-            <form method="get" id="filter-bottles-form">
-                {% for field in form %}
-                    {% for item in field %}
-                        <div class="btn-miran-filter">
-                            <div class="check">
-                                <svg version="1.1" xmlns="http://www.w3.org/2000/svg"
-                                     viewBox="0 0 26 26"
-                                     xmlns:xlink="http://www.w3.org/1999/xlink"
-                                     enable-background="new 0 0 26 26">
-                                    <path d="m.3,14c-0.2-0.2-0.3-0.5-0.3-0.7s0.1-0.5 0.3-0.7l1.4-1.4c0.4-0.4 1-0.4 1.4,0l.1,.1 5.5,5.9c0.2,0.2 0.5,0.2 0.7,0l13.4-13.9h0.1v-8.88178e-16c0.4-0.4 1-0.4 1.4,0l1.4,1.4c0.4,0.4 0.4,1 0,1.4l0,0-16,16.6c-0.2,0.2-0.4,0.3-0.7,0.3-0.3,0-0.5-0.1-0.7-0.3l-7.8-8.4-.2-.3z"></path>
-                                </svg>
-                            </div>
-                            {{ item }}
+            {% for field in form_filter %}
+                {% for item in field %}
+                    <div class="btn-miran-filter">
+                        <div class="check">
+                            <svg version="1.1" xmlns="http://www.w3.org/2000/svg"
+                                 viewBox="0 0 26 26"
+                                 xmlns:xlink="http://www.w3.org/1999/xlink"
+                                 enable-background="new 0 0 26 26">
+                                <path d="m.3,14c-0.2-0.2-0.3-0.5-0.3-0.7s0.1-0.5 0.3-0.7l1.4-1.4c0.4-0.4 1-0.4 1.4,0l.1,.1 5.5,5.9c0.2,0.2 0.5,0.2 0.7,0l13.4-13.9h0.1v-8.88178e-16c0.4-0.4 1-0.4 1.4,0l1.4,1.4c0.4,0.4 0.4,1 0,1.4l0,0-16,16.6c-0.2,0.2-0.4,0.3-0.7,0.3-0.3,0-0.5-0.1-0.7-0.3l-7.8-8.4-.2-.3z"></path>
+                            </svg>
                         </div>
-                    {% endfor %}
-                {% endfor %}
-            </form>
-        </div>
-    </section>
-
-    <div class="container">
-        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4">
-            {% for ser in series %}
-                <div class="col">
-                    <div class="card">
-                        <a href="{{ ser.get_absolute_url }}">
-                            <img src="{{ ser.series_image.url }}" class="card-img-top"
-                                 alt="...">
-                            <div class="card-body">
-                                <div class="text-center">
-                                    <h5 class="card-title">{{ ser.name }}</h5>
-                                </div>
-                            </div>
-                        </a>
-                        <div class="card-footer">
-                            <div class="capacity">Объем, мл</div>
-                            <div class="row capacity">
-                                <div class="value-item">
-                                    {% for bottle in ser.bottle.all %}
-                                        <a href="{% url 'catalog:product_detail' bottle.category.slug bottle.series.slug bottle.slug %}"
-                                        >
-                                            {{ bottle.volume }}
-                                        </a>
-                                    {% endfor %}
-                                </div>
-                            </div>
-                        </div>
-                        {% if ser.status == 'Новинка' %}
-                            <span class="badge-new">НОВИНКА</span>
-                        {% elif ser.status == 'Бестселлер' %}
-                            <span class="badge-best">БЕСТСЕЛЛЕР</span>
-                        {% endif %}
+                        {{ item }}
                     </div>
-                </div>
+                {% endfor %}
             {% endfor %}
-        </div>
+        </form>
     </div>
+</section>
 
+<!-- Контейнер с карточками товара -->
+<div class="my-container">
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4">
+        {% for ser in series %}
+            <div class="col">
+                <div class="card" id="{{ ser.id }}">
+                    <a href="{{ ser.get_absolute_url }}">
+                        <img src="{{ ser.series_image.url }}" class="card-img-top"
+                             alt="...">
+                        <div class="card-body">
+                            <div class="text-center">
+                                <h5 class="card-title">{{ ser.name }}</h5>
+                            </div>
+                        </div>
+                    </a>
+                    <div class="card-footer">
+                        <div class="capacity">Объем, мл</div>
+                        <div class="row capacity">
+                            <div class="value-item">
+                                {% for bottle in ser.bottle.all %}
+                                    <a href="{% url 'catalog:product_detail' bottle.category.slug bottle.series.slug bottle.slug %}"
+                                    >
+                                        {{ bottle.volume }}
+                                    </a>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    {% if ser.status == 'Новинка' %}
+                        <span class="badge-new">НОВИНКА</span>
+                    {% elif ser.status == 'Бестселлер' %}
+                        <span class="badge-best">БЕСТСЕЛЛЕР</span>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
 
-    <script>
+<!-- Фиксированная кнопка send to email-->
+<button class="fixed-button btn-menu-header" id="openPopup">Отправить на свой e-mail</button>
+<!-- Фиксированная кнопка Запросить прайс -->
+<button class="fixed-button2 btn-menu-header" id="openPopupPrice">Запросить прайс</button>
+
+<!-- Секция с данными -->
+<script>
+    const category = "{{ category|escapejs }}";
+    const place = "{{ place|escapejs }}";
+    const idsString = "{{ products_id|escapejs }}";
+    let ids;
+
+    try {
+        ids = idsString ? JSON.parse(idsString) : [];
+    } catch (error) {
+        ids = [];
+    }
+</script>
+
+<!-- Функции для валидации полей формы -->
+<script src="{% static 'js/functions_for_validate_form.js' %}"></script>
+
+<!-- Popups -->
+{% include 'popup/popup.html' %}
+{% include 'popup/popup_price.html' %}
+
+<!-- Секция с кнопками фильтров -->
+<script>
     document.addEventListener('DOMContentLoaded', function () {
         const form = document.getElementById('filter-bottles-form');
         const filterItems = document.querySelectorAll('#filter-bottles-form div.btn-miran-filter');
@@ -169,5 +198,12 @@
             form.dispatchEvent(new Event('change'));
         });
     });
-    </script>
+</script>
+
+{# RUSSIAN/ENGLAND KEYBOARD #}
+<script src="{% static 'js/russian.js' %}"></script>
+{# PHONE_MASK #}
+<script src="{% static 'js/jquery.inputmask.js' %}"></script>
+{# INIT FIELDS VIRTUAL KEYBOARDS #}
+<script src="{% static 'js/initKeyboardFields.js' %}"></script>
 {% endblock %}

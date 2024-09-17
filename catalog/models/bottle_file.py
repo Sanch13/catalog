@@ -2,10 +2,11 @@ import os
 
 from django.db import models
 
-from .bottle import Bottle
-
 from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
+
+from .bottle import Bottle
+from catalog.utils import convert_img_to_webp
 
 
 def get_file_upload_path_bottle(instance, filename):
@@ -30,6 +31,10 @@ class BottleFile(models.Model):
                                  verbose_name='Тип файла')
     file = models.FileField(upload_to=get_file_upload_path_bottle,
                             verbose_name='Файл')
+    rating = models.PositiveSmallIntegerField(blank=True,
+                                              null=True,
+                                              default=100,
+                                              verbose_name='Порядок')
     thumbnail = ImageSpecField(source='file',
                                processors=[ResizeToFill(150, 150)],
                                format='JPEG',
@@ -37,9 +42,18 @@ class BottleFile(models.Model):
     uploaded_at = models.DateTimeField(auto_now_add=True,
                                        verbose_name='Дата загрузки')
 
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            image_content = convert_img_to_webp(image=self.file)
+            self.file.save(image_content.name, image_content, save=False)
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return '| --->'.join(f"{self.file}".rsplit('/', 2)[-2:])
 
     class Meta:
         verbose_name = 'Файл'
         verbose_name_plural = 'Файлы'
+        ordering = [
+            "rating",
+        ]

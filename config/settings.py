@@ -1,4 +1,3 @@
-import os
 from pathlib import Path
 from settings import settings
 
@@ -71,7 +70,6 @@ DATABASES = {
     # }
 }
 
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -87,7 +85,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 LANGUAGE_CODE = 'ru-ru'
 TIME_ZONE = 'UTC'
 USE_I18N = True
@@ -95,12 +92,15 @@ USE_TZ = True
 
 # STATIC AND MEDIA
 STATIC_URL = 'static/'
-STATICFILES_DIRS = [
-    BASE_DIR / 'static',
-]
-# STATIC_ROOT = '/home/sanch/PycharmProjects/catalog/static'
+STATICFILES_DIRS = [Path(BASE_DIR, "static")]
 
 MEDIA_URL = "media/"
-MEDIA_ROOT = BASE_DIR / "media/"
+MEDIA_ROOT = Path(BASE_DIR, "media")
+
+PDF_DIR = Path(MEDIA_ROOT, "pdf")
+FONT_DIR = Path(BASE_DIR, 'static', 'fonts')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CELERY_BROKER_URL = settings.CELERY_BROKER_URL
+CELERY_RESULT_BACKEND = settings.CELERY_RESULT_BACKEND

@@ -16,39 +16,37 @@
 
         .btn-custom-size {
             display: flex;
-            width: 400px;
-            height: 250px;
-            border: 2px solid #BDD006;
-            background-color: #BDD006;
-            color: black;
             justify-content: center;
             align-items: center;
             text-align: center;
             flex-direction: column;
+
+            width: 400px;
+            height: 300px;
+
+            border: 2px solid #7F9A14;
+            background-color: #7F9A14;
+            color: white;
+            border-radius: 25px;
+
+            font-family: 'Roboto', arial, sans-serif;
+            font-size: 40px;
+            font-weight: 700;
+            text-decoration: none;
         }
 
         .btn-custom-size:hover {
-            color: black;
-            background-color: #E0F043;
-            border: 2px solid #E0F043;
+            color: white;
+            background-color: #7F9A14;
+            border: 2px solid #7F9A14;
         }
 
         .btn-custom-size:focus,
         .btn-custom-size:active {
-            color: black;
-            background-color: #E0F043;
-            border: 2px solid #E0F043;
+            color: white;
+            background-color: #7F9A14;
+            border: 2px solid #7F9A14;
             outline: none;
-        }
-
-        .rounded-5 {
-            --bs-border-radius-xxl: 2rem !important;
-        }
-
-        .header-text {
-            font-family: 'Roboto', arial, sans-serif;
-            font-size: 40px;
-            font-weight: 700;
         }
 
         .video-container {
@@ -69,6 +67,13 @@
             z-index: -100;
             transform: translateX(-50%) translateY(-50%);
         }
+
+        .container-fluid {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
     </style>
 </head>
 
@@ -78,20 +83,19 @@
     <video autoplay loop muted playsinline>
         <source src="{% static 'video/rolik-dlya-polskogo-sayta-15-secmp4' %}" type="video/mp4">
     </video>
-    <div class=" container-fluid d-flex justify-content-center align-items-center"
-         style="margin-top: 300px;">
+    <div class=" container-fluid d-flex justify-content-center align-items-center">
         <div class="btn-groups d-flex gap-5 justify-content-center align-items-center">
             <a href="{% url 'catalog:catalog' %}"
-               class="btn btn-custom-size">
-                Подбор упаковки
+               class="btn-custom-size">
+                Подбор<br>упаковки
             </a>
-            <a href=""
-               class="btn btn-custom-size">
+            <a href="{% url 'catalog:about_miran' %}"
+               class="btn-custom-size">
                 О Миран
             </a>
-            <a href=""
-               class="btn btn-custom-size rounded-5 header-text">
-                Свяжитесь со мной
+            <a href="{% url 'catalog:contact_me' %}"
+               class="btn-custom-size">
+                Свяжитесь<br>со мной
             </a>
         </div>
     </div>

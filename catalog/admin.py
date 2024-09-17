@@ -13,7 +13,7 @@ from tinymce.widgets import TinyMCE
 ##############################################
 class CapFileForm(forms.ModelForm):
     model = CapFile
-    fields = ['file_type', 'file']
+    fields = ['file_type', 'file', 'rating']
     widgets = {
         'file': CustomClearableFilesInput,
     }
@@ -48,7 +48,7 @@ class CapAdminForm(forms.ModelForm):
 class CapAdmin(admin.ModelAdmin):
     form = CapAdminForm
     inlines = [CapFileInline]
-    list_display = ('name', 'slug')
+    list_display = ('name', 'status', 'slug')
     prepopulated_fields = {"slug": ("name",)}
 
     class Media:
@@ -63,7 +63,7 @@ class CapAdmin(admin.ModelAdmin):
 ##############################################
 class JarFileForm(forms.ModelForm):
     model = JarFile
-    fields = ['file_type', 'file']
+    fields = ['file_type', 'file', 'rating']
     widgets = {
         'file': CustomClearableFilesInput,
     }
@@ -87,8 +87,9 @@ class JarFileInline(admin.TabularInline):
 class JarAdmin(admin.ModelAdmin):
     form = JarFileForm
     inlines = [JarFileInline]
-    list_display = ('name',)
+    list_display = ('name', 'status')
     prepopulated_fields = {"slug": ("name",)}
+    list_filter = ('status', 'volume', )
 
     class Media:
         js = ('tinymce/tinymce.min.js', 'admin/js/tinymce_setup.js', 'admin/js/image-previews.js')
@@ -102,7 +103,7 @@ class JarAdmin(admin.ModelAdmin):
 ##############################################
 class BottleFileForm(forms.ModelForm):
     model = BottleFile
-    fields = ['file_type', 'file']
+    fields = ['file_type', 'file', 'rating']
     widgets = {
         'file': CustomClearableFilesInput,
     }
@@ -126,7 +127,7 @@ class BottleFileInline(admin.TabularInline):
 class BottleAdmin(admin.ModelAdmin):
     form = BottleFileForm
     inlines = [BottleFileInline]
-    list_display = ('name',)
+    list_display = ('name', 'status')
     prepopulated_fields = {"slug": ("name",)}
 
     class Media:

@@ -1,0 +1,39 @@
+{% extends 'catalog/base.html' %}
+{% load static %}
+
+{% block title %}
+{% endblock title %}
+
+{% block css %}
+    <style>
+        .video-wrapper {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center; /* Центрирование видео по горизонтали */
+            align-items: center; /* Центрирование видео по вертикали */
+            margin: auto;
+        }
+
+        video {
+            max-width: 100%; /* Видео не будет шире контейнера */
+            max-height: 100%; /* Видео не будет выше контейнера */
+            object-fit: contain; /* Видео сохраняет пропорции и масштабируется по высоте */
+        }
+    </style>
+{% endblock css %}
+
+
+{% block content %}
+    <div class="video-wrapper">
+        <video id="myVideo" src="{% static 'video/about_miran.mp4' %}" controls playsinline type="video/mp4">
+        </video>
+    </div>
+
+    <script>
+        window.onload = function() {
+            const video = document.getElementById('myVideo');
+            video.play();
+        };
+    </script>
+{% endblock %}

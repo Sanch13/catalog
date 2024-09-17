@@ -4,14 +4,33 @@
 
 <head>
     {% block title %}
-        <title>Catalog</title>
+        <title>Каталог продукции</title>
     {% endblock title %}
 
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Подключаем Bootstrap -->
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet"/>
+    <!-- Подключаем стили jQuery UI -->
+    <link href="{% static 'css/jquery-ui.min.css' %}" rel="stylesheet"/>
+    <!-- Подключаем стили jQuery UI Keyboard -->
+    <link href="{% static 'css/keyboard.css' %}" rel="stylesheet"/>
+
+    <!-- Подключаем собственные стили  -->
     <link href="{% static 'css/style.css' %}" rel="stylesheet"/>
+    <link href="{% static 'css/social_networks.css' %}" rel="stylesheet"/>
+    <link href="{% static 'css/inactivity_popup.css' %}" rel="stylesheet"/>
+
+    <!-- Подключаем jQuery -->
+    <script src="{% static 'js/jquery-3.7.1.min.js' %}"></script>
+    <!-- Подключаем jQuery UI -->
+    <script src="{% static 'js/jquery-ui.min.js' %}"></script>
+    <!-- Подключаем jQuery UI Keyboard -->
+    <script src="{% static 'js/jquery.keyboard.js' %}"></script>
+    <!-- Подключаем Bootstrap -->
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
 
     {% block css %}
     {% endblock css %}
@@ -19,67 +38,251 @@
 </head>
 
 <body>
-
-<header class="header">
-    <div class="container-fluid px-5">
-        <div class="row align-items-center justify-content-between">
-            <div class="col-2 d-flex">
-            </div>
-            <div class="col-8 d-flex justify-content-center">
-                <ul class="main-menu d-flex justify-content-center">
-                    <li class="col-auto">
-                        <a href="{% url 'catalog:catalog' %}">
-                            <span class="header-text">Подбор упаковки</span>
-                        </a>
-                    </li>
-                    <li class="col-auto">
-                        <a href="#">
-                            <span class="header-text">О Миран</span>
-                        </a>
-                    </li>
-                    <li class="col-auto">
-                        <a href="#">
-                            <span class="header-text">Свяжитесь со мной</span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-            <div class="col-2 d-flex">
-                <div class="text-start back-button" id="backButton">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60"
-                         fill="currentColor" class="bi bi-arrow-90deg-left" viewBox="0 0 16 16">
-                        <path fill-rule="evenodd"
-                              d="M1.146 4.854a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 4H12.5A2.5 2.5 0 0 1 15 6.5v8a.5.5 0 0 1-1 0v-8A1.5 1.5 0 0 0 12.5 5H2.707l3.147 3.146a.5.5 0 1 1-.708.708z"/>
-                    </svg>
+<div class="wrapper">
+    <header class="header">
+        <div class="container-fluid px-5">
+            <div class="row align-items-center justify-content-between">
+                <div class="col-2 d-flex">
+                    <a href="{% url 'home' %}" class="link-logo">
+                        <img src="{% static 'img/logo.svg' %}" alt="logo">
+                    </a>
                 </div>
-                <div class="text-end home-button" >
-                    <a href="{% url 'home' %}"
-                   class="link-logo d-flex">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60"
-                         fill="black" class="bi bi-house" viewBox="0 0 16 16">
-                        <path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L2 8.207V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V8.207l.646.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293zM13 7.207V13.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V7.207l5-5z"/>
-                    </svg>
-                </a>
+                <div class="col-8 d-flex justify-content-center">
+                    <ul class="main-menu d-flex justify-content-center">
+                        <li class="col-auto">
+                            <a href="{% url 'catalog:catalog' %}" class="btn-menu-header"
+                               id="menu-catalog">
+                                <div class="header-text">Подбор упаковки</div>
+                            </a>
+                        </li>
+                        <li class="col-auto">
+                            <a href="{% url 'catalog:about_miran' %}" class="btn-menu-header"
+                               id="menu-about">
+                                <div class="header-text">О Миран</div>
+                            </a>
+                        </li>
+                        <li class="col-auto">
+                            <a href="{% url 'catalog:contact_me' %}" class="btn-menu-header"
+                               id="menu-contact">
+                                <div class="header-text">Свяжитесь со мной</div>
+                            </a>
+                        </li>
+                    </ul>
                 </div>
-
+                <div class="col-2 d-flex justify-content-end">
+                    <div class="btn-menu-header header-text" id="backButton">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"
+                             fill="currentColor" class="bi bi-arrow-left" viewBox="0 1 20 16">
+                            <path fill-rule="evenodd"
+                                  d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
+                        </svg>
+                        Назад
+                    </div>
+                </div>
             </div>
         </div>
+    </header>
+
+    <main class="main">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer class="footer"></footer>
+
+</div>
+{# BUTTON-ARROW UP #}
+<button id="scrollToTopBtn" class="scroll-to-top">
+    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-arrow-up white-icon"
+         viewBox="0 0 16 16">
+        <path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5"></path>
+    </svg>
+</button>
+
+{# INACTIVITY POPUP #}
+<div id="inactivity-popup">
+    <div style="font-size: 22px;"><b>Вы хотите остаться на сайте?</b></div>
+    <div class="buttons-container">
+        <button class="popup-button" id="stay-button">ДА</button>
+        <button class="popup-button-no" id="leave-button">НЕТ</button>
     </div>
-</header>
+    <div class="" style="font-size: 22px;">Перенаправление через <span id="popup-timer"></span>
+        секунд
+    </div>
+</div>
 
-<script src="{% static 'js/jquery-3.7.1.min.js' %}"></script>
-<script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+{# SOCIAL NETWORKS #}
+<div class="floating-container">
+    <div class="image-container">
+        <img src="{% static 'img/icon-instagram-70x70-80.webp' %}" class="thumbnail" alt="Instagram"
+             onclick="showSocialQrPopup(this)" data-popup-id="popup-1">
+        <img src="{% static 'img/icon-pinterest-70x70-90.webp' %}" class="thumbnail" alt="Telegram"
+             onclick="showSocialQrPopup(this)" data-popup-id="popup-2">
+        <img src="{% static 'img/icon-youtube-70x70-90.webp' %}" class="thumbnail" alt="YouTube"
+             onclick="showSocialQrPopup(this)" data-popup-id="popup-3">
+    </div>
+    <div class="popup-qr" id="popup-1">
+        <span class="close" onclick="closePopup('popup-1')">&times;</span>
+        <img src="{% static 'img/instagram-400x400-80.webp' %}" alt="Popup Image" id="popupImage-1">
+        <p class="text-center">* деятельность корпорации META запрещена в РФ</p>
+    </div>
+    <div class="popup-qr" id="popup-2">
+        <span class="close" onclick="closePopup('popup-2')">&times;</span>
+        <img src="{% static 'img/pinterest-400x400-80.webp' %}" alt="Popup Image" id="popupImage-2">
+    </div>
+    <div class="popup-qr" id="popup-3">
+        <span class="close" onclick="closePopup('popup-3')">&times;</span>
+        <img src="{% static 'img/youtube-400x400-80.webp' %}" alt="Popup Image" id="popupImage-3">
+    </div>
+</div>
 
-
-<main class="main">
-    {% block content %}
-    {% endblock %}
-</main>
-
+{# SOCIAL POPUP #}
 <script>
-    document.getElementById('backButton').addEventListener('click', function() {
+    function showSocialQrPopup(element) {
+        const popupId = element.getAttribute('data-popup-id');
+        const popupQr = document.getElementById(popupId);
+        popupQr.style.display = 'block'; // Показываем попап
+    }
+
+    function closePopup(popupId) {
+        const popupQr = document.getElementById(popupId);
+        popupQr.style.display = 'none'; // Скрываем попап
+    }
+</script>
+
+{# DISPLAY/NOT DISPLAY BUTTON ARROW UP #}
+<script>
+    window.onscroll = function () {
+        const scrollBtn = document.getElementById("scrollToTopBtn");
+        if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
+            scrollBtn.style.display = "block";
+        } else {
+            scrollBtn.style.display = "none";
+        }
+    };
+
+    // Плавная прокрутка страницы вверх при нажатии на кнопку
+    document.getElementById("scrollToTopBtn").onclick = function () {
+        window.scrollTo({top: 0, behavior: 'smooth'});
+    };
+</script>
+
+{# BUTTON HISTORY BACK #}
+<script>
+    document.getElementById('backButton').addEventListener('click', function () {
         history.back();
     });
+</script>
+
+{# DISPLAY POPUP IN INACTIVITY_TIMEOUT #}
+<script>
+    const INACTIVITY_TIMEOUT = 600000;
+    const POPUP_TIMEOUT = 10000;
+
+    let inactivityTimer;
+    let countdownInterval;
+    let isVideoPlaying = false;
+
+    function resetInactivityTimer() {
+        if (!isVideoPlaying) {
+            clearTimeout(inactivityTimer);
+            inactivityTimer = setTimeout(showPopup, INACTIVITY_TIMEOUT);
+        }
+    }
+
+    function stopInactivityTimer() {
+        clearTimeout(inactivityTimer);
+    }
+
+    function showPopup() {
+        const popup = document.getElementById('inactivity-popup');
+        popup.style.display = 'block'; // Показываем попап
+
+        let secondsRemaining = POPUP_TIMEOUT / 1000;
+        document.getElementById('popup-timer').textContent = secondsRemaining;
+
+        if (countdownInterval) {
+            clearInterval(countdownInterval);
+        }
+
+        countdownInterval = setInterval(() => {
+            secondsRemaining--;
+            document.getElementById('popup-timer').textContent = secondsRemaining;
+
+            if (secondsRemaining <= 0) {
+                clearInterval(countdownInterval);
+                window.location.href = '/'; // Перенаправление по истечении времени
+            }
+        }, 1000);
+    }
+
+    // Обработчики кнопок
+    document.getElementById('stay-button').addEventListener('click', () => {
+        clearInterval(countdownInterval);
+        resetInactivityTimer();
+        document.getElementById('inactivity-popup').style.display = 'none';
+    });
+
+    document.getElementById('leave-button').addEventListener('click', () => {
+        clearInterval(countdownInterval);
+        window.location.href = '/';  // Немедленное перенаправление при нажатии "НЕТ"
+    });
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        // Сброс таймера при загрузке страницы
+        resetInactivityTimer();
+
+        // События, которые будут сбрасывать таймер
+        document.addEventListener('mousemove', resetInactivityTimer);
+        document.addEventListener('keypress', resetInactivityTimer);
+        document.addEventListener('scroll', resetInactivityTimer);
+        document.addEventListener('click', resetInactivityTimer);
+
+        // Получение всех видео на странице
+        const videos = document.querySelectorAll('video');
+
+        videos.forEach(video => {
+            // Устанавливаем флаг, когда видео воспроизводится
+            video.addEventListener('play', () => {
+                isVideoPlaying = true;
+                stopInactivityTimer();
+            });
+            // Сброс флага и таймера при паузе или завершении воспроизведения видео
+            video.addEventListener('pause', () => {
+                isVideoPlaying = false;
+                resetInactivityTimer();
+            });
+            video.addEventListener('ended', () => {
+                setTimeout(() => {
+                    window.location.href = '/'
+                }, 5000);
+                {#isVideoPlaying = false;#}
+                {#resetInactivityTimer();#}
+            });
+        });
+    });
+</script>
+
+{# КАСТЫЛЬ ADD CLASS <ACTIVE> FROM URL #}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const currentUrl = window.location.pathname;
+
+        const menuCatalog = document.getElementById('menu-catalog');
+        const menuAbout = document.getElementById('menu-about');
+        const menuContact = document.getElementById('menu-contact');
+
+        // Проверяем, какой URL и назначаем соответствующий класс active
+        if (currentUrl.endsWith('/catalog/about/')) {
+            menuAbout.classList.add('active');
+        } else if (currentUrl.endsWith('/catalog/contact/')) {
+            menuContact.classList.add('active');
+        } else {
+            menuCatalog.classList.add('active');
+        }
+    });
+
+
 </script>
 
 </body>
