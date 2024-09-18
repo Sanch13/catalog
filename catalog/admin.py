@@ -50,6 +50,8 @@ class CapAdmin(admin.ModelAdmin):
     inlines = [CapFileInline]
     list_display = ('name', 'status', 'slug')
     prepopulated_fields = {"slug": ("name",)}
+    list_filter = ('status', )
+    search_fields = ('name', )
 
     class Media:
         js = ('tinymce/tinymce.min.js', 'admin/js/tinymce_setup.js', 'admin/js/image-previews.js')
@@ -90,6 +92,7 @@ class JarAdmin(admin.ModelAdmin):
     list_display = ('name', 'status')
     prepopulated_fields = {"slug": ("name",)}
     list_filter = ('status', 'volume', )
+    search_fields = ('name', )
 
     class Media:
         js = ('tinymce/tinymce.min.js', 'admin/js/tinymce_setup.js', 'admin/js/image-previews.js')
@@ -129,7 +132,9 @@ class BottleAdmin(admin.ModelAdmin):
     inlines = [BottleFileInline]
     list_display = ('name', 'status')
     prepopulated_fields = {"slug": ("name",)}
-
+    search_fields = ('name', )
+    list_filter = ('status', 'volume', )
+    
     class Media:
         js = ('tinymce/tinymce.min.js', 'admin/js/tinymce_setup.js', 'admin/js/image-previews.js')
         css = {
