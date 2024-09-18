@@ -50,8 +50,6 @@ class CapAdmin(admin.ModelAdmin):
     inlines = [CapFileInline]
     list_display = ('name', 'status', 'slug')
     prepopulated_fields = {"slug": ("name",)}
-    list_filter = ('status', )
-    search_fields = ('name', )
 
     class Media:
         js = ('tinymce/tinymce.min.js', 'admin/js/tinymce_setup.js', 'admin/js/image-previews.js')
