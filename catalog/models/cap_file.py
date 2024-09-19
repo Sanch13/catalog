@@ -29,6 +29,8 @@ class CapFile(models.Model):
                                  default=FileTypeChoices.IMAGE,
                                  verbose_name='Тип файла')
     file = models.FileField(upload_to=get_file_upload_path_cap,
+                            blank=True,
+                            null=True,
                             verbose_name='Файл')
     rating = models.PositiveSmallIntegerField(blank=True,
                                               null=True,

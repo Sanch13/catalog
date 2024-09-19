@@ -1,3 +1,5 @@
+import os
+
 from django.db import models
 from django.db.models import Case, When, Value, IntegerField
 from django.utils.text import slugify
@@ -88,6 +90,14 @@ class Cap(models.Model):
         if not self.slug:
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        for cap_file in self.cap_files.all():
+            if cap_file.file:
+                if os.path.isfile(cap_file.file.path):
+                    os.remove(cap_file.file.path)
+            cap_file.delete()
+        super().delete(*args, **kwargs)
 
     def get_absolute_url(self):
         from django.urls import reverse

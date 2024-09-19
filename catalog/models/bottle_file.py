@@ -30,6 +30,8 @@ class BottleFile(models.Model):
                                  default=FileTypeChoices.IMAGE,
                                  verbose_name='Тип файла')
     file = models.FileField(upload_to=get_file_upload_path_bottle,
+                            blank=True,
+                            null=True,
                             verbose_name='Файл')
     rating = models.PositiveSmallIntegerField(blank=True,
                                               null=True,
@@ -47,6 +49,8 @@ class BottleFile(models.Model):
             image_content = convert_img_to_webp(image=self.file)
             self.file.save(image_content.name, image_content, save=False)
         super().save(*args, **kwargs)
+
+
 
     def __str__(self):
         return '| --->'.join(f"{self.file}".rsplit('/', 2)[-2:])

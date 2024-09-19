@@ -1,3 +1,5 @@
+import os
+
 from django.db import models
 from django.db.models import Case, When, Value, IntegerField
 from django.utils.text import slugify
@@ -115,6 +117,14 @@ class Jar(models.Model):
         if not self.slug:
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        for jar_file in self.jar_files.all():
+            if jar_file.file:
+                if os.path.isfile(jar_file.file.path):
+                    os.remove(jar_file.file.path)
+            jar_file.delete()
+        super().delete(*args, **kwargs)
 
     def get_absolute_url(self):
         from django.urls import reverse
