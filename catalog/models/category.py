@@ -57,8 +57,9 @@ class Category(models.Model):
         if not self.slug:
             self.slug = slugify(self.name)
 
-        image_content = convert_img_to_webp(image=self.category_image)
-        self.category_image.save(image_content.name, image_content, save=False)
+        if not self.pk:
+            image_content = convert_img_to_webp(image=self.category_image)
+            self.category_image.save(image_content.name, image_content, save=False)
 
         super().save(*args, **kwargs)
 
