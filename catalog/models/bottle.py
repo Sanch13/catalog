@@ -1,3 +1,5 @@
+import os
+
 from django.db import models
 from django.utils.text import slugify
 
@@ -129,6 +131,14 @@ class Bottle(models.Model):
         if not self.slug:
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        for bottle_file in self.bottle_files.all():
+            if bottle_file.file:
+                if os.path.isfile(bottle_file.file.path):
+                    os.remove(bottle_file.file.path)
+            bottle_file.delete()
+        super().delete(*args, **kwargs)
 
     def get_absolute_url(self):
         from django.urls import reverse
