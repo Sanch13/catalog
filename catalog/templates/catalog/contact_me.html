@@ -1,0 +1,230 @@
+{% extends 'catalog/base.html' %}
+{% load static %}
+
+{% block title %}
+{% endblock title %}
+
+{% block css %}
+    <link href="{% static 'css/popup_styles.css' %}" rel="stylesheet"/>
+{% endblock css %}
+
+{% block content %}
+
+<!-- Контейнер с вопросом -->
+<div class="container-contact">
+    <div class="question-lid">
+        Вас интересует консультация по нашей упаковке или вы хотите предложить нам свои
+        услуги?<br>Пожалуйста, выберите один из вариантов вашего обращения!
+    </div>
+    <div class="block-buttons ">
+        <div class="mx-5">
+            <button class="btn-miran-filter-contact" id="openPopup">
+                Интересует упаковка МИРАН
+            </button>
+        </div>
+        <div class="mx-5">
+            <button class="btn-miran-filter-contact" id="openPopupSupplier">
+                Хочу предложить услуги/товар
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Секция с данными -->
+<script>
+    const category = '{{ category|escapejs }}';
+    const place = '{{ place|escapejs }}';
+</script>
+
+<!-- Функции для валидации полей формы -->
+<script src="{% static 'js/functions_for_validate_form.js' %}"></script>
+
+<!-- Попап для отправки выбранных продуктов -->
+<div id="popupForm" class="popup" style="display: none;">
+    <div class="popup-content">
+        <span id="closePopup">&times;</span>
+        <h2>Заполните форму и нажмите отправить</h2>
+        <form class="form-send-data-to-email"
+              id="contactForm"
+              action="{% url 'catalog:send_data_to_email' %}"
+              method="post"
+              novalidate>
+
+            {% csrf_token %}
+
+            {# NAME #}
+            <div class="my-form-group">
+                <label>{{ form_lids.name.label }}
+                    <span class="text-danger"> *</span>
+                </label>
+                {{ form_lids.name }}
+                <div id="id_name-error" class="error-message"></div>
+            </div>
+
+            {# COMPANY #}
+            <div class="my-form-group">
+                <label>{{ form_lids.company.label_tag }}<span
+                        class="text-danger"> *</span>
+                </label>
+                {{ form_lids.company }}
+                <div id="id_company-error" class="error-message"></div>
+            </div>
+
+            {# PHONE #}
+            <div class="my-form-group">
+                <label>{{ form_lids.phone_number.label_tag }}
+                    <span class="text-danger"> *</span>
+                </label>
+                {{ form_lids.phone_number }}
+                <div id="id_phone_number-error" class="error-message"></div>
+            </div>
+
+            {# EMAIL #}
+            <div class="my-form-group">
+                <label>{{ form_lids.email.label_tag }}
+                    <span class="text-danger"> *</span>
+                </label>
+                {{ form_lids.email }}
+                <div id="id_email-error" class="error-message"></div>
+            </div>
+
+            {# COMMENT #}
+            <div class="my-form-group">
+                <label>{{ form_lids.comment.label_tag }}</label>
+                {{ form_lids.comment }}
+            </div>
+
+            {# CHECKBOX RULES #}
+            <div class="my-form-group">
+                <input type="checkbox" class="custom-checkbox" id="checkbox1">
+                <label class="custom-label" for="checkbox1">
+                    Я даю свое согласие на обработку моих персональных данных
+                </label>
+            </div>
+
+            <div class="fileSizeDisplay">
+                <span id="fileSizeDisplay"></span>
+            </div>
+
+            <button type="submit"
+                    class="btn-submit-form"
+                    id="sendForm"
+                    disabled>Отправить
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- Попап о успешной отправке -->
+<div id="successPopup" class="popup" style="display: none;">
+    <div class="success-popup-content d-flex justify-content-center align-items-center">
+        <div id="successMessage">
+            Спасибо!<br>Ваша заявка принята!
+        </div>
+    </div>
+</div>
+
+{# Закрытие POPUPS  #}
+<script>
+    {# Закрытие попапа по кнопке Х #}
+    document.getElementById('closePopup').addEventListener('click', function () {
+        document.getElementById('popupForm').style.display = 'none';
+    });
+
+    {# Закрытие попапа по клику вне окна #}
+    document.addEventListener('click', function (event) {
+        let popup = document.querySelector('.popup-content');
+        let formPopup = document.getElementById('popupForm');
+        if (formPopup.style.display === 'flex' && !popup.contains(event.target) && event.target.id !== 'openPopup') {
+            formPopup.style.display = 'none';
+        }
+    });
+
+    {# Закрытие успешного попапа по клику вне окна #}
+    document.addEventListener('click', function (event) {
+        let popup = document.querySelector('.success-popup-content');
+        let formPopup = document.getElementById('successPopup');
+        if (formPopup.style.display === 'flex' && !popup.contains(event.target) && event.target.id !== 'openPopup') {
+            formPopup.style.display = 'none';
+        }
+    });
+</script>
+
+<!-- Popups -->
+{% include 'popup/popup_supplier.html' %}
+
+<script>
+    const formLidsElem = {
+        name: document.getElementById("id_name"),
+        company: document.getElementById("id_company"),
+        phone_number: document.getElementById("id_phone_number"),
+        email: document.getElementById("id_email")
+    };
+
+    document.addEventListener("DOMContentLoaded", function () {
+        formLidsElem.name.addEventListener('blur', () => handleSimpleFieldBlur(formLidsElem.name));
+        formLidsElem.company.addEventListener('blur', () => handleSimpleFieldBlur(formLidsElem.company));
+        formLidsElem.phone_number.addEventListener('blur', () => handlePhoneNumberBlur(formLidsElem.phone_number));
+        formLidsElem.email.addEventListener('blur', () => handleEmailBlur(formLidsElem.email));
+
+        const checkbox = document.getElementById('checkbox1');
+        const submitButton = document.getElementById('sendForm');
+
+        checkbox.addEventListener('change', function () {
+            submitButton.disabled = !checkbox.checked;
+        });
+    });
+
+    document.getElementById('openPopup').addEventListener('click', function () {
+        document.getElementById('popupForm').style.display = 'flex';
+    });
+
+    document.getElementById('contactForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+        let flag = checkFields(
+            formLidsElem.name,
+            formLidsElem.company,
+            formLidsElem.phone_number,
+            formLidsElem.email
+        )
+        if (flag) {
+            const formElement = document.getElementById("contactForm");
+            let data = new FormData(formElement);
+            data.append('category', category);
+            data.append('place', place);
+
+            fetch("{% url 'catalog:send_data_to_email' %}", {
+                method: 'POST',
+                body: data,
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('popupForm').style.display = 'none';
+                        document.getElementById('successPopup').style.display = 'flex';
+
+                        document.getElementById('contactForm').reset();
+
+                        setTimeout(function () {
+                            document.getElementById('successPopup').style.display = 'none';
+                        }, 3000); // Закрытие через 3 секунды
+                    } else {
+                        alert('Ошибка: ' + JSON.stringify(data.errors));
+                    }
+                });
+        }
+    });
+
+</script>
+
+{# RUSSIAN/ENGLAND KEYBOARD #}
+<script src="{% static 'js/russian.js' %}"></script>
+{# PHONE_MASK #}
+<script src="{% static 'js/jquery.inputmask.js' %}"></script>
+{# INIT FIELDS VIRTUAL KEYBOARDS #}
+<script src="{% static 'js/initKeyboardFields.js' %}"></script>
+
+{% endblock %}

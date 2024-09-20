@@ -1,0 +1,28 @@
+{% extends 'catalog/base.html' %}
+{% load static %}
+
+{% block title %}
+{% endblock title %}
+
+
+{% block content %}
+    <div class="catalog__page">
+        <div class="row my-row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4">
+            {% for category in categories %}
+                <div class="col">
+                    <a href="{{ category.get_absolute_url }}">
+                        <div class="card">
+                            <img src="{{ category.category_image.url }}"
+                                 class="card-img-top" alt="...">
+                            <div class="card-body">
+                                <div class="text-center">
+                                    <h5 class="card-title">{{ category.name }}</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

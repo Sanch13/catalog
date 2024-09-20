@@ -1,0 +1,181 @@
+.popup, .popup-sup, .popup-price {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+
+.popup-content, .popup-content-sup, .popup-content-price {
+    background-color: white;
+    padding: 20px;
+    border-radius: 15px;
+    position: relative;
+    width: 700px;
+    max-width: 80%;
+}
+
+#closePopup, #closePopup-sup, #closePopupPrice {
+    position: absolute;
+    /*top: 2px;*/
+    /*right: 12px;*/
+    /*font-size: 50px;*/
+    /*transform: scale(1);*/
+    top: -28px;
+    right: 4px;
+    font-size: 4rem;
+    transform: scale(1);
+    cursor: pointer;
+}
+
+h2 {
+    padding: 10px 0;
+    margin-bottom: 0;
+    text-align: center; /* Центрируем заголовок */
+}
+
+.success-popup-content, .success-popup-content-sup {
+    background-color: #7F9A14; /* Задаем зеленый цвет фона только для successPopup */
+    color: white; /* Цвет текста для лучшей видимости */
+    padding: 60px 30px;
+    border-radius: 5px;
+    width: 500px;
+    max-width: 80%;
+    text-align: center; /* Центрируем текст */
+}
+
+#successMessage {
+    text-align: center;
+    font-size: 28px;
+    background-color: #7F9A14;
+    color: white;
+}
+
+.form-send-data-to-email {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Центрирование всех элементов по центру */
+}
+
+
+/**************************
+CHECKBOX
+**************************/
+.custom-checkbox {
+    display: none; /* Скрываем стандартный чекбокс */
+}
+
+.custom-label {
+    position: relative;
+    display: inline-block;
+    padding-left: 70px; /* Задан отступ для псевдоэлемента */
+    cursor: pointer;
+    font-size: 1.2rem; /* Размер текста */
+    user-select: none; /* Запрет выделения текста */
+}
+
+.custom-label:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%); /* Вертикальное центрирование */
+    width: 50px; /* Ширина чекбокса */
+    height: 50px; /* Высота чекбокса */
+    border: 1px solid #7F9A14; /* Цвет границы */
+    background-color: #FFF; /* Цвет фона */
+    border-radius: 3px; /* Округлые углы */
+}
+
+.custom-checkbox:checked + .custom-label:before {
+    background-color: #7F9A14; /* Цвет фона при отмеченном состоянии */
+    border-color: #7F9A14; /* Цвет границы при отмеченном состоянии */
+}
+
+.custom-checkbox:checked + .custom-label:after {
+    content: ''; /* Галочка при отмеченном состоянии */
+    position: absolute;
+    left: 16px;
+    top: 11px; /* Позиция галочки */
+    width: 20px;
+    height: 28px;
+    color: #FFF; /* Цвет галочки */
+    border: solid white;
+    border-width: 0 4px 4px 0;
+    transform: rotate(45deg);
+}
+
+
+.text-danger {
+    color: red;
+    margin-left: 5px;
+}
+
+.error-message {
+    position: absolute;
+    bottom: -12px; /* Расположение под полем ввода */
+    left: 0;
+    color: red;
+    font-size: 0.9rem;
+    /*display: none; !* Скрыть сообщение об ошибке по умолчанию *!*/
+}
+
+.is-invalid {
+    border: 1px solid red;
+}
+
+.btn-submit-form {
+    display: block;
+    padding: 13px 34px;
+    border: 2px solid #7F9A14;
+    border-radius: 50px;
+    background-color: #7F9A14;
+    font-size: 1.6rem;
+    color: white;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.btn-submit-form2 {
+    display: block;
+    padding: 13px 34px;
+    border: 2px solid #7F9A14;
+    border-radius: 50px;
+    background-color: white;
+    font-size: 1.6rem;
+    color: black;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.btn-submit-form:hover {
+    background-color: #7F9A14;
+    color: white;
+}
+
+.btn-submit-form2:hover {
+    background-color: #7F9A14;
+    color: white;
+}
+
+.btn-submit-form:disabled {
+    background-color: #e0e0e0;
+    border-color: #b0b0b0;
+    cursor: not-allowed;
+    color: #a0a0a0;
+}
+
+.btn-submit-form2:disabled {
+    background-color: #e0e0e0;
+    border-color: #b0b0b0;
+    cursor: not-allowed;
+    color: #a0a0a0;
+}

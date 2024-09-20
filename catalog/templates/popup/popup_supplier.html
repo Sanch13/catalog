@@ -1,0 +1,157 @@
+<!-- Попап для FormSupplier -->
+<div id="popupFormSupplier" class="popup-sup" style="display: none;">
+    <div class="popup-content-sup">
+        <span id="closePopup-sup">&times;</span>
+        <h2>Заполните форму и нажмите отправить</h2>
+        <form class="form-send-data-to-email"
+              id="contactSupplierForm"
+              action="{% url 'catalog:send_data_to_email_from_supplier' %}"
+              method="post"
+              novalidate>
+
+            {% csrf_token %}
+
+            {# NAME #}
+            <div class="my-form-group">
+                <label>{{ form_supplier.name_sup.label }}
+                    <span class="text-danger"> *</span>
+                </label>
+                {{ form_supplier.name_sup }}
+                <div id="id_name_sup-error" class="error-message"></div>
+            </div>
+
+            {# COMPANY #}
+            <div class="my-form-group">
+                <label>{{ form_supplier.company_sup.label_tag }}<span
+                        class="text-danger"> *</span>
+                </label>
+                {{ form_supplier.company_sup }}
+                <div id="id_company_sup-error" class="error-message"></div>
+            </div>
+
+            {# EMAIL #}
+            <div class="my-form-group">
+                <label>{{ form_supplier.email_sup.label_tag }}
+                    <span class="text-danger"> *</span>
+                </label>
+                {{ form_supplier.email_sup }}
+                <div id="id_email_sup-error" class="error-message"></div>
+            </div>
+
+            {# DEPARTMENT #}
+            <div class="my-form-group">
+                <label>{{ form_supplier.department_sup.label_tag }}
+                    <span class="text-danger"> *</span>
+                </label>
+                {{ form_supplier.department_sup }}
+                <div id="id_department_sup-error" class="error-message"></div>
+            </div>
+
+            {# COMMENT #}
+            <div class="my-form-group">
+                <label>{{ form_supplier.comment_sup.label_tag }}</label>
+                {{ form_supplier.comment_sup }}
+            </div>
+
+            {# CHECKBOX RULES #}
+            <div class="my-form-group">
+                <input type="checkbox" class="custom-checkbox" id="checkbox2">
+                <label class="custom-label" for="checkbox2">
+                    Я даю свое согласие на обработку моих персональных данных
+                </label>
+            </div>
+
+            <button type="submit"
+                    class="btn-submit-form"
+                    id="sendForm2"
+                    disabled>Отправить
+            </button>
+        </form>
+    </div>
+</div>
+
+{#  POPUP  #}
+<script>
+    {# Закрытие попапа по кнопке Х #}
+    document.getElementById('closePopup-sup').addEventListener('click', function () {
+        document.getElementById('popupFormSupplier').style.display = 'none';
+    });
+
+    {# Закрытие попапа по клику вне окна #}
+    document.addEventListener('click', function (event) {
+        let popup = document.querySelector('.popup-content-sup');
+        let formPopup = document.getElementById('popupFormSupplier');
+        if (formPopup.style.display === 'flex' && !popup.contains(event.target) && event.target.id !== 'openPopupSupplier') {
+            formPopup.style.display = 'none';
+        }
+    });
+
+    {# Закрытие успешного попапа по клику вне окна #}
+    document.addEventListener('click', function (event) {
+        let popup = document.querySelector('.success-popup-content');
+        let formPopup = document.getElementById('successPopup');
+        if (formPopup.style.display === 'flex' && !popup.contains(event.target) && event.target.id !== 'openPopupSupplier') {
+            formPopup.style.display = 'none';
+        }
+    });
+</script>
+
+{#  VALIDATION FIELDS AND SEND FORM TO SERVER #}
+<script>
+    const formSupplierElem = {
+        name: document.getElementById("id_name_sup"),
+        company: document.getElementById("id_company_sup"),
+        email: document.getElementById("id_email_sup"),
+        department: document.getElementById("id_department_sup")
+    };
+
+    document.getElementById('openPopupSupplier').addEventListener('click', function () {
+        document.getElementById('popupFormSupplier').style.display = 'flex';
+    });
+
+    document.getElementById('contactSupplierForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            if (checkFieldsSupplierForm()) {
+                let data = new FormData(this);
+                data.append("place", 'contact');
+                data.append('category', 'no category');
+
+                fetch("{% url 'catalog:send_data_to_email_from_supplier' %}", {
+                    method: 'POST',
+                    body: data,
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    }
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            document.getElementById('popupFormSupplier').style.display = 'none';
+                            document.getElementById('successPopup').style.display = 'flex';
+
+                            document.getElementById('contactSupplierForm').reset();
+
+                            setTimeout(function () {
+                                document.getElementById('successPopup').style.display = 'none';
+                            }, 3000); // Закрытие через 3 секунды
+                        } else {
+                            alert('Ошибка: ' + JSON.stringify(data.errors));
+                        }
+                    });
+            }
+        });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        formSupplierElem.name.addEventListener('blur', () => handleSimpleFieldBlur(formSupplierElem.name));
+        formSupplierElem.company.addEventListener('blur', () => handleSimpleFieldBlur(formSupplierElem.company));
+        formSupplierElem.email.addEventListener('blur', () => handleEmailBlur(formSupplierElem.email));
+        formSupplierElem.department.addEventListener('blur', () => handleDepartmentBlur(formSupplierElem.department));
+
+        const checkbox2 = document.getElementById('checkbox2');
+        const submitButton2 = document.getElementById('sendForm2');
+        checkbox2.addEventListener('change', function () {
+            submitButton2.disabled = !checkbox2.checked;
+        });
+    });
+</script>

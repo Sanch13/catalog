@@ -1,0 +1,155 @@
+{% extends 'catalog/base.html' %}
+{% load static %}
+
+{% block title %}<title></title>{% endblock title %}
+
+{% block css %}
+    <link href="{% static 'css/carousel.css' %}" rel="stylesheet"/>
+    <link href="{% static 'css/fancybox.css' %}" rel="stylesheet"/>
+    <link href="{% static 'css/panzoom.css' %}" rel="stylesheet"/>
+    <link href="{% static 'css/my_settings_carousel.css' %}" rel="stylesheet"/>
+    <link href="{% static 'css/popup_styles.css' %}" rel="stylesheet"/>
+{% endblock css %}
+
+{% block content %}
+<!-- Контейнер с карточкой товара и описанием -->
+<div class="my-container">
+    <div class="product-card" id="{{ jar.id }}">
+        <div class="row mb-5">
+            <div class="col-lg-6">
+                <div class="carousel-container ">
+                    <div class="f-carousel " id="myCarousel">
+                        <div class="f-carousel__viewport">
+                            <div class="f-carousel__track">
+                                {% if jar.jar_files.all %}
+                                    {% for file in jar.jar_files.all %}
+                                        <div class="f-carousel__slide"
+                                             data-thumb-src="{{ file.file.url }}">
+                                            <a href="{{ file.file.url }}"
+                                               data-fancybox="gallery">
+                                                <img width="700" height="700" alt=""
+                                                     data-lazy-src="{{ file.file.url }}"/>
+                                            </a>
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% if jar.status == 'Новинка' %}
+                            <span class="badge-new">НОВИНКА</span>
+                        {% elif jar.status == 'Бестселлер' %}
+                            <span class="badge-best">БЕСТСЕЛЛЕР</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="container">
+                    <div>
+                        <h1 class="text-center my-2"
+                            style="border-bottom: 1px solid #7F9A14;">{{ jar.name }}</h1>
+                    </div>
+                    <div class="my-3 ">
+                        <div class="row px-0">
+                            <div class="col-md-8 col-12 px-1">
+                                <div class="product-details">
+                                    <div class="detail-item">
+                                        <div class="detail-label">Объем мл.</div>
+                                        <div class="detail-value">{{ jar.volume }}</div>
+                                    </div>
+                                    <div class="detail-item">
+                                        <div class="detail-label">Поверхность</div>
+                                        <div class="detail-value">{{ jar.surface }}</div>
+                                    </div>
+                                    <div class="detail-item">
+                                        <div class="detail-label">Декорирование</div>
+                                        <div class="detail-value">{{ jar.status_decoration }}</div>
+                                    </div>
+                                    <div class="detail-item">
+                                        <div class="detail-label">Дополнительные
+                                            характеристики
+                                        </div>
+                                        <div class="detail-value">{{ jar.feature }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-12 d-flex flex-column align-items-center justify-content-center px-1">
+                                <div class="w-100 d-flex my-1 align-items-center justify-content-center">
+                                    <button id="openPopup" class="btn-menu-header-send">
+                                        Отправить на свой e-mail
+                                    </button>
+                                </div>
+                                <div class="w-100 d-flex my-1 align-items-center justify-content-center">
+                                    <button id="openPopupPrice" class="btn-menu-header-send">
+                                        Запросить прайс
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="py-2 product-description">
+                        {{ jar.description|safe }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Секция с данными -->
+<script>
+    const category = "{{ category|escapejs }}";
+    const place = "{{ place|escapejs }}";
+    const idsString = "{{ products_id|escapejs }}";
+    let ids;
+
+    try {
+        ids = idsString ? JSON.parse(idsString) : [];
+    } catch (error) {
+        ids = [];
+    }
+</script>
+
+<!-- Функции для валидации полей формы -->
+<script src="{% static 'js/functions_for_validate_form.js' %}"></script>
+
+<!-- Popups -->
+{% include 'popup/popup.html' %}
+{% include 'popup/popup_price.html' %}
+
+<!-- Сarousel fancybox -->
+<script src="{% static 'js/carousel.umd.js' %}"></script>
+<script src="{% static 'js/carousel.thumbs.umd.js' %}"></script>
+<script src="{% static 'js/fancybox.umd.js' %}"></script>
+
+{#  CARUSEL SETTINGS  #}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const myCarousel = new Carousel(document.getElementById("myCarousel"), {
+            Dots: false,
+            Thumbs: {
+                type: "classic",
+            },
+            Navigation: true,
+        }, {Thumbs});
+
+        Fancybox.bind('[data-fancybox="gallery"]', {
+            Images: {
+                zoom: true,
+                Panzoom: {
+                    {#maxScale: 2,#}
+                },
+            },
+            Thumbs: false,
+        });
+    });
+</script>
+
+{# RUSSIAN/ENGLAND KEYBOARD #}
+<script src="{% static 'js/russian.js' %}"></script>
+{# PHONE_MASK #}
+<script src="{% static 'js/jquery.inputmask.js' %}"></script>
+{# INIT FIELDS VIRTUAL KEYBOARDS #}
+<script src="{% static 'js/initKeyboardFields.js' %}"></script>
+
+{% endblock %}

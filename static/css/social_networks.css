@@ -1,0 +1,77 @@
+.floating-container {
+    position: fixed;
+    width: 250px;
+    height: 70px;
+    bottom: 5px;
+    left: 0;
+    /*background-color: rgba(255, 255, 255, 0.9);*/
+    padding: 5px;
+    /*border-radius: 50px 0 0 0;*/
+    /*box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);*/
+    z-index: 99;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.image-container {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.thumbnail {
+    width: 60px;
+    height: 60px;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+/*.thumbnail:hover {*/
+/*    transform: scale(1.1);*/
+/*}*/
+
+.popup-qr {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Центрируем попап */
+    background-color: white;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+
+    /*height: 70px;*/
+    /*width: 70px;*/
+    /*right: 170px;*/
+    /*bottom: 70px;*/
+    /*padding: 10px;*/
+    /*background-color: rgba(255, 255, 255, 0.95);*/
+    /*border-radius: 25px;*/
+    /*box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);*/
+    /*justify-content: center;*/
+    /*align-items: center;*/
+    /*z-index: 2000;*/
+}
+
+.popup-qr img {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.close {
+    position: absolute; /* Устанавливаем абсолютное позиционирование */
+    top: 0; /* Расположение сверху */
+    right: 0; /* Расположение справа */
+    font-size: 80px; /* Увеличение размера */
+    cursor: pointer; /* Указатель мыши */
+    color: black; /* Цвет текста (можете изменить на свой) */
+    background-color: white; /* Цвет фона */
+    border-radius: 50%; /* Закругляем края, чтобы создать круг */
+    width: 50px; /* Ширина (можете настроить) */
+    height: 50px; /* Высота (можете настроить) */
+    display: flex; /* Используйте flex для горизонтального и вертикального центрирования */
+    align-items: center; /* Центруем по вертикали */
+    justify-content: center; /* Центруем по горизонтали */
+}

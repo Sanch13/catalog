@@ -1,0 +1,13 @@
+
+            category     price       detail      price
+novinki     +            +           None        None
+series      +            +           +           +
+jars        +            +           +           +
+caps        +            +           +           +
+
+contact to me
+    contact
+    -
+
+supplier    production      OMTS      Sale      Secratary
+            +                +           +       +

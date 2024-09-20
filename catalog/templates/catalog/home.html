@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+
+<head>
+    <title>Home</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet"/>
+    <link href="{% static 'css/style.css' %}" rel="stylesheet"/>
+    <style>
+        .gap-5 {
+            gap: 10rem !important;
+        }
+
+        .btn-custom-size {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            flex-direction: column;
+
+            width: 400px;
+            height: 300px;
+
+            border: 2px solid #7F9A14;
+            background-color: #7F9A14;
+            color: white;
+            border-radius: 25px;
+
+            font-family: 'Roboto', arial, sans-serif;
+            font-size: 40px;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .btn-custom-size:hover {
+            color: white;
+            background-color: #7F9A14;
+            border: 2px solid #7F9A14;
+        }
+
+        .btn-custom-size:focus,
+        .btn-custom-size:active {
+            color: white;
+            background-color: #7F9A14;
+            border: 2px solid #7F9A14;
+            outline: none;
+        }
+
+        .video-container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .video-container video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            z-index: -100;
+            transform: translateX(-50%) translateY(-50%);
+        }
+
+        .container-fluid {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="video-container">
+    <video autoplay loop muted playsinline>
+        <source src="{% static 'video/rolik-dlya-polskogo-sayta-15-secmp4' %}" type="video/mp4">
+    </video>
+    <div class=" container-fluid d-flex justify-content-center align-items-center">
+        <div class="btn-groups d-flex gap-5 justify-content-center align-items-center">
+            <a href="{% url 'catalog:catalog' %}"
+               class="btn-custom-size">
+                Подбор<br>упаковки
+            </a>
+            <a href="{% url 'catalog:about_miran' %}"
+               class="btn-custom-size">
+                О Миран
+            </a>
+            <a href="{% url 'catalog:contact_me' %}"
+               class="btn-custom-size">
+                Свяжитесь<br>со мной
+            </a>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'js/jquery-3.7.1.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+</body>

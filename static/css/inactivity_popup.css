@@ -1,0 +1,72 @@
+#inactivity-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgb(248, 244, 244);
+    padding: 40px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    z-index: 1000;
+    text-align: center;
+    display: none; /* Попап по умолчанию скрыт */
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 600px; /* Увеличиваем ширину */
+    height: 300px; /* Увеличиваем высоту */
+}
+
+/* Стили для кнопок */
+.popup-button, .popup-button-no {
+    width: 150px;
+    padding: 10px 20px;
+    margin: 10px 20px;
+    background-color: #7F9A14;
+    border: 2px solid #7F9A14;
+    border-radius: 50px;
+    cursor: pointer;
+    color: white;
+    font-size: 22px;
+}
+
+.popup-button-no {
+    background-color: white;
+    border: 2px solid #7F9A14;
+    color: black;
+}
+
+.popup-button:hover {
+    background-color: #7F9A14;
+    color: white;
+}
+
+.popup-button:active {
+    background-color: #7F9A14;
+    color: white;
+}
+
+
+.btn-success {
+    background-color: #E0F043;
+    color: white;
+}
+
+.btn-danger {
+    background-color: #de1a32;
+    color: white;
+}
+
+/* Дополнительные стили */
+#popup-timer {
+    font-weight: bold;
+    color: #dc3545;
+    font-size: 20px;
+}
+
+.buttons-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}

@@ -1,0 +1,262 @@
+<!-- Попап для отправки выбранных продуктов -->
+<div id="popupFormPrice" class="popup-price" style="display: none;">
+    <div class="popup-content-price">
+        <span id="closePopupPrice">&times;</span>
+        <h2>Заполните форму и нажмите отправить</h2>
+        <form class="form-send-data-to-email"
+              id="contactFormPrice"
+              action="{% url 'catalog:send_data_form_price_to_email' %}"
+              method="post"
+              novalidate>
+
+            {% csrf_token %}
+
+            {# NAME #}
+            <div class="my-form-group">
+                <label>{{ price_form.name.label }}
+                    <span class="text-danger"> *</span>
+                </label>
+                {{ price_form.name }}
+                <div id="id_name_price-error" class="error-message"></div>
+            </div>
+
+            {# COMPANY #}
+            <div class="my-form-group">
+                <label>{{ price_form.company.label_tag }}<span
+                        class="text-danger"> *</span>
+                </label>
+                {{ price_form.company }}
+                <div id="id_company_price-error" class="error-message"></div>
+            </div>
+
+            {# PHONE #}
+            <div class="my-form-group">
+                <label>{{ price_form.phone_number.label_tag }}
+                    <span class="text-danger"> *</span>
+                </label>
+                {{ price_form.phone_number }}
+                <div id="id_phone_number_price-error" class="error-message"></div>
+            </div>
+
+            {# EMAIL #}
+            <div class="my-form-group">
+                <label>{{ price_form.email.label_tag }}
+                    <span class="text-danger"> *</span>
+                </label>
+                {{ price_form.email }}
+                <div id="id_email_price-error" class="error-message"></div>
+            </div>
+
+            {# COMMENT #}
+            <div class="my-form-group">
+                <label>{{ price_form.comment.label_tag }}</label>
+                {{ price_form.comment }}
+            </div>
+
+            {# CHECKBOX RULES #}
+            <div class="my-form-group">
+                <input type="checkbox" class="custom-checkbox" id="checkbox-price">
+                <label class="custom-label" for="checkbox-price">
+                    Я даю свое согласие на обработку моих персональных данных
+                </label>
+            </div>
+
+            <button type="submit"
+                    class="btn-submit-form"
+                    id="sendFormLidsPrice"
+                    disabled>Отправить
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- Попап предупреждения -->
+<div id="warningPopup" class="popupWarning" style="display: none;">
+    <div class="popup-content">
+        <span class="close" onclick="closePopupWarning()">&times;</span>
+        <p class="count-popup">Пожалуйста, отметьте не более 10 карточек.</p>
+    </div>
+</div>
+
+<!-- Счетчик отмеченных карточек -->
+<div id="checkboxCounter" class="checkbox-counter" style="display: none;">
+    Количество: <span id="checkedCount">0</span>
+</div>
+
+{# Закрытие POPUPS FORM PRICE #}
+<script>
+    {# Закрытие попапа по кнопке Х #}
+    document.getElementById('closePopupPrice').addEventListener('click', function () {
+        document.getElementById('popupFormPrice').style.display = 'none';
+    });
+
+    {# Закрытие попапа по клику вне окна #}
+    document.addEventListener('click', function (event) {
+        let popup = document.querySelector('.popup-content-price');
+        let formPopup = document.getElementById('popupFormPrice');
+        if (formPopup.style.display === 'flex' && !popup.contains(event.target) && event.target.id !== 'openPopupPrice') {
+            formPopup.style.display = 'none';
+        }
+    });
+
+    {# Закрытие успешного попапа по клику вне окна #}
+    document.addEventListener('click', function (event) {
+        let popup = document.querySelector('.success-popup-content');
+        let formPopup = document.getElementById('successPopup');
+        if (formPopup.style.display === 'flex' && !popup.contains(event.target) && event.target.id !== 'openPopupPrice') {
+            formPopup.style.display = 'none';
+        }
+    });
+</script>
+
+{#  CHECK FIELDS AND CHECKBOX  #}
+<script>
+    const formPriceElem = {
+        name: document.getElementById("id_name_price"),
+        company: document.getElementById("id_company_price"),
+        phone_number: document.getElementById("id_phone_number_price"),
+        email: document.getElementById("id_email_price")
+    };
+    const LIMIT_PRODUCT = 5;
+    const checkboxesProducts = document.querySelectorAll('.checkbox-product');
+    checkboxesProducts.forEach(checkbox => {
+            checkbox.addEventListener('change', updateCheckedCount);
+
+        });
+    const productCards = document.querySelectorAll('.card'); // Выбираем все карточки
+    const haveCheckboxes = document.querySelectorAll('.checkbox-product').length > 0; // Проверяем, есть ли уже чекбоксы
+
+    function updateCheckedCount() {
+            const checkedCheckboxes = document.querySelectorAll('.checkbox-product:checked');
+            const checkedCountElement = document.getElementById('checkedCount');
+            const count = checkedCheckboxes.length;
+            console.log(count);
+            checkedCountElement.textContent = String(count);
+
+            if (count > 0 && count <= LIMIT_PRODUCT) {
+                checkedCountElement.style.color = 'green'; // Зеленый для значений от 1 до 10
+            } else if (count > LIMIT_PRODUCT) {
+                checkedCountElement.style.color = 'red'; // Красный для значений более 10
+            } else {
+                checkedCountElement.style.color = 'black'; // Черный для 0
+            }
+        }
+
+    function openPopupWarning() {
+        const warningPopup = document.getElementById('warningPopup');
+        warningPopup.style.display = 'flex';
+    }
+
+    function closePopupWarning() {
+        const warningPopup = document.getElementById('warningPopup');
+        warningPopup.style.display = 'none';
+    }
+
+    function getIdsFromCheckedCheckBoxes() {
+        const checkedCheckboxes = document.querySelectorAll('.checkbox-product:checked');
+        return Array.from(checkedCheckboxes).map(checkbox => ({id: parseInt(checkbox.id.replace('checkbox-', ''), 10)}))
+    }
+
+    document.getElementById('openPopupPrice').addEventListener('click', function () {
+        let idsLenght = getIdsFromCheckedCheckBoxes().length;
+        console.log(typeof idsLenght, idsLenght);
+        console.log(typeof ids, ids.length);
+        if (productCards.length < LIMIT_PRODUCT){
+            document.getElementById('popupFormPrice').style.display = 'flex';
+        }  else if (idsLenght === 0 || idsLenght > LIMIT_PRODUCT) {
+            openPopupWarning();
+            const checkboxCounterElement = document.getElementById('checkboxCounter');
+            checkboxCounterElement.style.display = 'flex';
+            if (!haveCheckboxes) {
+                productCards.forEach(function (card) {
+                    const cardId = card.id; // Получаем id карточки
+                    const existingCheckbox = document.getElementById(`checkbox-${cardId}`); // Проверяем, существует ли чекбокс
+                    if (!existingCheckbox) {
+                        const checkbox = document.createElement('input');
+                        checkbox.type = 'checkbox';
+                        checkbox.className = 'checkbox-product';
+                        checkbox.id = `checkbox-${cardId}`; // Устанавливаем id
+
+                        const label = document.createElement('label'); // Создаем метку для чекбокса
+                        label.htmlFor = checkbox.id; // Привязываем метку к чекбоксу
+                        label.className = 'checkbox-label-product'; // Устанавливаем класс для метки
+
+                        // Вставляем чекбокс и метку в карточку
+                        card.insertBefore(label, card.firstChild);
+                        card.insertBefore(checkbox, card.firstChild);
+                        }
+                });
+                const checkboxesProducts = document.querySelectorAll('.checkbox-product');
+                checkboxesProducts.forEach(checkbox => {
+                    checkbox.addEventListener('change', updateCheckedCount);
+        });
+            }
+        } else {
+            document.getElementById('popupFormPrice').style.display = 'flex';
+        }
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        formPriceElem.name.addEventListener('blur', () => handleSimpleFieldBlur(formPriceElem.name));
+        formPriceElem.company.addEventListener('blur', () => handleSimpleFieldBlur(formPriceElem.company));
+        formPriceElem.phone_number.addEventListener('blur', () => handlePhoneNumberBlur(formPriceElem.phone_number));
+        formPriceElem.email.addEventListener('blur', () => handleEmailBlur(formPriceElem.email));
+
+        const checkboxFormPrice = document.getElementById('checkbox-price');
+        const submitButtonFormPrice = document.getElementById('sendFormLidsPrice');
+
+        checkboxFormPrice.addEventListener('change', function () {
+            submitButtonFormPrice.disabled = !checkboxFormPrice.checked;
+        });
+    });
+
+    document.getElementById('contactFormPrice').addEventListener('submit', function (event) {
+            event.preventDefault();
+            const flag = checkFields(
+                formPriceElem.name,
+                formPriceElem.company,
+                formPriceElem.phone_number,
+                formPriceElem.email
+            )
+
+            if (flag) {
+                const idsCheckProducts = getIdsFromCheckedCheckBoxes()
+                ids = idsCheckProducts.length ? idsCheckProducts : ids
+                const formLidsPrice = document.getElementById('contactFormPrice');
+                let data = createFormData(formLidsPrice, category, place, ids);
+
+                fetch("{% url 'catalog:send_data_form_price_to_email' %}", {
+                    method: 'POST',
+                    body: data,
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    }
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            document.getElementById('popupFormPrice').style.display = 'none';
+                            document.getElementById('successPopup').style.display = 'flex';
+                            document.getElementById('checkboxCounter').style.display = 'none';
+                            document.getElementById('checkedCount').textContent = String(0);
+                            const allCheckboxes = document.querySelectorAll('.checkbox-product');
+                            allCheckboxes.forEach(checkbox => {
+                                checkbox.checked = false;
+                                checkbox.remove();
+                                const label = document.querySelector(`label[for="${checkbox.id}"]`);
+                                if (label) {
+                                    label.remove();
+                                }
+                            });
+                            document.getElementById('contactFormPrice').reset();
+
+                            setTimeout(function () {
+                                document.getElementById('successPopup').style.display = 'none';
+                            }, 3000); // Закрытие через 3 секунды
+                        } else {
+                            alert('Ошибка: ' + JSON.stringify(data.errors));
+                        }
+                    });
+                }
+        });
+</script>

@@ -1,0 +1,21 @@
+.f-carousel__thumbs {
+    --f-thumb-width: 170px;
+    --f-thumb-height: 170px;
+}
+
+.fancybox__container {
+    --fancybox-bg: rgba(24, 24, 27, 0.8)
+}
+
+.f-thumbs__slide__button {
+    border-radius: 28px;
+    --f-thumb-opacity: 0.75;
+}
+
+.is-classic .is-nav-selected .f-thumbs__slide__button {
+    border: 2px solid #7F9A14;
+}
+
+.f-carousel__viewport {
+    border-radius: 28px;
+}
