@@ -5,6 +5,28 @@
 /*    font-style: normal;*/
 /*}*/
 
+/* Настройка ширины полосы прокрутки */
+::-webkit-scrollbar {
+    width: 0px; /* Ширина вертикальной полосы прокрутки */
+    height: 5px; /* Высота горизонтальной полосы прокрутки */
+}
+
+/* Настройка фона полосы прокрутки */
+::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Цвет фона полосы прокрутки */
+}
+
+/* Настройка цвета ползунка полосы прокрутки */
+::-webkit-scrollbar-thumb {
+    background: #dcd8d8; /* Цвет ползунка */
+    border-radius: 4px; /* Скругление ползунка */
+}
+
+/* Настройка цвета ползунка при наведении */
+::-webkit-scrollbar-thumb:hover {
+    background: #555; /* Цвет ползунка при наведении */
+}
+
 * {
     box-sizing: border-box;
     margin: 0;
@@ -34,7 +56,9 @@ body {
     flex-direction: column;
     min-height: 100vh; /* Растягивает контейнер на всю высоту экрана */
     padding-top: 160px; /* Оставляет место для фиксированного хедера */
-    padding-bottom: 80px; /* Оставляет место для фиксированного футера */
+    /*padding-bottom: 80px; !* Оставляет место для фиксированного футера *!*/
+
+    padding-bottom: 90px; /* Оставляет место для фиксированного футера */
 
 }
 
@@ -66,7 +90,10 @@ HEADER
     bottom: 0;
     left: 0;
     width: 100%;
-    height: 80px;
+    /*height: 80px;*/
+
+    height: 90px;
+
     background-color: white;
     /* Цвет фона для наглядности */
     padding: 20px;
@@ -158,7 +185,9 @@ HEADER
     color: white;
     font-size: 1.4rem;
     padding: 13px 10px;
+    width: 100%;
 }
+
 .main-menu li {
     margin: 5px 30px;
 }
@@ -338,7 +367,7 @@ Filter_block
     flex-wrap: wrap;
     /*gap: 10px;*/
     width: 100%; /* Задаем ширину в 100% */
-    padding: 15px 10px;
+    padding: 10px 10px;
     margin: 0;
 }
 .btn-filter-all {
@@ -594,7 +623,9 @@ img {
     /* середина по X низ*/
     left: 35%;
     transform: translateX(-50%);
-    bottom: 7px;
+
+    /*bottom: 7px;*/
+    bottom: 13px;
 
     /* середина по Y низ*/
     /*right: 20px; !* Отступ справа *!*/
@@ -624,7 +655,11 @@ img {
 **************************/
 .scroll-to-top {
     position: fixed;
-    bottom: 5px;
+
+    /*bottom: 5px;*/
+
+    bottom: 10px;
+
     right: 30px;
     display: none;
     width: 70px;
