@@ -180,6 +180,23 @@ HEADER
     cursor: pointer;
 }
 
+.btn-menu-header-test {
+    margin-bottom: 2px;
+    padding: 0 34px;
+    border: none;
+    border-bottom: 2px solid white;
+    border-radius: 0;
+    background-color: #f8f8f8;
+}
+
+.btn-menu-header-test:hover {
+    background-color: #f8f8f8;
+}
+
+.btn-menu-header-test:active {
+    border-bottom: 2px solid #7F9A14;
+}
+
 .btn-menu-header-send {
     background-color: #7F9A14;
     color: white;
@@ -197,15 +214,20 @@ HEADER
     color: inherit;
 }
 
-.btn-menu-header:hover {
-    background-color: #7F9A14;
-    color: white;
-}
+/*.btn-menu-header:hover {*/
+/*    background-color: #7F9A14;*/
+/*    color: white;*/
+/*}*/
+
+/* Стили для активного элемента меню */
+/*.btn-menu-header.active {*/
+/*    background-color: #7F9A14;*/
+/*    color: white;*/
+/*}*/
 
 /* Стили для активного элемента меню */
 .btn-menu-header.active {
-    background-color: #7F9A14;
-    color: white;
+    border-bottom: 2px solid #7F9A14;
 }
 
 .btn-menu-header.active a {
