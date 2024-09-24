@@ -225,12 +225,12 @@ def create_pdf_from_data(params, category):
     pdf.set_x(5)
     pdf.image(name=Path(config_settings.BASE_DIR, 'static', 'img', 'header.jpg'),
               w=190,  # w=200
-              h=40)
+              h=35)
 
     # TITLE
     text_title = pdf.get_string_width(params["name"])
     x_position = (page_width - text_title) / 2  # Смещение для центрирования
-    pdf.set_y(header + padding_bottom * 2)
+    pdf.set_y(header + padding_bottom)
     pdf.set_x(x_position)
     pdf.cell(text_title, 10, params["name"], new_x=XPos.LMARGIN, new_y=YPos.NEXT)
     pdf.ln(padding_bottom)
