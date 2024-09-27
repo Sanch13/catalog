@@ -41,7 +41,7 @@
 <div class="wrapper">
     <header class="header">
         <div class="container-fluid px-5">
-            <div class="row align-items-center justify-content-between">
+            <div class="row align-items-center justify-content-between mtop-40">  {# mtop-40 style for frame of monitor #}
                 <div class="col-2 d-flex">
                     <a href="{% url 'home' %}" class="link-logo">
                         <img src="{% static 'img/logo.svg' %}" alt="logo">
@@ -176,7 +176,7 @@
 
 {# DISPLAY POPUP IN INACTIVITY_TIMEOUT #}
 <script>
-    const INACTIVITY_TIMEOUT = 6000;
+    const INACTIVITY_TIMEOUT = 600000;
     const POPUP_TIMEOUT = 10000;
 
     let inactivityTimer;
