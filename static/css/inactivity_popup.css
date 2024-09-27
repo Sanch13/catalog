@@ -13,13 +13,13 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    width: 600px; /* Увеличиваем ширину */
-    height: 300px; /* Увеличиваем высоту */
+    width: 570px; /* Увеличиваем ширину */
+    height: 270px; /* Увеличиваем высоту */
 }
 
 /* Стили для кнопок */
 .popup-button, .popup-button-no {
-    width: 150px;
+    width: 170px;
     padding: 10px 20px;
     margin: 10px 20px;
     background-color: #7F9A14;
@@ -46,6 +46,9 @@
     color: white;
 }
 
+.text-footer {
+    margin-top: 20px;
+}
 
 .btn-success {
     background-color: #E0F043;
@@ -68,5 +71,5 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 20px;
+    margin-top: 25px;
 }

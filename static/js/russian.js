@@ -52,7 +52,7 @@ language.russian = {
 		'accept' : 'Ввод:Accept (Shift-Enter)',
 		'alt'    : 'РУС/ENG:Alternate Graphemes',
 		'b'      : '\u2190:Backspace',    // Left arrow (same as &larr;)
-		'bksp'   : '\u232B:Backspace',  // version \u21D0 \u232B
+		'bksp'   : '\u2B05:Backspace',  // version \u21D0 \u232B
 		'c'      : '\u2716:Cancel (Esc)', // big X, close - same action as cancel
 		'cancel' : 'Отмена:Cancel (Esc)',
 		'clear'  : 'C:Clear',             // clear num pad

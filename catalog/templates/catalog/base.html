@@ -41,7 +41,7 @@
 <div class="wrapper">
     <header class="header">
         <div class="container-fluid px-5">
-            <div class="row align-items-center justify-content-between">
+            <div class="row align-items-center justify-content-between mtop-40">  {# mtop-40 style for frame of monitor #}
                 <div class="col-2 d-flex">
                     <a href="{% url 'home' %}" class="link-logo">
                         <img src="{% static 'img/logo.svg' %}" alt="logo">
@@ -50,19 +50,19 @@
                 <div class="col-8 d-flex justify-content-center">
                     <ul class="main-menu d-flex justify-content-center">
                         <li class="col-auto">
-                            <a href="{% url 'catalog:catalog' %}" class="btn-menu-header"
+                            <a href="{% url 'catalog:catalog' %}" class="btn-menu-header btn-menu-header-test"
                                id="menu-catalog">
                                 <div class="header-text">Подбор упаковки</div>
                             </a>
                         </li>
                         <li class="col-auto">
-                            <a href="{% url 'catalog:about_miran' %}" class="btn-menu-header"
+                            <a href="{% url 'catalog:about_miran' %}" class="btn-menu-header btn-menu-header-test"
                                id="menu-about">
                                 <div class="header-text">О Миран</div>
                             </a>
                         </li>
                         <li class="col-auto">
-                            <a href="{% url 'catalog:contact_me' %}" class="btn-menu-header"
+                            <a href="{% url 'catalog:contact_me' %}" class="btn-menu-header btn-menu-header-test"
                                id="menu-contact">
                                 <div class="header-text">Свяжитесь со мной</div>
                             </a>
@@ -70,7 +70,7 @@
                     </ul>
                 </div>
                 <div class="col-2 d-flex justify-content-end">
-                    <div class="btn-menu-header header-text" id="backButton">
+                    <div class="btn-menu-header header-text btn-menu-header-test" id="backButton">
                         <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"
                              fill="currentColor" class="bi bi-arrow-left" viewBox="0 1 20 16">
                             <path fill-rule="evenodd"
@@ -106,7 +106,7 @@
         <button class="popup-button" id="stay-button">ДА</button>
         <button class="popup-button-no" id="leave-button">НЕТ</button>
     </div>
-    <div class="" style="font-size: 22px;">Перенаправление через <span id="popup-timer"></span>
+    <div class="text-footer" style="font-size: 22px;">Перенаправление через <span id="popup-timer"></span>
         секунд
     </div>
 </div>

@@ -7,7 +7,7 @@ caps        +            +           +           +
 
 contact to me
     contact
-    -
+    +
 
-supplier    production      OMTS      Sale      Secratary
-            +                +           +       +
+    supplier    production      OMTS      Sale      Secratary
+                +                +           +       +
