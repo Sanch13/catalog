@@ -11,7 +11,7 @@
 {% block content %}
 <!-- Контейнер с карточками товара -->
 <div class="my-container">
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4">
+    <div class="row my-row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4">
         {% for product in new_products %}
             <div class="col">
                 <a href="{% if product.category__slug == 'bottles' %}{% url 'catalog:product_detail' product.category__slug product.series_slug product.slug %}{% else %}{% url 'catalog:product_detail_no_series' product.category__slug product.slug %}{% endif %}"

@@ -118,7 +118,7 @@ HEADER
     display: flex;
     flex-direction: column;
     padding: 0;
-    margin: auto 30px;
+    margin: 0;
     /*overflow: hidden; !* Убирает вертикальные полосы прокрутки *!*/
     /*background-color: rgba(250, 250, 250, 0.99);*/
 }
@@ -282,6 +282,10 @@ products_list
     margin: 0;
     padding: 0 25px;
     width: 100%;
+}
+
+.my-row {
+    margin: 0 40px;
 }
 
 .card {
