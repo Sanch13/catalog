@@ -8,7 +8,7 @@ from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
 
 from catalog.models.category import Category
-from catalog.utils import convert_img_to_webp
+from catalog.utils import convert_img_to_webp, get_upload_path_category
 
 
 def get_upload_path_series(instance, filename):
@@ -54,7 +54,7 @@ class Series(models.Model):
     description = models.TextField(blank=True,
                                    null=True,
                                    verbose_name='Описание')
-    series_image = models.ImageField(upload_to=get_upload_path_series,
+    series_image = models.ImageField(upload_to='files/Флаконы/Серии/',
                                      blank=True,
                                      null=True,
                                      verbose_name="Изображение серии")
