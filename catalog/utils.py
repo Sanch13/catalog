@@ -1,3 +1,4 @@
+import os
 from io import BytesIO
 from pathlib import Path
 from email.message import EmailMessage
@@ -24,6 +25,10 @@ def get_objects_from_paginator(request, per_page=1, model_objects_list=None):
         paginator = Paginator(model_objects_list, per_page=per_page)
         page_number = request.GET.get('page', 1)
         return paginator.page(page_number)
+
+
+def get_upload_path_category(instance, filename):
+    return os.path.join('files', instance.name, filename)
 
 
 def get_validate_list_values(data: list) -> list[tuple[int, int]]:
