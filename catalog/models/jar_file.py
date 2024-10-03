@@ -6,7 +6,7 @@ from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
 
 from .jar import Jar
-from catalog.utils import convert_img_to_webp
+from catalog.utils import convert_img_to_webp, get_upload_path_category
 
 
 def get_file_upload_path_jar(instance, filename):
@@ -28,7 +28,7 @@ class JarFile(models.Model):
                                  choices=FileTypeChoices.choices,
                                  default=FileTypeChoices.IMAGE,
                                  verbose_name='Тип файла')
-    file = models.FileField(upload_to=get_file_upload_path_jar,
+    file = models.FileField(upload_to='files/Баночки/',
                             verbose_name='Файл',
                             blank=True,
                             null=True,

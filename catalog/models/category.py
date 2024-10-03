@@ -1,16 +1,10 @@
-import os
-
 from django.db import models
 from django.utils.text import slugify
 
 from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
 
-from catalog.utils import convert_img_to_webp
-
-
-def get_upload_path_category(instance, filename):
-    return os.path.join('files', instance.name, filename)
+from catalog.utils import convert_img_to_webp, get_upload_path_category
 
 
 class Category(models.Model):

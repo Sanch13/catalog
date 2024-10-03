@@ -6,7 +6,7 @@ from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
 
 from .bottle import Bottle
-from catalog.utils import convert_img_to_webp
+from catalog.utils import convert_img_to_webp, get_upload_path_category
 
 
 def get_file_upload_path_bottle(instance, filename):
@@ -29,7 +29,7 @@ class BottleFile(models.Model):
                                  choices=FileTypeChoices.choices,
                                  default=FileTypeChoices.IMAGE,
                                  verbose_name='Тип файла')
-    file = models.FileField(upload_to=get_file_upload_path_bottle,
+    file = models.FileField(upload_to='files/Флаконы/',
                             blank=True,
                             null=True,
                             verbose_name='Файл')

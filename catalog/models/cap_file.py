@@ -6,7 +6,7 @@ from imagekit.processors import ResizeToFill
 from django.db import models
 
 from .cap import Cap
-from catalog.utils import convert_img_to_webp
+from catalog.utils import convert_img_to_webp, get_upload_path_category
 
 
 def get_file_upload_path_cap(instance, filename):
@@ -28,7 +28,7 @@ class CapFile(models.Model):
                                  choices=FileTypeChoices.choices,
                                  default=FileTypeChoices.IMAGE,
                                  verbose_name='Тип файла')
-    file = models.FileField(upload_to=get_file_upload_path_cap,
+    file = models.FileField(upload_to='files/Колпачки/',
                             blank=True,
                             null=True,
                             verbose_name='Файл')
