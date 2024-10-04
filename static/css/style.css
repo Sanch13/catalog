@@ -530,6 +530,10 @@ img {
     max-width: 1800px;
 }
 
+.product-card {
+    width: 100%;
+}
+
 .my-container {
     flex: 1;
     display: flex;
@@ -544,7 +548,8 @@ img {
 .container {
     margin: 0 0;
     padding: 0;
-    max-width: max-content;
+    /*max-width: max-content;*/
+    max-width: 897px;
 }
 
 .shadow-description {
