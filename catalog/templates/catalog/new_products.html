@@ -447,7 +447,7 @@
 
     document.getElementById('openPopupPrice').addEventListener('click', function () {
         let idsLenght = getIdsFromCheckedCheckBoxes().totalCount;
-        if (productCards.length < LIMIT_PRODUCT){
+        if (productCards.length <= LIMIT_PRODUCT){
             document.getElementById('popupFormPrice').style.display = 'flex';
         }  else if (idsLenght === 0 || idsLenght > LIMIT_PRODUCT) {
             openPopupWarning();

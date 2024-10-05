@@ -278,7 +278,7 @@ def create_pdf_from_data(params, category):
 
     # TABLE
     pdf.set_y(current_position_y + padding_bottom)
-    pdf.set_font("DejaVu", size=14)
+    pdf.set_font("DejaVu", size=13)
     table_width = page_width - 2 * margin  # Ширина таблицы с учетом отступов
     col1_width = table_width * 0.4  # 30% ширины страницы для первой колонки
     col2_width = table_width * 0.6  # 70% ширины страницы для второй колонки

@@ -392,13 +392,13 @@ def get_size_new_products(request):
         all_size = 0
         if jars:
             list_params = get_list_params_jars_from_db(jars)
-            all_size += get_size_category(list_params=list_params, category='jar')
+            all_size += get_size_category(list_params=list_params, category='jars')
         if caps:
             list_params = get_list_params_caps_from_db(caps)
-            all_size += get_size_category(list_params=list_params, category='cap')
+            all_size += get_size_category(list_params=list_params, category='caps')
         if bottles:
             list_params = get_list_params_bottles_from_db(bottles, category="bottles")
-            all_size += get_size_category(list_params=list_params, category='bottle')
+            all_size += get_size_category(list_params=list_params, category='bottles')
 
         file_size = get_formatted_file_size(size_bytes=all_size)
         return JsonResponse({'success': True, 'file_size': file_size})
