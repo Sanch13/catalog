@@ -210,7 +210,6 @@ def get_text_for_email_table(user_data):
 
 
 def create_pdf_from_data(params, category):
-    print("Create PDF file from category ", category)
     image_bytes_list = params["files"]
     font_path = Path(config_settings.FONT_DIR, "DejaVuSans.ttf")
 
@@ -360,7 +359,6 @@ def send_admin_email(text_body):
         server.starttls(context=context)
         server.login(settings.FROM_APP, settings.PASSWORD_APP)
         server.send_message(message)
-    print("sent email to admin")
 
 
 def get_text_subject_for_email_to_department(department) -> str:
@@ -382,7 +380,6 @@ def send_email_to_department(user_data):
 
     template = 'template_for_emails/department.html'
     render_template_and_send_email(message, template, user_data)
-    print("sent email to DEPARTMENT")
 
 
 def send_data_to_client(list_params, data, file_stream):
@@ -416,7 +413,6 @@ def send_data_to_client(list_params, data, file_stream):
         server.starttls(context=context)
         server.login(settings.SALE_EMAIL, settings.SALE_PASSWORD_EMAIL)
         server.send_message(message)
-    print("sent email to client")
 
 
 def get_subject_for_email(user_data):
@@ -442,13 +438,12 @@ def send_data_to_sale(user_data):
     message['Subject'] = user_data.get('subject', "")
     # message['Subject'] = "Запрос цены на выбранную продукцию с InterCharm" if user_data.get("form") == "price" else "Информация о загрузке информации из каталога клиентом на InterCharm"
     message['From'] = settings.FROM_APP  # send app
-    message['To'] = ['a.zubchyk@miran-bel.com']  # sent email settings.SALE_EMAIL to sale@miran-bel.com
+    message['To'] = ['sale@miran-bel.com']  # sent email settings.SALE_EMAIL to sale@miran-bel.com
 
     # text_body = "Информация о потенциальном покупателе"
     # message.set_content(text_body)
     template = "template_for_emails/template_email.html"
     render_template_and_send_email(message, template, user_data)
-    print("sent email to sale")
 
 
 def render_template_and_send_email(message, template, user_data):

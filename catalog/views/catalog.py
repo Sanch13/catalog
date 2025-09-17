@@ -267,7 +267,6 @@ def product_detail_no_series(request, category_slug, product_slug):
 
 
 def send_data_to_email(request):
-    print('send_data_to_email', request.POST)
     if request.method == 'POST':
         form = ContactLidForm(request.POST)
         if form.is_valid():
@@ -284,8 +283,6 @@ def send_data_to_email(request):
                 'place': place,
                 'form': 'catalog',
             }
-            print("work")
-            print(category, user_data)
             if place != 'contact':
                 ids = convert_to_numbers(json.loads(request.POST.get('ids', '[]')))
                 list_params = []
@@ -304,12 +301,10 @@ def send_data_to_email(request):
                     caps = convert_to_numbers(new_products.get('caps', []))
                     list_params += get_list_params_caps_from_db(caps)
 
-                print("FROM catalog -> send email")
                 send_email_list_products.delay(list_params=list_params, user_data=user_data)
                 return JsonResponse({'success': True})
             else:
                 send_email_from_contact_customer.delay(user_data=user_data)
-                print("FROM contact -> send email")
                 return JsonResponse({'success': True})
         else:
             return JsonResponse({'success': False, 'errors': form.errors})
@@ -319,7 +314,6 @@ def get_size_list_pdf_files(request):
     if request.method == 'POST':
         ids = convert_to_numbers(json.loads(request.POST.get('ids', [])))
         category = request.POST.get("category")
-        print("GET FILE SIZE: ", category)
         list_params = []
         if category == 'jars':
             list_params = get_list_params_jars_from_db(ids)
@@ -361,7 +355,6 @@ def contact_me(request):
 
 
 def send_data_to_email_from_supplier(request):
-    print('send_data_to_email_from_supplier', request.POST)
     if request.method == 'POST':
         form = SupplierForm(request.POST)
         if form.is_valid():
@@ -374,7 +367,6 @@ def send_data_to_email_from_supplier(request):
                 'comment': cd['comment_sup'],
                 'place': request.POST.get('place', []),
             }
-            print("work supplier !!!")
             send_department_email.delay(user_data=user_data)
             return JsonResponse({'success': True})
         else:
@@ -405,7 +397,6 @@ def get_size_new_products(request):
 
 
 def send_data_form_price_to_email(request):
-    print('send_data_form_price_to_email', request.POST)
     if request.method == 'POST':
         form = ContactPriceForm(request.POST)
         if form.is_valid():
@@ -426,7 +417,6 @@ def send_data_form_price_to_email(request):
                 'ids': ids,
                 'new_products': new_products,
             }
-            print('user_data', user_data)
             send_data_form_price_to_sale.delay(user_data=user_data)
             return JsonResponse({'success': True})
         else:
